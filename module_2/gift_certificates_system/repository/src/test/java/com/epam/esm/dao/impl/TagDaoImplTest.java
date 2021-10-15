@@ -30,11 +30,16 @@ public class TagDaoImplTest {
     private final static String GYM_TAG_NAME = "gym";
     private final static String EXPECTED_TAG_NAME_POSITIVE = "notebook";
     private final static String EXPECTED_TAG_NAME_NEGATIVE = "negative";
-    private final TagDaoImpl tagDao;
     private static Tag EXPECTED_TAG_POSITIVE;
     private static Tag EXPECTED_TAG_NEGATIVE;
     private static List<Tag> EXPECTED_POSITIVE_TAGS;
     private static List<Tag> EXPECTED_NEGATIVE_TAGS;
+    private final TagDaoImpl tagDao;
+
+    @Autowired
+    public TagDaoImplTest(TagDaoImpl tagDao) {
+        this.tagDao = tagDao;
+    }
 
     @BeforeEach
     public void init() {
@@ -57,11 +62,6 @@ public class TagDaoImplTest {
         EXPECTED_NEGATIVE_TAGS = Arrays.asList(new Tag(9, EPAM_TAG_NAME),
                 new Tag(9, GIFT_TAG_NAME),
                 new Tag(9, GYM_TAG_NAME));
-    }
-
-    @Autowired
-    public TagDaoImplTest(TagDaoImpl tagDao) {
-        this.tagDao = tagDao;
     }
 
     @Test

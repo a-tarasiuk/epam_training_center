@@ -1,89 +1,37 @@
 package com.epam.esm.configuration;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.epam.esm.converter.StringToColumnNameConverter;
+import com.epam.esm.converter.StringToRequestParameterConverter;
+import com.epam.esm.converter.StringToSqlSortOperatorConverter;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import javax.sql.DataSource;
+
+import java.util.Locale;
 
 /**
  * Main ESM application configuration.
  */
 @Configuration
-@EnableWebMvc
 @ComponentScan("com.epam.esm")
-@PropertySource("classpath:database_configuration.properties")
 public class EsmConfiguration implements WebMvcConfigurer {
-    private final Environment environment;
-
-    /**
-     * Initialization environment object to gain access to property file.
-     *
-     * @param environment   - Environment object.
-     * @see org.springframework.core.env.Environment
-     */
-    @Autowired
-    public EsmConfiguration(Environment environment) {
-        this.environment = environment;
-    }
-
-    /**
-     * Created connection pool with HikariCP and set attributes for MySQL database connection.
-     *
-     * @return  - DataSource (Hikari data source)
-     * @see com.zaxxer.hikari.HikariConfig
-     * @see com.zaxxer.hikari.HikariDataSource
-     */
     @Bean
-    public DataSource dataSource() {
-        HikariConfig hikariConfig = new HikariConfig();
-
-        hikariConfig.setDriverClassName(environment.getProperty("driver.classname"));
-        hikariConfig.setJdbcUrl(environment.getProperty("jdbc.url"));
-        hikariConfig.setUsername(environment.getProperty("db.username"));
-        hikariConfig.setPassword(environment.getProperty("db.password"));
-
-        hikariConfig.addDataSourceProperty("cachePrepStmts" , environment.getProperty("cache.prep.stmts"));
-        hikariConfig.addDataSourceProperty("prepStmtCacheSize" , environment.getProperty("prep.stmt.cache.size"));
-        hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit" , environment.getProperty("prep.stmt.cache.limit"));
-
-        return new HikariDataSource(hikariConfig);
+    public MessageSource messageSource() {
+        ResourceBundleMessageSource messages = new ResourceBundleMessageSource();
+        messages.setBasename("/locale");
+        messages.setDefaultLocale(Locale.ENGLISH);
+        messages.setDefaultEncoding("UTF-8");
+        return messages;
     }
 
-    /**
-     * This is the central class in the JDBC core package. It simplifies the use of JDBC and helps to avoid common errors.
-     * It executes core JDBC workflow, leaving application code to provide SQL and extract results.
-     * This class executes SQL queries or updates, initiating iteration over ResultSets
-     * and catching JDBC exceptions and translating them to the generic,
-     * more informative exception hierarchy defined in the org.springframework.dao package.
-     *
-     * @return - Jdbc template.
-     * @see org.springframework.jdbc.core.JdbcTemplate
-     */
-    @Bean
-    public JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(dataSource());
-    }
-
-    /**
-     * For use StringToEnumConverter, need register it in Spring Configuration.
-     *
-     * @param registry - Formatter registry object.
-     * @see org.springframework.format.FormatterRegistry
-     * @see com.epam.esm.util.StringToSortOperatorEnumConverter
-     * @see com.epam.esm.util.StringToColumnNameEnumConverter
-     */
     @Override
-    public void addFormatters(@NotNull FormatterRegistry registry) {
-        WebMvcConfigurer.super.addFormatters(registry);
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new StringToColumnNameConverter());
+        registry.addConverter(new StringToSqlSortOperatorConverter());
+        registry.addConverter(new StringToRequestParameterConverter());
     }
 }

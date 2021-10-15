@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -22,9 +23,7 @@ import java.util.Optional;
  */
 @Log4j2
 @Component
-public class TagDaoImpl extends TagDao {
-    private final JdbcTemplate jdbcTemplate;
-
+public class TagDaoImpl implements TagDao {
     private static final String CREATE_TAG_SQL = "INSERT INTO tag (name) VALUES (?)";
     private static final String DELETE_TAG_BY_ID_SQL = "DELETE FROM tag WHERE id = (?)";
     private static final String FIND_TAG_BY_NAME_SQL = "SELECT id, name FROM tag WHERE name = (?)";
@@ -32,6 +31,9 @@ public class TagDaoImpl extends TagDao {
     private static final String FIND_ALL_TAGS_SQL = "SELECT id, name FROM tag";
     private static final String FIND_TAGS_BY_CERTIFICATE_ID_SQL
             = "SELECT tag.id, tag.name FROM tag JOIN gift_certificate_to_tag_relation AS relation ON relation.tag_id = tag.id WHERE relation.gift_certificate_id = ?";
+    private static final String DELETE_GIFT_CERTIFICATE_TO_TAG_RELATION_BY_ID_SQL = "DELETE FROM gift_certificate_to_tag_relation WHERE gift_certificate_id = ?";
+
+    private final JdbcTemplate jdbcTemplate;
 
     /**
      * Instantiates a new Tag dao.
@@ -57,7 +59,6 @@ public class TagDaoImpl extends TagDao {
 
         long generatedId = Objects.requireNonNull(keyHolder.getKey()).longValue();
         entity.setId(generatedId);
-        log.info("Tag was created in the database: " + entity);
 
         return entity;
     }
@@ -76,12 +77,11 @@ public class TagDaoImpl extends TagDao {
         } catch (DataAccessException e) {
             optionalTag = Optional.empty();
 
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug(e);
             }
         }
 
-        log.info(optionalTag.isPresent() ? "Tag with id '{}' found in database." : "Tag with name '{}' not found in database.", id);
         return optionalTag;
     }
 
@@ -95,12 +95,11 @@ public class TagDaoImpl extends TagDao {
         } catch (DataAccessException e) {
             optionalTag = Optional.empty();
 
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug(e);
             }
         }
 
-        log.info(optionalTag.isPresent() ? "Tag with name '{}' found in database." : "Tag with name '{}' not found in database.", tagName);
         return optionalTag;
     }
 
@@ -113,5 +112,11 @@ public class TagDaoImpl extends TagDao {
     @Override
     public List<Tag> findByGiftCertificateId(long id) {
         return jdbcTemplate.query(FIND_TAGS_BY_CERTIFICATE_ID_SQL, new BeanPropertyRowMapper<>(Tag.class), id);
+    }
+
+    @Override
+    public boolean deleteAllTagsByGiftCertificateId(long giftCertificateId) {
+        int countDeletedRows = jdbcTemplate.update(DELETE_GIFT_CERTIFICATE_TO_TAG_RELATION_BY_ID_SQL, giftCertificateId);
+        return countDeletedRows >= SqlQueryStatus.SUCCESSFUL;
     }
 }

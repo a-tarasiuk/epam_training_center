@@ -13,7 +13,7 @@ public class EsmServletInitializer extends AbstractAnnotationConfigDispatcherSer
     /**
      * For "root" application context (non-web infrastructure) configuration.
      *
-     * @return  - Specify @Configuration and/or @Component classes for the root application context.
+     * @return - Specify @Configuration and/or @Component classes for the root application context.
      */
     @Override
     protected Class<?>[] getRootConfigClasses() {
@@ -27,8 +27,8 @@ public class EsmServletInitializer extends AbstractAnnotationConfigDispatcherSer
      */
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {
-            EsmConfiguration.class
+        return new Class[]{
+                DatabaseConfiguration.class
         };
     }
 
@@ -39,6 +39,6 @@ public class EsmServletInitializer extends AbstractAnnotationConfigDispatcherSer
      */
     @Override
     protected String @NotNull [] getServletMappings() {
-        return new String[] {"/"};
+        return new String[]{"/"};
     }
 }

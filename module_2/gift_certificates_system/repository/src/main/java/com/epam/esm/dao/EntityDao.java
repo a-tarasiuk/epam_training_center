@@ -7,43 +7,43 @@ import java.util.Optional;
  * Entity DAO layer class.
  * Works with database.
  */
-public abstract class EntityDao<T> {
+public interface EntityDao<T> {
     /**
      * Create an entity in the database.
      *
-     * @param entity    - Entity being created.
-     * @return          - Created entity.
+     * @param entity - Entity being created.
+     * @return - Created entity.
      */
-    public abstract T create(T entity);
+    T create(T entity);
 
     /**
      * Delete an entity in the database.
      *
-     * @param id        - Entity ID.
-     * @return          - Operation result (entity deleted or not deleted)
+     * @param id - Entity ID.
+     * @return - Operation result (entity deleted or not deleted)
      */
-    public abstract boolean delete(long id);
+    boolean delete(long id);
 
     /**
      * Search for all entities.
      *
-     * @return          - List of found entities.
+     * @return - List of found entities.
      */
-    public abstract List<T> findAll();
+    List<T> findAll();
 
     /**
      * Finding an entity by its ID.
      *
-     * @param id        - Entity ID.
-     * @return          - Optional of found entity.
+     * @param id - Entity ID.
+     * @return - Optional of found entity.
      */
-    public abstract Optional<T> findById(long id);
+    Optional<T> findById(long id);
 
     /**
      * Finding an entity by its name.
      *
-     * @param name      - Entity name.
-     * @return          - Optional of found entity.
+     * @param name - Entity name.
+     * @return - Optional of found entity.
      */
-    public abstract Optional<T> findByName(String name);
+    Optional<T> findByName(String name);
 }

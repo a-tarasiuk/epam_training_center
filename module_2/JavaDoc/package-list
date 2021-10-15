@@ -1,9 +1,0 @@
-com.epam.esm.configuration
-com.epam.esm.controller
-com.epam.esm.dao
-com.epam.esm.dao.impl
-com.epam.esm.entity
-com.epam.esm.exception
-com.epam.esm.service
-com.epam.esm.service.impl
-com.epam.esm.util

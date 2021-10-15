@@ -1,46 +1,38 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.configuration.EsmConfigurationTest;
 import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
+import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.EntityExistsException;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.util.ColumnName;
-import com.epam.esm.util.SortOperator;
-import org.junit.jupiter.api.BeforeAll;
+import com.epam.esm.util.SqlSortOperator;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = EsmConfigurationTest.class)
-@Sql(scripts = "classpath:database/schema.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(scripts = "classpath:database/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class GiftCertificateServiceImplTest {
-    @Autowired
-    private GiftCertificateServiceImpl giftCertificateService;
+    @Mock
     private static GiftCertificateDaoImpl giftCertificateDao;
+    @Mock
     private static TagDaoImpl tagDao;
+    @Mock
+    private static GiftCertificateToTagRelationDaoImpl relationDao;
+
     private static Tag tag;
     private static GiftCertificate existsGiftCertificateOne;
     private static GiftCertificate existsGiftCertificateTwo;
@@ -48,12 +40,12 @@ public class GiftCertificateServiceImplTest {
     private static List<Tag> existsTagsOne;
     private static List<Tag> existsTagsTwo;
     private static List<Tag> existsTagsThree;
-
+    private GiftCertificateServiceImpl giftCertificateService;
 
     @BeforeEach
     public void beforeAll() {
-        giftCertificateDao = Mockito.mock(GiftCertificateDaoImpl.class);
-        tagDao = Mockito.mock(TagDaoImpl.class);
+        MockitoAnnotations.openMocks(this);
+        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateDao, tagDao, relationDao);
         tag = new Tag(4, "abstract tag");
 
         // Initialization gift certificates
@@ -82,33 +74,17 @@ public class GiftCertificateServiceImplTest {
 
     @Test
     public void createPositive() {
-        GiftCertificate giftCertificate = new GiftCertificate(4L, "certificate 4", "description for gift certificate 4", 1.10F, 1,
+        GiftCertificate giftCertificate = new GiftCertificate(4L, "certificate", "description for gift certificate 4", 1.10F, 1,
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
                 Collections.singletonList(tag));
 
-        Mockito.when(giftCertificateDao.findByName("certificate 4")).thenReturn(Optional.empty());
+        Mockito.when(giftCertificateDao.findByName("certificate")).thenReturn(Optional.empty());
         Mockito.when(giftCertificateDao.create(giftCertificate)).thenReturn(giftCertificate);
+        Mockito.when(tagDao.findByName("abstract tag")).thenReturn(Optional.of(tag));
+        Mockito.when(relationDao.find(1, 1)).thenReturn(Optional.empty());
+        Mockito.when(relationDao.create(1, 1)).thenReturn(true);
         assertNotNull(giftCertificateService.create(giftCertificate));
-    }
-
-    @Test
-    public void createException() {
-        String tagName = "certificate 1";
-
-        GiftCertificate giftCertificate = new GiftCertificate(4L, tagName, "description for gift certificate 4", 1.10F, 1,
-                LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
-                LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
-                Collections.singletonList(tag));
-
-        Mockito.when(giftCertificateDao.findByName(tagName)).thenThrow(EntityExistsException.class);
-
-        Throwable throwable = assertThrows(EntityExistsException.class, () -> giftCertificateService.create(giftCertificate));
-
-        String expectedMessage = "Gift certificate with name '" + tagName + "' already exists in the database.";
-        String actualMessage = throwable.getMessage();
-
-        assertTrue(expectedMessage.contentEquals(actualMessage));
     }
 
     @Test
@@ -155,10 +131,12 @@ public class GiftCertificateServiceImplTest {
                 existsGiftCertificateThree,
                 existsGiftCertificateTwo,
                 existsGiftCertificateOne
-                );
+        );
+
+        Set<ColumnName> set = Collections.singleton(ColumnName.NAME);
 
         // Step 3
-        List<GiftCertificate> actualGiftCertificates = giftCertificateService.findAllAndSort(ColumnName.NAME, SortOperator.DESC);
+        List<GiftCertificate> actualGiftCertificates = giftCertificateService.findAllSortedWithType(set, SqlSortOperator.DESC);
 
         // Result
         assertEquals(expectedGiftCertificates, actualGiftCertificates);
@@ -186,8 +164,10 @@ public class GiftCertificateServiceImplTest {
                 existsGiftCertificateOne
         );
 
+        Set<ColumnName> set = Collections.singleton(ColumnName.CREATE_DATE);
+
         // Step 3
-        List<GiftCertificate> actualGiftCertificates = giftCertificateService.findAllAndSort(ColumnName.CREATE_DATE, SortOperator.DESC);
+        List<GiftCertificate> actualGiftCertificates = giftCertificateService.findAllSortedWithType(set, SqlSortOperator.DESC);
 
         // Result
         assertEquals(expectedGiftCertificates, actualGiftCertificates);
@@ -215,8 +195,10 @@ public class GiftCertificateServiceImplTest {
                 existsGiftCertificateOne
         );
 
+        Set<ColumnName> set = Collections.singleton(ColumnName.DESCRIPTION);
+
         // Step 3
-        List<GiftCertificate> actualGiftCertificates = giftCertificateService.findAllAndSort(ColumnName.LAST_UPDATE_DATE, SortOperator.DESC);
+        List<GiftCertificate> actualGiftCertificates = giftCertificateService.findAllSortedWithType(set, SqlSortOperator.DESC);
 
         // Result
         assertEquals(expectedGiftCertificates, actualGiftCertificates);
@@ -244,8 +226,10 @@ public class GiftCertificateServiceImplTest {
                 existsGiftCertificateOne
         );
 
+        Set<ColumnName> set = Collections.singleton(ColumnName.PRICE);
+
         // Step 3
-        List<GiftCertificate> actualGiftCertificates = giftCertificateService.findAllAndSort(ColumnName.WITHOUT_SORTING, SortOperator.DESC);
+        List<GiftCertificate> actualGiftCertificates = giftCertificateService.findAllSortedWithType(set, SqlSortOperator.DESC);
 
         // Result
         assertEquals(expectedGiftCertificates, actualGiftCertificates);

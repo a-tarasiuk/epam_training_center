@@ -1,32 +1,84 @@
 package com.epam.esm.exception;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+import java.util.Locale;
+
+import static com.epam.esm.exception.HttpCustomErrorCode.COLUMN_NAME_NOT_PRESENT;
+import static com.epam.esm.exception.HttpCustomErrorCode.ENTITY_EXISTS;
+import static com.epam.esm.exception.HttpCustomErrorCode.ENTITY_INVALID;
+import static com.epam.esm.exception.HttpCustomErrorCode.ENTITY_INVALID_FIELD;
+import static com.epam.esm.exception.HttpCustomErrorCode.ENTITY_NOT_FOUND;
+import static com.epam.esm.exception.HttpCustomErrorCode.ENUM_CONSTANT_NOT_PRESENT;
+
+@RestControllerAdvice
 public class EsmExceptionHandler {
-    private static final int HTTP_ERROR_CODE_ENTITY_EXISTS = 40601;
-    private static final int HTTP_ERROR_CODE_ENTITY_NOT_FOUND = 40602;
+    private final ResourceBundleMessageSource messageSource;
+    private final EsmExceptionBody exceptionBody;
+    private final EsmTemplateException templateException;
+
+    @Autowired
+    public EsmExceptionHandler(ResourceBundleMessageSource messageSource, EsmExceptionBody exceptionBody, EsmTemplateException templateException) {
+        this.messageSource = messageSource;
+        this.exceptionBody = exceptionBody;
+        this.templateException = templateException;
+    }
 
     @ExceptionHandler(EntityExistsException.class)
-    public ResponseEntity<EsmTemplateException> handleEntityExistsException(RuntimeException e) {
-        HttpStatus httpStatus = HttpStatus.FOUND;
-
-        EsmExceptionBody body = new EsmExceptionBody(e.getMessage(), HTTP_ERROR_CODE_ENTITY_EXISTS);
-        EsmTemplateException response = new EsmTemplateException(httpStatus, body);
-
-        return new ResponseEntity<>(response, httpStatus);
+    public ResponseEntity<EsmTemplateException> handleEntityExistsException(EntityExistsException e, Locale locale) {
+        return createResponseEntity(e, locale, ENTITY_EXISTS, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<EsmTemplateException> handleEntityNotFoundException(RuntimeException e) {
-        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+    public ResponseEntity<EsmTemplateException> handleEntityNotFoundException(EntityNotFoundException e, Locale locale) {
+        return createResponseEntity(e, locale, ENTITY_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
 
-        EsmExceptionBody body = new EsmExceptionBody(e.getMessage(), HTTP_ERROR_CODE_ENTITY_NOT_FOUND);
-        EsmTemplateException response = new EsmTemplateException(httpStatus, body);
+    @ExceptionHandler(EntityInvalidException.class)
+    public ResponseEntity<EsmTemplateException> handleEntityFieldValidateException(EntityInvalidException e, Locale locale) {
+        return createResponseEntity(e, locale, ENTITY_INVALID, HttpStatus.BAD_REQUEST);
+    }
 
-        return new ResponseEntity<>(response, httpStatus);
+    @ExceptionHandler(FieldInvalidException.class)
+    public ResponseEntity<EsmTemplateException> handleFieldInvalidException(FieldInvalidException e, Locale locale) {
+        return createResponseEntity(e, locale, ENTITY_INVALID_FIELD, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EnumConstantNotPresentException.class)
+    public ResponseEntity<EsmTemplateException> handleEnumConstantNotPresentException(EnumConstantNotPresentException e, Locale locale) {
+        return createResponseEntity(e, locale, ENUM_CONSTANT_NOT_PRESENT, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ColumnNameNotPresentException.class)
+    public ResponseEntity<EsmTemplateException> handleColumnNameNotPresentException(ColumnNameNotPresentException e, Locale locale) {
+        return createResponseEntity(e, locale, COLUMN_NAME_NOT_PRESENT, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<EsmTemplateException> handleIllegalArgumentException(IllegalArgumentException e) {
+        exceptionBody.setHttpCustomErrorCode(ENUM_CONSTANT_NOT_PRESENT);
+        exceptionBody.setErrorMessage(e.getMessage());
+
+        templateException.setHttpStatus(HttpStatus.CONFLICT);
+        templateException.setExceptionBody(exceptionBody);
+
+        return new ResponseEntity<>(templateException, HttpStatus.CONFLICT);
+    }
+
+    private ResponseEntity<EsmTemplateException> createResponseEntity(RuntimeException runtimeException, Locale locale, HttpCustomErrorCode httpCustomErrorCode, HttpStatus httpStatus) {
+        String exceptionMessage = messageSource.getMessage(runtimeException.getMessage(), null, locale);
+
+        exceptionBody.setHttpCustomErrorCode(httpCustomErrorCode);
+        exceptionBody.setErrorMessage(exceptionMessage);
+
+        templateException.setHttpStatus(httpStatus);
+        templateException.setExceptionBody(exceptionBody);
+
+        return new ResponseEntity<>(templateException, httpStatus);
     }
 }
