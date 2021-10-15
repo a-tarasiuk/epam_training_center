@@ -31,11 +31,11 @@ public class GiftCertificateUpdater {
             foundGiftCertificate.setDescription(newDescription);
         }
 
-        if (!ObjectUtils.isEmpty(newPrice) && newPrice.equals(oldPrice)) {
+        if (!ObjectUtils.isEmpty(newPrice) && !newPrice.equals(oldPrice)) {
             foundGiftCertificate.setPrice(newPrice);
         }
 
-        if (!ObjectUtils.isEmpty(newDuration) && newDuration.equals(oldDuration)) {
+        if (!ObjectUtils.isEmpty(newDuration) && !newDuration.equals(oldDuration)) {
             foundGiftCertificate.setDuration(newDuration);
         }
 
