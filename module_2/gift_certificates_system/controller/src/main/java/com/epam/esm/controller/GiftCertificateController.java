@@ -174,6 +174,7 @@ public class GiftCertificateController {
      * @param giftCertificate - Entity of the gift certificate.
      */
     @PatchMapping(path = UrlMapping.ID)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable long id, @RequestBody GiftCertificate giftCertificate) {
         service.update(id, giftCertificate);
     }

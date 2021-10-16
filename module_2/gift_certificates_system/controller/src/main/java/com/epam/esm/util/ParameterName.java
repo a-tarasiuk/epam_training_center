@@ -11,6 +11,7 @@ public final class ParameterName {
     public static final String KEYWORD = "keyword";
     public static final String SORT_BY = "sort_by";
     public static final String SORT_TYPE = "sort_type";
+
     private ParameterName() {
     }
 }
