@@ -1,0 +1,54 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'maven-publish'
+}
+
+group 'by.tarasiuk'
+version '1.3.5'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation 'org.apache.commons:commons-lang3:3.10'
+}
+
+jar {
+    setArchivesBaseName('utils')
+
+    manifest {
+        attributes('jar-name': archiveBaseName, 'jar-version' : project.version)
+    }
+
+    from {
+        configurations.runtimeClasspath.files.collect{it.isDirectory() ? it : zipTree(it)}
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'by.tarasiuk.util'
+            artifactId = 'etc-module_1-gradle-part_1'
+            version = '1.3.5'
+
+            from components.java
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy(jacocoTestReport)   // Returns tasks that finalize this task.
+}
+
+jacocoTestReport {
+    dependsOn(test)                 //jacocoTestReport task depends on task test.
+}

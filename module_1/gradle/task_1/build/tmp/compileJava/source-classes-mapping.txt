@@ -1,0 +1,2 @@
+by/tarasiuk/util/StringUtils.java
+ by.tarasiuk.util.StringUtils

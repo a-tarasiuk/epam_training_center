@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group 'by.tarasiuk'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':api')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': 'by.tarasiuk.app.App')
+        DuplicatesStrategy.EXCLUDE
+    }
+
+    from {
+        configurations.runtimeClasspath.files.collect {it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

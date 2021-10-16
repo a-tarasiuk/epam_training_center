@@ -1,0 +1,2 @@
+by/tarasiuk/app/App.java
+ by.tarasiuk.app.App
