@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +17,7 @@ import java.util.Optional;
  * Gift certificate to tag relation DAO implementation.
  */
 @Log4j2
-@Component
+@Repository
 public class GiftCertificateToTagRelationDaoImpl implements GiftCertificateToTagRelationDao<GiftCertificateToTagRelation> {
     private static final String CREATE_RELATION_SQL = "INSERT INTO gift_certificate_to_tag_relation (gift_certificate_id, tag_id) VALUES (?, ?)";
     private static final String DELETE_RELATION_SQL = "DELETE FROM gift_certificate_to_tag_relation WHERE gift_certificate_id = ? AND tag_id = ?";

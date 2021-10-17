@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -29,7 +29,7 @@ import java.util.Set;
  * Gift certificate DAO implementation.
  */
 @Log4j2
-@Component
+@Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private static final String CREATE_GIFT_CERTIFICATE_SQL
             = "INSERT INTO gift_certificate (name, description, price, duration, create_date, last_update_date) VALUES (?, ?, ?, ?, ?, ?)";

@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -22,7 +22,7 @@ import java.util.Optional;
  * Tag DAO implementation.
  */
 @Log4j2
-@Component
+@Repository
 public class TagDaoImpl implements TagDao {
     private static final String CREATE_TAG_SQL = "INSERT INTO tag (name) VALUES (?)";
     private static final String DELETE_TAG_BY_ID_SQL = "DELETE FROM tag WHERE id = (?)";
