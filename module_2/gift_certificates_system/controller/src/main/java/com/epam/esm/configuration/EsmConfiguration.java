@@ -28,6 +28,15 @@ public class EsmConfiguration implements WebMvcConfigurer {
         return messages;
     }
 
+    /**
+     * Provides an opportunity to use ENUM's as request parameters.
+     * The input name string must exactly match one of the declared enum values.
+     * When we make a web request with a string value that doesn't match one of our enum values,
+     * Spring will fail to convert it to the specified enum type.
+     * In this case, we'll get a ConversionFailedException.
+     *
+     * @param registry - Provides registry of field formatting logic.
+     */
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new StringToColumnNameConverter());

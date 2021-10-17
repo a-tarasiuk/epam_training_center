@@ -19,6 +19,7 @@ import com.epam.esm.util.TagValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
@@ -220,31 +221,8 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         }
     }
 
-    @Transactional
-    @Override
-    public boolean delete(long id) {
-        boolean result;
-        Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findById(id);
-
-        if (optionalGiftCertificate.isPresent()) {
-            boolean deleteTagsResult = tagDao.deleteAllTagsByGiftCertificateId(id);
-            boolean deleteRelationResult = giftCertificateDao.delete(id);
-            result = deleteTagsResult == deleteRelationResult;
-            log.info(result ? "Gift certificate with id '{}' deleted from the database."
-                    : "Gift certificate with id '{}' not deleted from the database.", id);
-        } else {
-            throw new EntityNotFoundException(MESSAGE_ENTITY_NOT_FOUND_EXCEPTION);
-        }
-
-        return result;
-    }
-
-    private boolean requiredFieldsAreEmpty(GiftCertificate giftCertificate) {
-        return ObjectUtils.isEmpty(giftCertificate.getName()) && ObjectUtils.isEmpty(giftCertificate.getDescription())
-                && ObjectUtils.isEmpty(giftCertificate.getPrice()) && ObjectUtils.isEmpty(giftCertificate.getDuration());
-    }
-
-    private void createRelations(GiftCertificate giftCertificate) {
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void createRelations(GiftCertificate giftCertificate) {
         long giftCertificateId = giftCertificate.getId();
 
         giftCertificate.getTags().forEach(tag -> {
@@ -272,6 +250,30 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
                 throw new EntityInvalidException(MESSAGE_ENTITY_INVALID_EXCEPTION);
             }
         });
+    }
+
+    @Transactional
+    @Override
+    public boolean delete(long id) {
+        boolean result;
+        Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findById(id);
+
+        if (optionalGiftCertificate.isPresent()) {
+            boolean deleteTagsResult = tagDao.deleteAllTagsByGiftCertificateId(id);
+            boolean deleteRelationResult = giftCertificateDao.delete(id);
+            result = deleteTagsResult == deleteRelationResult;
+            log.info(result ? "Gift certificate with id '{}' deleted from the database."
+                    : "Gift certificate with id '{}' not deleted from the database.", id);
+        } else {
+            throw new EntityNotFoundException(MESSAGE_ENTITY_NOT_FOUND_EXCEPTION);
+        }
+
+        return result;
+    }
+
+    private boolean requiredFieldsAreEmpty(GiftCertificate giftCertificate) {
+        return ObjectUtils.isEmpty(giftCertificate.getName()) && ObjectUtils.isEmpty(giftCertificate.getDescription())
+                && ObjectUtils.isEmpty(giftCertificate.getPrice()) && ObjectUtils.isEmpty(giftCertificate.getDuration());
     }
 
     private void deleteIrrelevantRelations(GiftCertificate giftCertificate) {
