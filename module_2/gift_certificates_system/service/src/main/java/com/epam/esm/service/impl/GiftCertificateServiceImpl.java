@@ -61,7 +61,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         this.relationDao = relationDao;
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public GiftCertificate create(GiftCertificate entity) {
         List<Tag> tags = entity.getTags();
@@ -121,7 +121,6 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         return giftCertificate;
     }
 
-    @Transactional
     @Override
     public List<GiftCertificate> findByTagName(String tagName) {
         Optional<Tag> optionalTag = tagDao.findByName(tagName);
@@ -189,7 +188,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         }
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public boolean update(long id, GiftCertificate giftCertificate) {
         if (!requiredFieldsAreEmpty(giftCertificate)) {
@@ -252,7 +251,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         });
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public boolean delete(long id) {
         boolean result;
