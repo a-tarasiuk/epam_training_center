@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.service.impl.GiftCertificateServiceImpl;
+import com.epam.esm.service.GitCertificateService;
 import com.epam.esm.util.ColumnName;
 import com.epam.esm.util.ParameterName;
 import com.epam.esm.util.ResponseEntityWrapper;
@@ -36,17 +36,16 @@ import java.util.Set;
 @RestController
 @RequestMapping(value = UrlMapping.GIFT_CERTIFICATES, produces = MediaType.APPLICATION_JSON_VALUE)
 public class GiftCertificateController {
-    private final GiftCertificateServiceImpl service;
+    private final GitCertificateService service;
     /**
      * Initializing of the gift certificate implementation.
      *
      * @param service - Service layer of the gift certificate.
      */
     @Autowired
-    public GiftCertificateController(GiftCertificateServiceImpl service) {
+    public GiftCertificateController(GitCertificateService service) {
         this.service = service;
     }
-
 
     /**
      * Create gift certificate entity.

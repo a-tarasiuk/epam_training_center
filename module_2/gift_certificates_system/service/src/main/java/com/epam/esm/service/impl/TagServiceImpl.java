@@ -1,6 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.impl.TagDaoImpl;
+import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityExistsException;
 import com.epam.esm.exception.EntityInvalidException;
@@ -24,7 +24,7 @@ import static com.epam.esm.util.PropertyKey.MESSAGE_ENTITY_NOT_FOUND_EXCEPTION;
 @Log4j2
 @Service
 public class TagServiceImpl implements AbstractService<Tag> {
-    private final TagDaoImpl tagDao;
+    private final TagDao tagDao;
 
     /**
      * Instantiates a new tag service.
@@ -32,7 +32,7 @@ public class TagServiceImpl implements AbstractService<Tag> {
      * @param tagDao - Tag DAO layer.
      */
     @Autowired
-    public TagServiceImpl(TagDaoImpl tagDao) {
+    public TagServiceImpl(TagDao tagDao) {
         this.tagDao = tagDao;
     }
 

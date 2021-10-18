@@ -1,8 +1,8 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
+import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
-import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateToTagRelation;
 import com.epam.esm.entity.Tag;
@@ -43,8 +43,8 @@ import static com.epam.esm.util.PropertyKey.MESSAGE_REQUIRED_FIELDS_EMPTY_EXCEPT
 @Log4j2
 @Service
 public class GiftCertificateServiceImpl implements GitCertificateService {
-    private final TagDaoImpl tagDao;
-    private final GiftCertificateDaoImpl giftCertificateDao;
+    private final TagDao tagDao;
+    private final GiftCertificateDao giftCertificateDao;
     private final GiftCertificateToTagRelationDaoImpl relationDao;
 
     /**
@@ -55,7 +55,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
      * @param relationDao        - Gift certificate to tag relation DAO layer.
      */
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDaoImpl giftCertificateDao, TagDaoImpl tagDao, GiftCertificateToTagRelationDaoImpl relationDao) {
+    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao, GiftCertificateToTagRelationDaoImpl relationDao) {
         this.giftCertificateDao = giftCertificateDao;
         this.tagDao = tagDao;
         this.relationDao = relationDao;
@@ -65,7 +65,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     @Override
     public GiftCertificate create(GiftCertificate entity) {
         List<Tag> tags = entity.getTags();
-        if (!GiftCertificateValidator.isValid(entity) && !TagValidator.isValid(tags)) {
+        if (!GiftCertificateValidator.isValid(entity) || !TagValidator.isValid(tags)) {
             throw new EntityInvalidException(MESSAGE_ENTITY_INVALID_EXCEPTION);
         }
 

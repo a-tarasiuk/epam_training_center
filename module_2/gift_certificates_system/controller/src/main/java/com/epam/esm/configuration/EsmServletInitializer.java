@@ -28,7 +28,7 @@ public class EsmServletInitializer extends AbstractAnnotationConfigDispatcherSer
     @Override
     protected Class<?>[] getServletConfigClasses() {
         return new Class[]{
-                DatabaseConfiguration.class
+                DatabaseConfiguration.class, EsmConfiguration.class
         };
     }
 
