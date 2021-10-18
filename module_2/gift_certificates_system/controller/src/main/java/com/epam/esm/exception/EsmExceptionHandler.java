@@ -57,7 +57,9 @@ public class EsmExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<EsmTemplateException> handleIllegalArgumentException(IllegalArgumentException e, Locale locale) {
-        return createResponseEntity(e, locale, ENUM_CONSTANT_NOT_PRESENT, HttpStatus.CONFLICT);
+        EsmExceptionBody exceptionBody = new EsmExceptionBody(e.getMessage(), ENUM_CONSTANT_NOT_PRESENT);
+        EsmTemplateException templateException = new EsmTemplateException(HttpStatus.NOT_FOUND, exceptionBody);
+        return new ResponseEntity<>(templateException, HttpStatus.NOT_FOUND);
     }
 
     private ResponseEntity<EsmTemplateException> createResponseEntity(RuntimeException runtimeException, Locale locale, HttpCustomErrorCode httpCustomErrorCode, HttpStatus httpStatus) {
