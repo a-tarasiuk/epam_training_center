@@ -71,7 +71,6 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
 
         String name = entity.getName();
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findByName(name);
-
         if (optionalGiftCertificate.isPresent()) {
             throw new EntityExistsException(MESSAGE_ENTITY_EXISTS_EXCEPTION);
         }

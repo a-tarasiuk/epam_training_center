@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Locale;
 
@@ -16,17 +16,13 @@ import static com.epam.esm.exception.HttpCustomErrorCode.ENTITY_INVALID_FIELD;
 import static com.epam.esm.exception.HttpCustomErrorCode.ENTITY_NOT_FOUND;
 import static com.epam.esm.exception.HttpCustomErrorCode.ENUM_CONSTANT_NOT_PRESENT;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class EsmExceptionHandler {
     private final ResourceBundleMessageSource messageSource;
-    private final EsmExceptionBody exceptionBody;
-    private final EsmTemplateException templateException;
 
     @Autowired
-    public EsmExceptionHandler(ResourceBundleMessageSource messageSource, EsmExceptionBody exceptionBody, EsmTemplateException templateException) {
+    public EsmExceptionHandler(ResourceBundleMessageSource messageSource) {
         this.messageSource = messageSource;
-        this.exceptionBody = exceptionBody;
-        this.templateException = templateException;
     }
 
     @ExceptionHandler(EntityExistsException.class)
@@ -60,25 +56,14 @@ public class EsmExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<EsmTemplateException> handleIllegalArgumentException(IllegalArgumentException e) {
-        exceptionBody.setHttpCustomErrorCode(ENUM_CONSTANT_NOT_PRESENT);
-        exceptionBody.setErrorMessage(e.getMessage());
-
-        templateException.setHttpStatus(HttpStatus.CONFLICT);
-        templateException.setExceptionBody(exceptionBody);
-
-        return new ResponseEntity<>(templateException, HttpStatus.CONFLICT);
+    public ResponseEntity<EsmTemplateException> handleIllegalArgumentException(IllegalArgumentException e, Locale locale) {
+        return createResponseEntity(e, locale, ENUM_CONSTANT_NOT_PRESENT, HttpStatus.CONFLICT);
     }
 
     private ResponseEntity<EsmTemplateException> createResponseEntity(RuntimeException runtimeException, Locale locale, HttpCustomErrorCode httpCustomErrorCode, HttpStatus httpStatus) {
         String exceptionMessage = messageSource.getMessage(runtimeException.getMessage(), null, locale);
-
-        exceptionBody.setHttpCustomErrorCode(httpCustomErrorCode);
-        exceptionBody.setErrorMessage(exceptionMessage);
-
-        templateException.setHttpStatus(httpStatus);
-        templateException.setExceptionBody(exceptionBody);
-
+        EsmExceptionBody exceptionBody = new EsmExceptionBody(exceptionMessage, httpCustomErrorCode);
+        EsmTemplateException templateException = new EsmTemplateException(httpStatus, exceptionBody);
         return new ResponseEntity<>(templateException, httpStatus);
     }
 }

@@ -49,7 +49,7 @@ public class TagServiceImpl implements AbstractService<Tag> {
             throw new EntityExistsException(MESSAGE_ENTITY_EXISTS_EXCEPTION);
         }
 
-        return optionalTag.orElse(tagDao.create(entity));
+        return tagDao.create(entity);
     }
 
     @Override
@@ -67,14 +67,8 @@ public class TagServiceImpl implements AbstractService<Tag> {
     public boolean delete(long id) {
         boolean result;
         Optional<Tag> optionalTag = tagDao.findById(id);
-
-        if (optionalTag.isPresent()) {
-            result = tagDao.delete(id);
-            log.info(result ? "Tag with id '{}' deleted from the database." : "Tag with id '{}' not deleted from the database.", id);
-        } else {
-            throw new EntityNotFoundException(MESSAGE_ENTITY_NOT_FOUND_EXCEPTION);
-        }
-
+        optionalTag.orElseThrow(() -> new EntityNotFoundException(MESSAGE_ENTITY_NOT_FOUND_EXCEPTION));
+        result = tagDao.delete(id);
         return result;
     }
 }

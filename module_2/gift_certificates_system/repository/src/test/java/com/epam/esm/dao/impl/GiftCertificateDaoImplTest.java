@@ -3,7 +3,6 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.configuration.EsmConfigurationTest;
 import com.epam.esm.entity.GiftCertificate;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,12 +85,6 @@ public class GiftCertificateDaoImplTest {
         );
     }
 
-    @BeforeEach
-
-    public void beforeEach() {
-
-    }
-
     @Test
     public void createPositive() {
         GiftCertificate actualGiftCertificate = giftCertificateDao.create(EXPECTED_GIFT_CERTIFICATE);
@@ -170,18 +163,16 @@ public class GiftCertificateDaoImplTest {
 
     @Test
     public void updatePositive() {
-//        EXPECTED_GIFT_CERTIFICATE.setId(1L);
-//
-//        boolean actualResult = giftCertificateDao.update(EXPECTED_GIFT_CERTIFICATE);
-//        assertTrue(actualResult);
+        boolean actualResult = giftCertificateDao.update(EXPECTED_GIFT_CERTIFICATE.getId(), EXPECTED_GIFT_CERTIFICATE);
+        assertTrue(actualResult);
     }
 
     @Test
     public void updateNegative() {
         EXPECTED_GIFT_CERTIFICATE.setId(99L);
 
-//        boolean actualResult = giftCertificateDao.update(EXPECTED_GIFT_CERTIFICATE);
-//        assertFalse(actualResult);
+        boolean actualResult = giftCertificateDao.update(EXPECTED_GIFT_CERTIFICATE.getId(), EXPECTED_GIFT_CERTIFICATE);
+        assertFalse(actualResult);
     }
 
     @Test

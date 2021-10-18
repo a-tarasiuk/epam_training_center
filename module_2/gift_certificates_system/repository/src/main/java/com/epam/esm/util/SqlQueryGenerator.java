@@ -27,13 +27,11 @@ public final class SqlQueryGenerator {
     }
 
     public static String forLikeOperator(String sqlQueryValue) {
-        StringBuilder sb = new StringBuilder()
+        return new StringBuilder()
                 .append(PERCENT_SIGN)
                 .append(sqlQueryValue)
-                .append(PERCENT_SIGN);
-
-        log.info("SQL query for LIKE operator was generated: {}.", sb);
-        return sb.toString();
+                .append(PERCENT_SIGN)
+                .toString();
     }
 
     public static String update(Map<String, Object> fields) {
@@ -46,7 +44,6 @@ public final class SqlQueryGenerator {
                     joiner.add(fieldName + EQUALS_MARK + fieldName);
                 });
 
-        log.info("Generated SQL query '{}'.", joiner);
         return joiner.toString();
     }
 

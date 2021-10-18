@@ -37,7 +37,6 @@ import java.util.Set;
 @RequestMapping(value = UrlMapping.GIFT_CERTIFICATES, produces = MediaType.APPLICATION_JSON_VALUE)
 public class GiftCertificateController {
     private final GiftCertificateServiceImpl service;
-
     /**
      * Initializing of the gift certificate implementation.
      *
