@@ -218,7 +218,6 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         }
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
     public void createRelations(GiftCertificate giftCertificate) {
         long giftCertificateId = giftCertificate.getId();
 
