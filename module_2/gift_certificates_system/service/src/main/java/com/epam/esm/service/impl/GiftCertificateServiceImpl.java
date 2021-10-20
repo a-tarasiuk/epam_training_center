@@ -189,10 +189,8 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public boolean update(long id, GiftCertificate giftCertificate) {
+    public GiftCertificate update(long id, GiftCertificate giftCertificate) {
         if (!requiredFieldsAreEmpty(giftCertificate)) {
-            boolean result;
-
             GiftCertificate foundGiftCertificate = giftCertificateDao.findById(id).orElseThrow(() -> new EntityNotFoundException(MESSAGE_ENTITY_NOT_FOUND_EXCEPTION));
             giftCertificate = GiftCertificateUpdater.update(foundGiftCertificate, giftCertificate);
 
@@ -208,12 +206,13 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
                     }
                 }
 
-                result = giftCertificateDao.update(id, giftCertificate);
+                GiftCertificate updated = giftCertificateDao.update(id, giftCertificate);
+                findAndSetTags(updated);
+
+                return updated;
             } else {
                 throw new EntityInvalidException(MESSAGE_ENTITY_INVALID_EXCEPTION);
             }
-
-            return result;
         } else {
             throw new FieldInvalidException(MESSAGE_REQUIRED_FIELDS_EMPTY_EXCEPTION);
         }
@@ -314,5 +313,11 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
             List<Tag> tags = tagDao.findByGiftCertificateId(id);
             giftCertificate.setTags(tags);
         });
+    }
+
+    private void findAndSetTags(GiftCertificate giftCertificate) {
+        long id = giftCertificate.getId();
+        List<Tag> tags = tagDao.findByGiftCertificateId(id);
+        giftCertificate.setTags(tags);
     }
 }

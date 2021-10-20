@@ -16,9 +16,9 @@ public interface GitCertificateService extends AbstractService<GiftCertificate> 
      *
      * @param id              - Gift certificate ID.
      * @param giftCertificate - Entity of the gift certificate.
-     * @return - Operation result (true or false)
+     * @return - Updated gift certificate
      */
-    boolean update(long id, GiftCertificate giftCertificate);
+    GiftCertificate update(long id, GiftCertificate giftCertificate);
 
     /**
      * Search for a list of gift certificates and sort them by column name.

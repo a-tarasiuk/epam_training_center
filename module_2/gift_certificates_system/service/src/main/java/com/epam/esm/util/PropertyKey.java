@@ -11,6 +11,7 @@ public final class PropertyKey {
     public static final String MESSAGE_NAME_INVALID_EXCEPTION = "message.name.invalid.exception";
     public static final String MESSAGE_DESCRIPTION_INVALID_EXCEPTION = "message.description.invalid.exception";
     public static final String MESSAGE_KEYWORD_INVALID_EXCEPTION = "message.keyword.invalid.exception";
+    public static final String MESSAGE_UNSUCCESSFUL_OPERATION_EXCEPTION = "message.keyword.invalid.exception";
     private PropertyKey() {
     }
 }

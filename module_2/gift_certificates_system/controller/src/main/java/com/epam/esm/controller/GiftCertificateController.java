@@ -173,7 +173,8 @@ public class GiftCertificateController {
      */
     @PatchMapping(path = UrlMapping.ID)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable long id, @RequestBody GiftCertificate giftCertificate) {
-        service.update(id, giftCertificate);
+    public ResponseEntity<GiftCertificate> update(@PathVariable long id, @RequestBody GiftCertificate giftCertificate) {
+        GiftCertificate updated = service.update(id, giftCertificate);
+        return ResponseEntityWrapper.wrap(updated);
     }
 }

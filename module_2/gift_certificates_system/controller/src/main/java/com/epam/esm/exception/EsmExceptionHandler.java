@@ -15,6 +15,7 @@ import static com.epam.esm.exception.HttpCustomErrorCode.ENTITY_INVALID;
 import static com.epam.esm.exception.HttpCustomErrorCode.ENTITY_INVALID_FIELD;
 import static com.epam.esm.exception.HttpCustomErrorCode.ENTITY_NOT_FOUND;
 import static com.epam.esm.exception.HttpCustomErrorCode.ENUM_CONSTANT_NOT_PRESENT;
+import static com.epam.esm.exception.HttpCustomErrorCode.OPERATION_FAILED;
 
 @ControllerAdvice
 public class EsmExceptionHandler {
@@ -53,6 +54,11 @@ public class EsmExceptionHandler {
     @ExceptionHandler(ColumnNameNotPresentException.class)
     public ResponseEntity<EsmTemplateException> handleColumnNameNotPresentException(ColumnNameNotPresentException e, Locale locale) {
         return createResponseEntity(e, locale, COLUMN_NAME_NOT_PRESENT, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UnsuccessfulOperationException.class)
+    public ResponseEntity<EsmTemplateException> handleUnsuccessfulOperationException(UnsuccessfulOperationException e, Locale locale) {
+        return createResponseEntity(e, locale, OPERATION_FAILED, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

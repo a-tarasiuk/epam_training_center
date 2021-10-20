@@ -91,19 +91,19 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public boolean update(long id, GiftCertificate giftCertificate) {
+    public GiftCertificate update(long id, GiftCertificate giftCertificate) {
         LocalDateTime lastUpdateTime = giftCertificate.getLastUpdateDate();
 
-        int countUpdatedRows = jdbcTemplate.update(UPDATE_GIFT_CERTIFICATE_BY_ID_SQL,
+        jdbcTemplate.update(UPDATE_GIFT_CERTIFICATE_BY_ID_SQL,
                 giftCertificate.getName(),
                 giftCertificate.getDescription(),
                 giftCertificate.getPrice(),
                 giftCertificate.getDuration(),
                 Timestamp.valueOf(lastUpdateTime),
-                giftCertificate.getId()
-        );
+                giftCertificate.getId());
 
-        return countUpdatedRows == SqlQueryStatus.SUCCESSFUL;
+        giftCertificate.setId(id);
+        return giftCertificate;
     }
 
     @Override

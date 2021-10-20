@@ -16,9 +16,9 @@ public interface GiftCertificateDao extends EntityDao<GiftCertificate> {
      * Updating fields of gift certificate.
      *
      * @param giftCertificate - Gift certificate.
-     * @return - Operation result (Gift certificate updated or not updated)
+     * @return - Updated gift certificate.
      */
-    boolean update(long id, GiftCertificate giftCertificate);
+    GiftCertificate update(long id, GiftCertificate giftCertificate);
 
     /**
      * Finding list of gift certificates and sort by column name from request.

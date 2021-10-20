@@ -8,7 +8,8 @@ enum HttpCustomErrorCode {
     ENTITY_INVALID(40603),
     ENTITY_INVALID_FIELD(40604),
     ENUM_CONSTANT_NOT_PRESENT(40605),
-    COLUMN_NAME_NOT_PRESENT(40606);
+    COLUMN_NAME_NOT_PRESENT(40606),
+    OPERATION_FAILED(40607);
 
     @JsonValue
     private final int errorCode;

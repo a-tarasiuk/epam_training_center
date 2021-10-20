@@ -162,20 +162,6 @@ public class GiftCertificateDaoImplTest {
     }
 
     @Test
-    public void updatePositive() {
-        boolean actualResult = giftCertificateDao.update(EXPECTED_GIFT_CERTIFICATE.getId(), EXPECTED_GIFT_CERTIFICATE);
-        assertTrue(actualResult);
-    }
-
-    @Test
-    public void updateNegative() {
-        EXPECTED_GIFT_CERTIFICATE.setId(99L);
-
-        boolean actualResult = giftCertificateDao.update(EXPECTED_GIFT_CERTIFICATE.getId(), EXPECTED_GIFT_CERTIFICATE);
-        assertFalse(actualResult);
-    }
-
-    @Test
     public void findByTagIdPositiveVersion1() {
         List<GiftCertificate> actualGiftCertificates = giftCertificateDao.findByTagId(1);
         List<GiftCertificate> expectedGiftCertificates = Collections.singletonList(EXPECTED_GIFT_CERTIFICATE_FIRST);
