@@ -5,14 +5,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TagValidatorTest {
     Tag tag;
-    List<Tag> tags;
+    Set<Tag> tags;
 
     @BeforeEach
     public void beforeEach() {
@@ -49,7 +51,7 @@ public class TagValidatorTest {
 
     @Test
     public void isValidListPositive() {
-        tags = Arrays.asList(tag, tag, tag);
+        tags = new HashSet<>(Arrays.asList(tag, tag, tag));
 
         boolean result = TagValidator.isValid(tags);
         assertTrue(result);
@@ -58,7 +60,7 @@ public class TagValidatorTest {
     @Test
     public void isValidListNegative1() {
         Tag invalid = new Tag(1, "a");
-        tags = Arrays.asList(tag, invalid);
+        tags = new HashSet<>(Arrays.asList(tag, invalid));
 
         boolean result = TagValidator.isValid(tags);
         assertFalse(result);
@@ -67,7 +69,7 @@ public class TagValidatorTest {
     @Test
     public void isValidListNegative2() {
         Tag invalid = new Tag(1, "A");
-        tags = Arrays.asList(tag, invalid);
+        tags = new HashSet<>(Arrays.asList(tag, invalid));
 
         boolean result = TagValidator.isValid(tags);
         assertFalse(result);
@@ -76,7 +78,7 @@ public class TagValidatorTest {
     @Test
     public void isValidListNegative3() {
         Tag invalid = new Tag(1, "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        tags = Arrays.asList(tag, invalid);
+        tags = new HashSet<>(Arrays.asList(tag, invalid));
 
         boolean result = TagValidator.isValid(tags);
         assertFalse(result);
@@ -85,7 +87,7 @@ public class TagValidatorTest {
     @Test
     public void isValidListNegative4() {
         Tag invalid = new Tag(1, "                         ");
-        tags = Arrays.asList(tag, invalid);
+        tags = new HashSet<>(Arrays.asList(tag, invalid));
 
         boolean result = TagValidator.isValid(tags);
         assertFalse(result);

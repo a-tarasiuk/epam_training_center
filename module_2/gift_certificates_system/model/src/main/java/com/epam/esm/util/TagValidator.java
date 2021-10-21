@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +16,7 @@ public class TagValidator {
     private TagValidator() {
     }
 
-    public static boolean isValid(List<Tag> tags) {
+    public static boolean isValid(Set<Tag> tags) {
         return !ObjectUtils.isEmpty(tags) && tags.stream().allMatch(TagValidator::isValid);
     }
 

@@ -14,9 +14,12 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Tag DAO implementation.
@@ -110,8 +113,8 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> findByGiftCertificateId(long id) {
-        return jdbcTemplate.query(FIND_TAGS_BY_CERTIFICATE_ID_SQL, new BeanPropertyRowMapper<>(Tag.class), id);
+    public Set<Tag> findByGiftCertificateId(long id) {
+        return new HashSet<>(jdbcTemplate.query(FIND_TAGS_BY_CERTIFICATE_ID_SQL, new BeanPropertyRowMapper<>(Tag.class), id));
     }
 
     @Override

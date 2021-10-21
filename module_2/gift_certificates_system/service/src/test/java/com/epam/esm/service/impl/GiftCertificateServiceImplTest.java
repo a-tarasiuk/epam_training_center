@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -38,9 +39,9 @@ public class GiftCertificateServiceImplTest {
     private static GiftCertificate existsGiftCertificateOne;
     private static GiftCertificate existsGiftCertificateTwo;
     private static GiftCertificate existsGiftCertificateThree;
-    private static List<Tag> existsTagsOne;
-    private static List<Tag> existsTagsTwo;
-    private static List<Tag> existsTagsThree;
+    private static Set<Tag> existsTagsOne;
+    private static Set<Tag> existsTagsTwo;
+    private static Set<Tag> existsTagsThree;
     private GiftCertificateServiceImpl giftCertificateService;
 
     @BeforeEach
@@ -64,13 +65,13 @@ public class GiftCertificateServiceImplTest {
                 null);
 
         // Initialization tags
-        existsTagsOne = Arrays.asList(
+        existsTagsOne = new HashSet<Tag>(Arrays.asList(
                 new Tag(1, "epam"),
                 new Tag(2, "gift"),
                 new Tag(3, "gym")
-        );
-        existsTagsTwo = Collections.singletonList(new Tag(2, "gift"));
-        existsTagsThree = Collections.singletonList(new Tag(3, "gym"));
+        ));
+        existsTagsTwo = Collections.singleton(new Tag(2, "gift"));
+        existsTagsThree = Collections.singleton(new Tag(3, "gym"));
     }
 
     @Test
@@ -78,7 +79,7 @@ public class GiftCertificateServiceImplTest {
         GiftCertificate giftCertificate = new GiftCertificate(4L, "certificate", "description for gift certificate 4", BigDecimal.valueOf(1.10F), 1,
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
-                Collections.singletonList(tag));
+                Collections.singleton(tag));
 
         Mockito.when(giftCertificateDao.findByName("certificate")).thenReturn(Optional.empty());
         Mockito.when(giftCertificateDao.create(giftCertificate)).thenReturn(giftCertificate);

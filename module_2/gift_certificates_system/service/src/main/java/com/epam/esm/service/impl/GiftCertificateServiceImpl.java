@@ -64,7 +64,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public GiftCertificate create(GiftCertificate entity) {
-        List<Tag> tags = entity.getTags();
+        Set<Tag> tags = entity.getTags();
         if (!GiftCertificateValidator.isValid(entity) || !TagValidator.isValid(tags)) {
             throw new EntityInvalidException(MESSAGE_ENTITY_INVALID_EXCEPTION);
         }
@@ -114,7 +114,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     public GiftCertificate findById(long id) {
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findById(id);
         GiftCertificate giftCertificate = optionalGiftCertificate.orElseThrow(() -> new EntityNotFoundException(MESSAGE_ENTITY_NOT_FOUND_EXCEPTION));
-        List<Tag> tagList = tagDao.findByGiftCertificateId(id);
+        Set<Tag> tagList = tagDao.findByGiftCertificateId(id);
         giftCertificate.setTags(tagList);
 
         return giftCertificate;
@@ -195,7 +195,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
             giftCertificate = GiftCertificateUpdater.update(foundGiftCertificate, giftCertificate);
 
             if (GiftCertificateValidator.isValid(giftCertificate)) {
-                List<Tag> tags = giftCertificate.getTags();
+                Set<Tag> tags = giftCertificate.getTags();
 
                 if (!ObjectUtils.isEmpty(tags)) {
                     if (tags.stream().allMatch(TagValidator::isValid)) {
@@ -309,14 +309,14 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     private void findAndSetTags(List<GiftCertificate> giftCertificates) {
         giftCertificates.forEach(giftCertificate -> {
             long id = giftCertificate.getId();
-            List<Tag> tags = tagDao.findByGiftCertificateId(id);
+            Set<Tag> tags = tagDao.findByGiftCertificateId(id);
             giftCertificate.setTags(tags);
         });
     }
 
     private void findAndSetTags(GiftCertificate giftCertificate) {
         long id = giftCertificate.getId();
-        List<Tag> tags = tagDao.findByGiftCertificateId(id);
+        Set<Tag> tags = tagDao.findByGiftCertificateId(id);
         giftCertificate.setTags(tags);
     }
 }
