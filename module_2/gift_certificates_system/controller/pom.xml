@@ -11,22 +11,22 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>controller</artifactId>
+    <artifactId>${esm.module.controller.artifactId</artifactId>
     <packaging>war</packaging>
 
     <name>Gift Certificate Systems Webapp</name>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>${esm.encoding}</project.build.sourceEncoding>
         <maven.compiler.source>${maven.compiler.version}</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.version}</maven.compiler.target>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.epam.esm</groupId>
-            <artifactId>service</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>${esm.groupId}</groupId>
+            <artifactId>${esm.module.service.artifactId}</artifactId>
+            <version>${esm.version}</version>
             <scope>compile</scope>
         </dependency>
 

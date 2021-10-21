@@ -17,6 +17,21 @@
     </modules>
 
     <properties>
+        <!-- Project encoding -->
+        <esm.encoding>UTF-8</esm.encoding>
+
+        <!-- Project properties -->
+        <esm.groupId>com.epam.esm</esm.groupId>
+        <esm.artifactId>gift_certificates_system</esm.artifactId>
+        <esm.version>1.0-SNAPSHOT</esm.version>
+
+        <!-- Module properties -->
+        <esm.module.model.artifactId>model</esm.module.model.artifactId>
+        <esm.module.repository.artifactId>repository</esm.module.repository.artifactId>
+        <esm.module.service.artifactId>service</esm.module.service.artifactId>
+        <esm.module.controller.artifactId>controller</esm.module.controller.artifactId>
+
+        <!-- Dependency properties -->
         <maven.compiler.version>8</maven.compiler.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
