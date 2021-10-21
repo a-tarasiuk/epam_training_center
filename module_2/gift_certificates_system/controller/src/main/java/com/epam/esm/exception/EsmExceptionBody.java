@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class EsmExceptionBody {
     private String errorMessage;
     private HttpCustomErrorCode httpCustomErrorCode;
