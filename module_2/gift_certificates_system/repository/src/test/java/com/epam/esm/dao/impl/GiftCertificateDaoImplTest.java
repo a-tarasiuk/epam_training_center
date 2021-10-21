@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,7 +36,7 @@ public class GiftCertificateDaoImplTest {
     private static final String NAME_CERTIFICATE_1 = "certificate 1";
     private static final String NAME = "certificate 4";
     private static final String DESCRIPTION = "description for gift certificate 4";
-    private static final Float PRICE = 1.10F;
+    private static final BigDecimal PRICE = BigDecimal.valueOf(1.10);
     private static final Integer DURATION = 1;
     private static final LocalDateTime CREATE_DATE = LocalDateTime.of(2021, 10, 04, 17, 05, 53, 889);
     private static final LocalDateTime LAST_UPDATE_DATE = LocalDateTime.of(2021, 10, 04, 17, 05, 53, 889);
@@ -63,17 +64,17 @@ public class GiftCertificateDaoImplTest {
         EXPECTED_GIFT_CERTIFICATE.setCreateDate(CREATE_DATE);
         EXPECTED_GIFT_CERTIFICATE.setLastUpdateDate(LAST_UPDATE_DATE);
 
-        EXPECTED_GIFT_CERTIFICATE_FIRST = new GiftCertificate(1L, "certificate 1", "description for gift certificate 1", 1.10F, 1,
+        EXPECTED_GIFT_CERTIFICATE_FIRST = new GiftCertificate(1L, "certificate 1", "description for gift certificate 1", BigDecimal.valueOf(1.10F), 1,
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
                 null);
 
-        EXPECTED_GIFT_CERTIFICATE_SECOND = new GiftCertificate(2L, "certificate 2", "description for gift certificate 2", 2.20F, 2,
+        EXPECTED_GIFT_CERTIFICATE_SECOND = new GiftCertificate(2L, "certificate 2", "description for gift certificate 2", BigDecimal.valueOf(2.20F), 2,
                 LocalDateTime.of(2021, 10, 02, 17, 05, 53, 889000000),
                 LocalDateTime.of(2021, 10, 02, 17, 05, 53, 889000000),
                 null);
 
-        EXPECTED_GIFT_CERTIFICATE_THIRD = new GiftCertificate(3L, "certificate 3", "description for gift certificate 3", 3.30F, 3,
+        EXPECTED_GIFT_CERTIFICATE_THIRD = new GiftCertificate(3L, "certificate 3", "description for gift certificate 3", BigDecimal.valueOf(3.30F), 3,
                 LocalDateTime.of(2021, 10, 03, 17, 05, 53, 889000000),
                 LocalDateTime.of(2021, 10, 03, 17, 05, 53, 889000000),
                 null);

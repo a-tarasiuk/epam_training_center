@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,15 +50,15 @@ public class GiftCertificateServiceImplTest {
         tag = new Tag(4, "abstract tag");
 
         // Initialization gift certificates
-        existsGiftCertificateOne = new GiftCertificate(1L, "certificate 1", "description for gift certificate 1", 1.10F, 1,
+        existsGiftCertificateOne = new GiftCertificate(1L, "certificate 1", "description for gift certificate 1", BigDecimal.valueOf(1.10F), 1,
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
                 null);
-        existsGiftCertificateTwo = new GiftCertificate(2L, "certificate 2", "description for gift certificate 2", 2.20F, 2,
+        existsGiftCertificateTwo = new GiftCertificate(2L, "certificate 2", "description for gift certificate 2", BigDecimal.valueOf(2.20F), 2,
                 LocalDateTime.of(2021, 10, 02, 17, 05, 53, 889000000),
                 LocalDateTime.of(2021, 10, 02, 17, 05, 53, 889000000),
                 null);
-        existsGiftCertificateThree = new GiftCertificate(3L, "certificate 3", "description for gift certificate 3", 3.30F, 3,
+        existsGiftCertificateThree = new GiftCertificate(3L, "certificate 3", "description for gift certificate 3", BigDecimal.valueOf(3.30F), 3,
                 LocalDateTime.of(2021, 10, 03, 17, 05, 53, 889000000),
                 LocalDateTime.of(2021, 10, 03, 17, 05, 53, 889000000),
                 null);
@@ -74,7 +75,7 @@ public class GiftCertificateServiceImplTest {
 
     @Test
     public void createPositive() {
-        GiftCertificate giftCertificate = new GiftCertificate(4L, "certificate", "description for gift certificate 4", 1.10F, 1,
+        GiftCertificate giftCertificate = new GiftCertificate(4L, "certificate", "description for gift certificate 4", BigDecimal.valueOf(1.10F), 1,
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
                 Collections.singletonList(tag));

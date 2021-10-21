@@ -4,19 +4,20 @@ import com.epam.esm.entity.GiftCertificate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GiftCertificateValidatorTest {
     static GiftCertificate gc;
-    static GiftCertificate gcInvalid;
 
     @BeforeEach
     public void beforeAll() {
         gc = new GiftCertificate();
         gc.setName("Epam");
         gc.setDescription("Description");
-        gc.setPrice(99F);
+        gc.setPrice(BigDecimal.valueOf(99));
         gc.setDuration(10);
     }
 
@@ -49,14 +50,14 @@ public class GiftCertificateValidatorTest {
 
     @Test
     public void isValidNegative4() {
-        gc.setPrice(99999999999F);
+        gc.setPrice(BigDecimal.valueOf(99999999999F));
         boolean result = GiftCertificateValidator.isValid(gc);
         assertFalse(result);
     }
 
     @Test
     public void isValidNegative5() {
-        gc.setPrice(99.222F);
+        gc.setPrice(BigDecimal.valueOf(99.222F));
         boolean result = GiftCertificateValidator.isValid(gc);
         assertFalse(result);
     }

@@ -5,6 +5,8 @@ import com.epam.esm.entity.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.util.ObjectUtils;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +25,7 @@ public class GiftCertificateValidator {
     public static boolean isValid(GiftCertificate entity) {
         String name = entity.getName();
         String description = entity.getDescription();
-        Float price = entity.getPrice();
+        BigDecimal price = entity.getPrice();
         Integer duration = entity.getDuration();
 
         return isValidName(name) && isValidDescription(description) && isValidPrice(price) && isValidDuration(duration);
@@ -41,8 +43,8 @@ public class GiftCertificateValidator {
         return result;
     }
 
-    private static boolean isValidPrice(Float price) {
-        boolean result = !ObjectUtils.isEmpty(price) && isFoundMatcher(Float.toString(price), PRICE_REGEX_VALID);
+    private static boolean isValidPrice(BigDecimal price) {
+        boolean result = !ObjectUtils.isEmpty(price) && isFoundMatcher(price.toString(), PRICE_REGEX_VALID);
         log.info("Price '{}' is valid: {}", price, result);
         return result;
     }

@@ -3,6 +3,7 @@ package com.epam.esm.util;
 import com.epam.esm.entity.GiftCertificate;
 import org.springframework.util.ObjectUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -15,12 +16,12 @@ public class GiftCertificateUpdater {
     public static GiftCertificate update(GiftCertificate foundGiftCertificate, GiftCertificate newGiftCertificate) {
         String oldName = foundGiftCertificate.getName();
         String oldDescription = foundGiftCertificate.getDescription();
-        Float oldPrice = foundGiftCertificate.getPrice();
+        BigDecimal oldPrice = foundGiftCertificate.getPrice();
         Integer oldDuration = foundGiftCertificate.getDuration();
 
         String newName = newGiftCertificate.getName();
         String newDescription = newGiftCertificate.getDescription();
-        Float newPrice = newGiftCertificate.getPrice();
+        BigDecimal newPrice = newGiftCertificate.getPrice();
         Integer newDuration = newGiftCertificate.getDuration();
 
         if (!ObjectUtils.isEmpty(newName) && !newName.equals(oldName)) {

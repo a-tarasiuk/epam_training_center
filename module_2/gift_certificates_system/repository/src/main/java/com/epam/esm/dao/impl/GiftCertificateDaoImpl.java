@@ -70,7 +70,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
             preparedStatement.setString(1, entity.getName());
             preparedStatement.setString(2, entity.getDescription());
-            preparedStatement.setFloat(3, entity.getPrice());
+            preparedStatement.setBigDecimal(3, entity.getPrice());
             preparedStatement.setInt(4, entity.getDuration());
             preparedStatement.setTimestamp(5, Timestamp.valueOf(entity.getCreateDate()));
             preparedStatement.setTimestamp(6, Timestamp.valueOf(entity.getLastUpdateDate()));
