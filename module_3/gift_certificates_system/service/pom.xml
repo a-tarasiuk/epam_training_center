@@ -16,4 +16,13 @@
         <maven.compiler.target>${maven.compiler.version}</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <!-- Module dependency -->
+        <dependency>
+            <groupId>com.epam.esm</groupId>
+            <artifactId>repository</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>

@@ -8,6 +8,7 @@
     <artifactId>gift_certificates_system</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
     <modules>
         <module>controller</module>
         <module>model</module>
@@ -17,14 +18,6 @@
 
     <properties>
         <maven.compiler.version>8</maven.compiler.version>
+        <spring.version>2.5.5</spring.version>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.epam.esm</groupId>
-            <artifactId>repository</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
-
 </project>

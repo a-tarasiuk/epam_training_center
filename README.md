@@ -1,1 +1,0 @@
-# epam_training_center
