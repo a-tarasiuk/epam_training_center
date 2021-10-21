@@ -4,7 +4,6 @@ import com.epam.esm.entity.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.util.ObjectUtils;
 
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
