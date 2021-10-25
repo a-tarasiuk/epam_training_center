@@ -51,7 +51,6 @@ public class TagController {
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Tag> create(@RequestBody Tag tag) {
-        // todo сделать с валидацией
         Tag createdTag = tagService.create(tag);
         return ResponseEntityWrapper.wrap(createdTag);
     }
