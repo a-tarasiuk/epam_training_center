@@ -24,16 +24,15 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Getter
 @Setter
-@ToString
 public class GiftCertificateUpdateDto implements Serializable {
     private Long id;
 
-    @Pattern(regexp = DtoRegexValidator.GIFT_CERTIFICATE_NAME_UPDATE,
+    @Pattern(regexp = DtoRegexValidator.GIFT_CERTIFICATE_NAME,
             flags = Pattern.Flag.UNICODE_CASE,
             message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_NAME)
     private String name;
 
-    @Pattern(regexp = DtoRegexValidator.GIFT_CERTIFICATE_DESCRIPTION_UPDATE,
+    @Pattern(regexp = DtoRegexValidator.GIFT_CERTIFICATE_DESCRIPTION,
             flags = Pattern.Flag.UNICODE_CASE,
             message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_DESCRIPTION)
     private String description;

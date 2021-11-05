@@ -10,6 +10,6 @@ public final class EntityFieldName {
     /**
      * Tag.
      */
-    public static final String TAG_NAME = "tagName";
     public static final String TAG = "tag";
+    public static final String TAG_NAME = "tagName";
 }

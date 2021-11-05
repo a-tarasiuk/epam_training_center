@@ -4,6 +4,7 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateUpdateDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.service.GitCertificateService;
+import com.epam.esm.util.ColumnName;
 import com.epam.esm.util.ParameterName;
 import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.ResponseEntityWrapper;
@@ -130,8 +131,15 @@ public class GiftCertificateController {
     @PatchMapping(path = UrlMapping.ID)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<GiftCertificateDto> update(@PathVariable long id,
-                                                     @RequestBody GiftCertificateUpdateDto gcUpdateDto) {
+                                                     @Valid @RequestBody GiftCertificateUpdateDto gcUpdateDto) {
         GiftCertificateDto updated = service.update(id, gcUpdateDto);
         return ResponseEntityWrapper.wrap(updated);
     }
+
+//    @PatchMapping(params = ColumnName)
+//    public ResponseEntity<GiftCertificateDto> update(@PathVariable long id,
+//                                                     @Valid @RequestBody GiftCertificateUpdateDto gcUpdateDto) {
+//        GiftCertificateDto updated = service.update(id, gcUpdateDto);
+//        return ResponseEntityWrapper.wrap(updated);
+//    }
 }

@@ -5,9 +5,9 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.util.CriteriaQueryGenerator;
 import com.epam.esm.util.DatabaseColumnName;
-import com.epam.esm.util.DatabaseTableName;
+import com.epam.esm.util.EntityFieldName;
 import com.epam.esm.util.MessagePropertyKey;
-import com.epam.esm.util.SqlQueryGenerator;
+import com.epam.esm.util.SqlLikeGenerator;
 import com.epam.esm.util.pagination.EsmPagination;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
@@ -103,7 +103,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         Path<String> namePath = root.get(DatabaseColumnName.NAME);
         Path<String> descriptionPath = root.get(DatabaseColumnName.DESCRIPTION);
 
-        String keywordLike = SqlQueryGenerator.forLikeOperator(keyword);
+        String keywordLike = SqlLikeGenerator.generate(keyword);
 
         Predicate nameLike = cb.like(namePath, keywordLike);
         Predicate descriptionLike = cb.like(descriptionPath, keywordLike);
@@ -116,7 +116,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public Set<GiftCertificate> findByTag(Tag tag) {
         return entityManager.createQuery(FIND_GIFT_CERTIFICATES_BY_TAG_SQL, GiftCertificate.class)
-                .setParameter(DatabaseTableName.TAG, tag)
+                .setParameter(EntityFieldName.TAG, tag)
                 .getResultStream()
                 .collect(Collectors.toSet());
     }
@@ -138,7 +138,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
         int firstResult = numberOfPage * elementsOnPage;
 
-        if(firstResult > maxPages) {
+        if (firstResult > maxPages) {
             throw new IllegalArgumentException(MessagePropertyKey.EXCEPTION_ESM_PAGINATION_PAGE_OUT_OF_RANGE);
         }
 

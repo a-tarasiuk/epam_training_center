@@ -5,7 +5,6 @@ import java.util.Locale;
 import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_COLUMN_NAME_NOT_FOUND;
 
 public enum ColumnName {
-    ID,
     NAME,
     DESCRIPTION,
     PRICE,
