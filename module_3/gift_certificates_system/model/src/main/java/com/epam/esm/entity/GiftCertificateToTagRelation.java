@@ -1,6 +1,5 @@
 package com.epam.esm.entity;
 
-import com.epam.esm.listener.GiftCertificateListener;
 import com.epam.esm.listener.GiftCertificateToTagRelationListener;
 import com.epam.esm.util.DatabaseColumnName;
 import lombok.AllArgsConstructor;

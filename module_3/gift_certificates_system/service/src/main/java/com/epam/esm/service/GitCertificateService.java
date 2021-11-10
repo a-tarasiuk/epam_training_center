@@ -22,13 +22,15 @@ public interface GitCertificateService extends AbstractService<GiftCertificateDt
 
     Set<GiftCertificateDto> findAll(EsmPagination esmPagination, Set<String> sortBy);
 
+    Set<GiftCertificateDto> findByTagName(String tagName);
+
     /**
      * Finding list of gift certificates by tag name.
      *
-     * @param tagName - Tag name.
+     * @param names - Tag names.
      * @return - Set of gift certificates.
      */
-    Set<GiftCertificateDto> findByTagName(String tagName);
+    Set<GiftCertificateDto> findByTagNames(Set<String> names);
 
     /**
      * Finding list of gift certificates by keyword.

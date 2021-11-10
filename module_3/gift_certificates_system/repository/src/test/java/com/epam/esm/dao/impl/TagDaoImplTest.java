@@ -92,26 +92,26 @@
 //
 //    @Test
 //    public void findAllForEqualsPositive() {
-//        List<Tag> actualTags = tagDao.findAll();
+//        List<Tag> actualTags = tagDao.findAllBy();
 //        assertEquals(EXPECTED_POSITIVE_TAGS, actualTags);
 //    }
 //
 //    @Test
 //    public void findAllForEqualsNegative() {
-//        List<Tag> actualTags = tagDao.findAll();
+//        List<Tag> actualTags = tagDao.findAllBy();
 //        assertNotEquals(EXPECTED_NEGATIVE_TAGS, actualTags);
 //    }
 //
 //    @Test
 //    public void findAllForSizePositive() {
-//        List<Tag> actualTags = tagDao.findAll();
+//        List<Tag> actualTags = tagDao.findAllBy();
 //        int actualCountTags = actualTags.size();
 //        assertEquals(EXPECTED_COUNT_TAGS_POSITIVE, actualCountTags);
 //    }
 //
 //    @Test
 //    public void findAllForSizeNegative() {
-//        List<Tag> actualTags = tagDao.findAll();
+//        List<Tag> actualTags = tagDao.findAllBy();
 //        int actualCountTags = actualTags.size();
 //        assertNotEquals(EXPECTED_COUNT_TAGS_NEGATIVE, actualCountTags);
 //    }

@@ -3,18 +3,18 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.User;
 import com.epam.esm.util.CriteriaQueryGenerator;
 import com.epam.esm.util.DatabaseColumnName;
 import com.epam.esm.util.EntityFieldName;
 import com.epam.esm.util.MessagePropertyKey;
-import com.epam.esm.util.SqlLikeGenerator;
+import com.epam.esm.util.ParameterName;
+import com.epam.esm.util.SqlGenerator;
 import com.epam.esm.util.pagination.EsmPagination;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -30,72 +30,68 @@ import java.util.stream.Collectors;
  */
 @Log4j2
 @Repository
-public class GiftCertificateDaoImpl implements GiftCertificateDao {
-    private static final String FIND_ALL_GIFT_CERTIFICATES_SQL
-            = "SELECT gc FROM GiftCertificate AS gc";
-    private static final String FIND_GIFT_CERTIFICATE_BY_NAME_SQL
-            = "SELECT gc FROM GiftCertificate AS gc WHERE gc.name = :name";
+public class GiftCertificateDaoImpl extends GiftCertificateDao {
     private static final String FIND_GIFT_CERTIFICATES_BY_TAG_SQL
             = "SELECT gc FROM GiftCertificate AS gc INNER JOIN GiftCertificateToTagRelation AS relation ON relation.giftCertificate = gc WHERE relation.tag = :tag";
-
-    @PersistenceContext
-    private EntityManager entityManager;
+    private static final String FIND_GIFT_CERTIFICATE_BY_TAGS_SQL
+            = "SELECT gc FROM GiftCertificate gc JOIN GiftCertificateToTagRelation relation on gc = relation.giftCertificate WHERE relation.tag IN (:tags) GROUP BY gc HAVING COUNT(gc) = :countTags";
+    private static final String FIND_GIFT_CERTIFICATES_BY_USER_SQL
+            = "SELECT gc FROM GiftCertificate gc JOIN Order o ON gc = o.giftCertificate WHERE o.user = :user";
 
     @Override
     public GiftCertificate create(GiftCertificate giftCertificate) {
-        entityManager.persist(giftCertificate);
+        em.persist(giftCertificate);
         return giftCertificate;
     }
 
     @Override
     public void delete(GiftCertificate giftCertificate) {
-        entityManager.remove(giftCertificate);
+        em.remove(giftCertificate);
     }
 
     @Override
     public GiftCertificate update(GiftCertificate giftCertificate) {
-        return entityManager.merge(giftCertificate);
-    }
-
-    @Override
-    public Set<GiftCertificate> findAll() {
-        return entityManager.createQuery(FIND_ALL_GIFT_CERTIFICATES_SQL, GiftCertificate.class)
-                .getResultStream()
-                .collect(Collectors.toSet());
+        return em.merge(giftCertificate);
     }
 
     @Override
     public Set<GiftCertificate> findAll(EsmPagination esmPagination, Set<String> sortBy) {
-        CriteriaQueryGenerator<GiftCertificate> cqg = new CriteriaQueryGenerator<>(entityManager, GiftCertificate.class);
+        CriteriaQueryGenerator<GiftCertificate> cqg = new CriteriaQueryGenerator<>(em, GiftCertificate.class);
         CriteriaQuery<GiftCertificate> cq = cqg.generate(sortBy);
         return executeCriteriaQuery(cq, esmPagination);
     }
 
     @Override
     public Optional<GiftCertificate> findById(long id) {
-        GiftCertificate giftCertificate = entityManager.find(GiftCertificate.class, id);
+        GiftCertificate giftCertificate = em.find(GiftCertificate.class, id);
         return Optional.ofNullable(giftCertificate);
     }
 
     @Override
     public Optional<GiftCertificate> findByName(String name) {
-        Optional<GiftCertificate> optionalGiftCertificate;
+        Optional<GiftCertificate> optionalGc;
 
         try {
-            optionalGiftCertificate = Optional.of(entityManager.createQuery(FIND_GIFT_CERTIFICATE_BY_NAME_SQL, GiftCertificate.class)
-                    .setParameter(DatabaseColumnName.NAME, name)
-                    .getSingleResult());
+            CriteriaQuery<GiftCertificate> cq = cb.createQuery(GiftCertificate.class);
+            Root<GiftCertificate> fromGc = cq.from(GiftCertificate.class);
+            Predicate condition = cb.equal(fromGc.get(ParameterName.NAME), name);
+            cq.select(fromGc).where(condition);
+
+            GiftCertificate gc = em.createQuery(cq)
+                    .getSingleResult();
+
+            optionalGc = Optional.of(gc);
         } catch (NoResultException e) {
-            optionalGiftCertificate = Optional.empty();
+            optionalGc = Optional.empty();
         }
 
-        return optionalGiftCertificate;
+        return optionalGc;
     }
 
     @Override
-    public Set<GiftCertificate> findByKeyword(String keyword) {
+    public Set<GiftCertificate> findBy(String keyword) {
         //Get criteria builder
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         //Create the CriteriaQuery for Gift certificate object
         CriteriaQuery<GiftCertificate> cq = cb.createQuery(GiftCertificate.class);
 
@@ -103,7 +99,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         Path<String> namePath = root.get(DatabaseColumnName.NAME);
         Path<String> descriptionPath = root.get(DatabaseColumnName.DESCRIPTION);
 
-        String keywordLike = SqlLikeGenerator.generate(keyword);
+        String keywordLike = SqlGenerator.like(keyword);
 
         Predicate nameLike = cb.like(namePath, keywordLike);
         Predicate descriptionLike = cb.like(descriptionPath, keywordLike);
@@ -114,21 +110,38 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public Set<GiftCertificate> findByTag(Tag tag) {
-        return entityManager.createQuery(FIND_GIFT_CERTIFICATES_BY_TAG_SQL, GiftCertificate.class)
+    public Set<GiftCertificate> findBy(Tag tag) {
+        return em.createQuery(FIND_GIFT_CERTIFICATES_BY_TAG_SQL, GiftCertificate.class)
                 .setParameter(EntityFieldName.TAG, tag)
                 .getResultStream()
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    public Set<GiftCertificate> findBy(Set<Tag> tags) {
+        return em.createQuery(FIND_GIFT_CERTIFICATE_BY_TAGS_SQL, GiftCertificate.class)
+                .setParameter(ParameterName.TAGS, tags)
+                .setParameter(ParameterName.COUNT_TAGS, (long) tags.size())
+                .getResultStream()
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<GiftCertificate> findBy(User user) {
+        return em.createQuery(FIND_GIFT_CERTIFICATES_BY_USER_SQL, GiftCertificate.class)
+                .setParameter(EntityFieldName.USER, user)
+                .getResultStream()
+                .collect(Collectors.toSet());
+    }
+
     private <T> Set<T> executeCriteriaQuery(CriteriaQuery<T> criteriaQuery) {
-        return entityManager.createQuery(criteriaQuery)
+        return em.createQuery(criteriaQuery)
                 .getResultStream()
                 .collect(Collectors.toSet());
     }
 
     private <T> Set<T> executeCriteriaQuery(CriteriaQuery<T> criteriaQuery, EsmPagination esmPagination) {
-        TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+        TypedQuery<T> typedQuery = em.createQuery(criteriaQuery);
 
         int elementsOnPage = esmPagination.getSize();
         int numberOfPage = esmPagination.getPage();

@@ -22,5 +22,4 @@ public final class GiftCertificateListener {
         currentDateTime = LocalDateTime.now();
         giftCertificate.setLastUpdateDate(currentDateTime);
     }
-
 }

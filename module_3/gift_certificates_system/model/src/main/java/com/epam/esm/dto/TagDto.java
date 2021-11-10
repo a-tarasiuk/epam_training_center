@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -15,7 +16,7 @@ import java.io.Serializable;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class TagDto implements Serializable {
+public class TagDto extends RepresentationModel<TagDto> implements Serializable {
     private Long id;
 
     @NotBlank(message = MessagePropertyKey.VALIDATION_TAG_NAME_NOT_EMPTY)

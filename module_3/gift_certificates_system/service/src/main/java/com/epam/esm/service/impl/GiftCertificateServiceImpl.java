@@ -22,9 +22,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -88,7 +86,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
                     });
 
             GiftCertificateDto gcDto = modelMapper.map(createdGc, GiftCertificateDto.class);
-            Set<TagDto> tagsDto = tagDao.findAll(createdGc).stream()
+            Set<TagDto> tagsDto = tagDao.findAllBy(createdGc).stream()
                     .map(tag -> modelMapper.map(tag, TagDto.class))
                     .collect(Collectors.toSet());
             gcDto.setTags(tagsDto);
@@ -98,9 +96,10 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     }
 
     @Override
-    public Set<GiftCertificateDto> findAll() {
-        Set<GiftCertificate> gcs = gcDao.findAll();
-        return createGiftCertificatesDto(gcs);
+    public Set<GiftCertificateDto> findAll(EsmPagination esmPagination) {
+        return gcDao.findAll(esmPagination, GiftCertificate.class).stream()
+                .map(this::createGiftCertificateDto)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -119,14 +118,24 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     @Override
     public Set<GiftCertificateDto> findByTagName(String tagName) {
         Tag tag = tagDao.findByName(tagName).orElseThrow(() -> new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_TAG_NAME_NOT_FOUND));
-        return gcDao.findByTag(tag).stream()
-                .map(this::createGiftCertificateDto)
+        Set<GiftCertificate> gcs = gcDao.findBy(tag);
+        return createGiftCertificatesDto(gcs);
+    }
+
+    @Override
+    public Set<GiftCertificateDto> findByTagNames(Set<String> names) {
+        Set<Tag> tags = names.stream()
+                .map(tagDao::findByName)
+                .map(o -> o.orElseThrow(() -> new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_TAG_NAME_NOT_FOUND)))
                 .collect(Collectors.toSet());
+
+        Set<GiftCertificate> gcs = gcDao.findBy(tags);
+        return createGiftCertificatesDto(gcs);
     }
 
     @Override
     public Set<GiftCertificateDto> findByKeyword(String keyword) {
-        Set<GiftCertificate> gcs = gcDao.findByKeyword(keyword);
+        Set<GiftCertificate> gcs = gcDao.findBy(keyword);
         return createGiftCertificatesDto(gcs);
     }
 
@@ -164,11 +173,11 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         String tagName = tag.getName();
         Optional<Tag> optionalTag = tagDao.findByName(tagName);
 
-        if(optionalTag.isPresent()) {
+        if (optionalTag.isPresent()) {
             Tag foundTag = optionalTag.get();
             boolean isExistRelation = relationDao.isExist(gc, foundTag);
 
-            if(!isExistRelation) {
+            if (!isExistRelation) {
                 relationDao.create(gc, foundTag);
             }
         } else {
@@ -178,7 +187,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     }
 
     private Set<Tag> findTags(GiftCertificate gc) {
-        return tagDao.findAll(gc);
+        return tagDao.findAllBy(gc);
     }
 
     private Set<TagDto> findTagsDto(GiftCertificate gc) {

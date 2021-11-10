@@ -13,9 +13,7 @@ import java.io.Serializable;
 @Setter
 @ToString
 public class EsmPagination implements Serializable {
-    private static final int MIN_PAGE_INDEX = 0;
-
-    private static final int DEFAULT_PAGE_INDEX = 0;
+    private static final int MIN_PAGE_INDEX = 1;
     private static final int DEFAULT_ELEMENTS_ON_PAGE = 10;
 
     @Min(value = MIN_PAGE_INDEX, message = MessagePropertyKey.EXCEPTION_ESM_PAGINATION_PAGE_INCORRECT_VALUE)
@@ -25,7 +23,7 @@ public class EsmPagination implements Serializable {
     private int size;
 
     public EsmPagination() {
-        this.page = DEFAULT_PAGE_INDEX;
+        this.page = MIN_PAGE_INDEX;
         this.size = DEFAULT_ELEMENTS_ON_PAGE;
     }
 }

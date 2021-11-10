@@ -1,5 +1,7 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dto.OrderDto;
+import com.epam.esm.util.pagination.EsmPagination;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,7 +28,7 @@ public interface AbstractService<T> {
      *
      * @return - Set of found entities.
      */
-    Set<T> findAll();
+    Set<T> findAll(EsmPagination esmPagination);
 
     /**
      * Finding entity by it is ID.

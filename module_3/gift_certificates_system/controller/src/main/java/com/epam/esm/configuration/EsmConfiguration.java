@@ -3,17 +3,21 @@ package com.epam.esm.configuration;
 import com.epam.esm.converter.StringToColumnNameConverter;
 import com.epam.esm.converter.StringToRequestParameterConverter;
 import com.epam.esm.converter.StringToSqlSortOperatorConverter;
+import com.epam.esm.link.EsmLinkBuilder;
+import com.epam.esm.util.pagination.EsmPagination;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Locale;
 
 /**
@@ -52,6 +56,28 @@ public class EsmConfiguration implements WebMvcConfigurer {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    /**
+     * Used to construct criteria queries, compound selections, expressions, predicates, orderings.
+     *
+     * @param entityManager Entity manager.
+     * @return CriteriaBuilder.
+     */
+    @Bean
+    public CriteriaBuilder criteriaBuilder(EntityManager entityManager) {
+        return entityManager.getCriteriaBuilder();
+    }
+
+    /**
+     * Pagination for GET request.<br>
+     * Contain page and elements on page.
+     *
+     * @return EsmPagination.
+     */
+    @Bean
+    public EsmPagination esmPagination() {
+        return new EsmPagination();
     }
 
     /**

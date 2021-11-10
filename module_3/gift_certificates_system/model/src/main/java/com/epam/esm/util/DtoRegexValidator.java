@@ -2,6 +2,7 @@ package com.epam.esm.util;
 
 public final class DtoRegexValidator {
     // User DTO
+    public static final String USER_LOGIN = "^[\\p{Ll}\\p{Lu}]{4,50}$";
     public static final String USER_NAME = "^\\p{Lu}\\p{Ll}{1,50}$";
 
     // Tag DTO

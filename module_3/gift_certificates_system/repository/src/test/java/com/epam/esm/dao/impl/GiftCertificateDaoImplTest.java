@@ -94,20 +94,20 @@
 //
 //    @Test
 //    public void findAllPositive() {
-//        List<GiftCertificate> actualGiftCertificates = giftCertificateDao.findAll();
+//        List<GiftCertificate> actualGiftCertificates = giftCertificateDao.findAllBy();
 //        assertEquals(EXPECTED_GIFT_CERTIFICATES, actualGiftCertificates);
 //    }
 //
 //    @Test
 //    public void findByIdPositive() {
-//        Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findById(ID_1);
+//        Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findBy(ID_1);
 //        boolean actualResult = optionalGiftCertificate.isPresent();
 //        assertTrue(actualResult);
 //    }
 //
 //    @Test
 //    public void findByIdNegative() {
-//        Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findById(ID_4);
+//        Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findBy(ID_4);
 //        boolean actualResult = optionalGiftCertificate.isPresent();
 //        assertFalse(actualResult);
 //    }

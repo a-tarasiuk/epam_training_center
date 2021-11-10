@@ -10,21 +10,12 @@ import java.util.Set;
  * Tag DAO layer class.
  * Works with database.
  */
-public interface TagDao extends EntityDao<Tag> {
-    Set<Tag> findAll(GiftCertificate gc);
-
+public abstract class TagDao extends AbstractDao<Tag> {
     /**
-     * Finding list of tag by gift certificated ID.
+     * Find all tags by gift certificate.
      *
-     * @param id - Gift certificate ID.
-     * @return - Set of found tags.
+     * @param gc Gift certificate entity.
+     * @return Set of found tags.
      */
-    Set<Tag> findByGiftCertificateId(long id);
-
-    /**
-     * Deleting all tags by gift certificate ID.
-     *
-     * @param giftCertificateId - Gift certificate ID.
-     */
-    void deleteAllTagsByGiftCertificateId(long giftCertificateId);
+    public abstract Set<Tag> findAllBy(GiftCertificate gc);
 }

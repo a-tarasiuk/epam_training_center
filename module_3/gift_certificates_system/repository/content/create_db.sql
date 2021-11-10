@@ -26,12 +26,14 @@ CREATE TABLE tag
     PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE user
 (
     id         bigint unsigned auto_increment not null,
+    login      varchar(50)                    not null,
     first_name varchar(50)                    not null,
     last_name  varchar(50)                    not null,
-    UNIQUE (first_name, last_name),
+    UNIQUE (login),
     PRIMARY KEY (id)
 );
 

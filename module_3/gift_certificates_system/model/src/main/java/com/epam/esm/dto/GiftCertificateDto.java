@@ -7,10 +7,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -24,7 +26,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class GiftCertificateDto implements Serializable {
+public class GiftCertificateDto extends AbstractDto<GiftCertificateDto> {
     private Long id;
 
     @NotBlank(message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_NAME_NOT_EMPTY)
@@ -38,7 +40,6 @@ public class GiftCertificateDto implements Serializable {
             flags = Pattern.Flag.UNICODE_CASE,
             message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_DESCRIPTION)
     private String description;
-
 
     @NotNull(message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_PRICE_NOT_NULL)
     @DecimalMin(value = "0.0",

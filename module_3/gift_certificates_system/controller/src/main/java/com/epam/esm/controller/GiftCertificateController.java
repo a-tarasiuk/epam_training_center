@@ -2,18 +2,18 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateUpdateDto;
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.service.GitCertificateService;
-import com.epam.esm.util.ColumnName;
-import com.epam.esm.util.ParameterName;
 import com.epam.esm.util.MessagePropertyKey;
-import com.epam.esm.util.ResponseEntityWrapper;
+import com.epam.esm.util.ParameterName;
 import com.epam.esm.util.UrlMapping;
 import com.epam.esm.util.pagination.EsmPagination;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +31,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.Set;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * Gift certificate controller.
@@ -51,27 +54,41 @@ public class GiftCertificateController {
      * Used in RestTemplate as well as in @Controller methods.
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GiftCertificateDto> create(@Valid @RequestBody GiftCertificateDto gcDto) {
-        GiftCertificateDto gcCreatedDto = service.create(gcDto);
-        return ResponseEntityWrapper.wrap(gcCreatedDto);
+    public EntityModel<GiftCertificateDto> create(@Valid @RequestBody GiftCertificateDto gcDto) {
+        GiftCertificateDto gc = service.create(gcDto);
+
+        return EntityModel.of(gc,
+                linkTo(GiftCertificateController.class).slash(gc.getId()).withSelfRel(),
+                linkTo(methodOn(GiftCertificateController.class).findAll(new EsmPagination()))
+                        .withRel("findAll").withType(HttpMethod.GET.name()),
+                linkTo(methodOn(GiftCertificateController.class).findById(gc.getId()))
+                        .withRel("findById").withType(HttpMethod.GET.name())
+        );
     }
 
-    /**
-     * Find list of gift certificates.
-     *
-     * @return - List of gift certificates.
-     */
     @GetMapping
-    public Set<GiftCertificateDto> findAll() {
-        return service.findAll();
+    public CollectionModel<GiftCertificateDto> findAll(@Valid EsmPagination esmPagination) {
+        Set<GiftCertificateDto> gcs = service.findAll(esmPagination);
+
+        for (GiftCertificateDto gc : gcs) {
+            long id = gc.getId();
+            Link selfLink = linkTo(GiftCertificateController.class).slash(id).withSelfRel();
+            Link findById = linkTo(methodOn(GiftCertificateController.class).findById(id))
+                    .withRel("findById").withType(HttpMethod.GET.name());
+
+            gc.add(selfLink).add(findById);
+        }
+
+        Link currentLink = linkTo(GiftCertificateController.class).withSelfRel();
+
+        return CollectionModel.of(gcs, currentLink);
     }
 
     @GetMapping(params = ParameterName.SORT_BY)
     public Set<GiftCertificateDto> findAllSortByOrderBy(@RequestParam(value = ParameterName.SORT_BY) Set<String> sortBy,
-                                                        @Valid EsmPagination esmPagination, BindingResult bindingResult) {
+                                                        @Valid EsmPagination esmPagination, BindingResult br) {
         return service.findAll(esmPagination, sortBy);
     }
-
 
     /**
      * Finding gift certificate by it is ID.
@@ -80,22 +97,39 @@ public class GiftCertificateController {
      * @return - Entity of the gift certificate.
      */
     @GetMapping(path = UrlMapping.ID)
-    public GiftCertificateDto findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
-                                       @PathVariable long id) {
-        return service.findById(id);
+    public EntityModel<GiftCertificateDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
+                                                    @PathVariable long id) {
+        GiftCertificateDto gc = service.findById(id);
+
+        Link currentLink = linkTo(GiftCertificateController.class).slash(gc.getId()).withSelfRel();
+
+        return EntityModel.of(gc, currentLink,
+                linkTo(methodOn(GiftCertificateController.class).findAll(new EsmPagination()))
+                        .withRel("findAll").withType(HttpMethod.GET.name())
+        );
     }
 
     /**
-     * Finding gift certificate by tag name.
+     * Finding gift certificate by tag name(s).
      *
-     * @param tagName - Tag name.
+     * @param tagNames - Tag name(s).
      * @return - List of gift certificates.
      */
     @GetMapping(params = ParameterName.TAG_NAME)
-    public Set<GiftCertificateDto> findByTagName(@RequestParam(name = ParameterName.TAG_NAME)
-                                                 @NotBlank(message = MessagePropertyKey.VALIDATION_TAG_NAME_NOT_EMPTY)
-                                                         String tagName) {
-        return service.findByTagName(tagName);
+    public CollectionModel<GiftCertificateDto> findByTagNames(@RequestParam(name = ParameterName.TAG_NAME)
+                                                                      Set<@NotBlank(message = MessagePropertyKey.VALIDATION_TAG_NAME_NOT_EMPTY) String> tagNames) {
+        Set<GiftCertificateDto> gcs = service.findByTagNames(tagNames);
+
+        for (GiftCertificateDto gc : gcs) {
+            long id = gc.getId();
+            Link selfLink = linkTo(GiftCertificateController.class).slash(id).withSelfRel();
+            Link findById = linkTo(methodOn(GiftCertificateController.class).findById(id))
+                    .withRel("findById").withType(HttpMethod.GET.name());
+
+            gc.add(selfLink).add(findById);
+        }
+
+        return CollectionModel.of(gcs);
     }
 
     /**
@@ -125,21 +159,21 @@ public class GiftCertificateController {
     /**
      * Update gift certificate by it is ID.
      *
-     * @param id                 - Gift certificate ID.
+     * @param id          - Gift certificate ID.
      * @param gcUpdateDto - Gift certificate DTO.
      */
     @PatchMapping(path = UrlMapping.ID)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<GiftCertificateDto> update(@PathVariable long id,
-                                                     @Valid @RequestBody GiftCertificateUpdateDto gcUpdateDto) {
-        GiftCertificateDto updated = service.update(id, gcUpdateDto);
-        return ResponseEntityWrapper.wrap(updated);
-    }
+    public EntityModel<GiftCertificateDto> update(@PathVariable long id,
+                                                  @Valid @RequestBody GiftCertificateUpdateDto gcUpdateDto) {
+        GiftCertificateDto gc = service.update(id, gcUpdateDto);
 
-//    @PatchMapping(params = ColumnName)
-//    public ResponseEntity<GiftCertificateDto> update(@PathVariable long id,
-//                                                     @Valid @RequestBody GiftCertificateUpdateDto gcUpdateDto) {
-//        GiftCertificateDto updated = service.update(id, gcUpdateDto);
-//        return ResponseEntityWrapper.wrap(updated);
-//    }
+        return EntityModel.of(gc,
+                linkTo(GiftCertificateController.class).slash(gc.getId()).withSelfRel(),
+                linkTo(methodOn(GiftCertificateController.class).findAll(new EsmPagination()))
+                        .withRel("findAll").withType(HttpMethod.GET.name()),
+                linkTo(methodOn(GiftCertificateController.class).findById(gc.getId()))
+                        .withRel("findById").withType(HttpMethod.GET.name())
+        );
+    }
 }

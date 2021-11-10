@@ -68,11 +68,6 @@ public class GiftCertificateToTagRelationDaoImpl implements GiftCertificateToTag
     }
 
     @Override
-    public boolean isExist(GiftCertificateToTagRelation relation) {
-        return find(relation).isPresent();
-    }
-
-    @Override
     public boolean isExist(GiftCertificate gc, Tag tag) {
         GiftCertificateToTagRelation relation = createRelation(gc, tag);
         return find(relation).isPresent();

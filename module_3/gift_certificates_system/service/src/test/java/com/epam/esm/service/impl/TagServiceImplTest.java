@@ -84,9 +84,9 @@
 //                new Tag(3, "gym")
 //        );
 //
-//        Mockito.when(tagDao.findAll()).thenReturn(expectedTags);
+//        Mockito.when(tagDao.findAllBy()).thenReturn(expectedTags);
 //
-//        List<Tag> actualTags = tagService.findAll();
+//        List<Tag> actualTags = tagService.findAllBy();
 //
 //        assertEquals(expectedTags, actualTags);
 //    }
@@ -99,9 +99,9 @@
 //                new Tag(3, "epam")
 //        );
 //
-//        Mockito.when(tagDao.findAll()).thenReturn(expectedTags);
+//        Mockito.when(tagDao.findAllBy()).thenReturn(expectedTags);
 //        expectedTags = new ArrayList<>();
-//        List<Tag> actualTags = tagService.findAll();
+//        List<Tag> actualTags = tagService.findAllBy();
 //        assertNotEquals(expectedTags, actualTags);
 //    }
 //
@@ -110,8 +110,8 @@
 //        int requiredId = 1;
 //        Tag expectedTag = new Tag(requiredId, "epam");
 //        Optional<Tag> optionalTag = Optional.of(expectedTag);
-//        Mockito.when(tagDao.findById(requiredId)).thenReturn(optionalTag);
-//        Tag actualTag = tagService.findById(requiredId);
+//        Mockito.when(tagDao.findBy(requiredId)).thenReturn(optionalTag);
+//        Tag actualTag = tagService.findBy(requiredId);
 //        assertEquals(expectedTag, actualTag);
 //    }
 //
@@ -120,8 +120,8 @@
 //        int requiredId = 2;
 //        Tag expectedTag = new Tag(requiredId, "gift");
 //        Optional<Tag> optionalTag = Optional.of(expectedTag);
-//        Mockito.when(tagDao.findById(requiredId)).thenReturn(optionalTag);
-//        Tag actualTag = tagService.findById(requiredId);
+//        Mockito.when(tagDao.findBy(requiredId)).thenReturn(optionalTag);
+//        Tag actualTag = tagService.findBy(requiredId);
 //        assertEquals(expectedTag, actualTag);
 //    }
 //
@@ -132,9 +132,9 @@
 //        Tag expectedTag = new Tag(requiredId, "gym");
 //        Optional<Tag> optionalTag = Optional.of(expectedTag);
 //
-//        Mockito.when(tagDao.findById(requiredId)).thenReturn(optionalTag);
+//        Mockito.when(tagDao.findBy(requiredId)).thenReturn(optionalTag);
 //
-//        Tag actualTag = tagService.findById(requiredId);
+//        Tag actualTag = tagService.findBy(requiredId);
 //        assertEquals(expectedTag, actualTag);
 //    }
 //
@@ -142,9 +142,9 @@
 //    public void findByIdExceptionPositive() {
 //        int nonExistingId = 9;
 //
-//        Mockito.when(tagDao.findById(nonExistingId)).thenReturn(Optional.empty());
+//        Mockito.when(tagDao.findBy(nonExistingId)).thenReturn(Optional.empty());
 //
-//        Throwable throwable = assertThrows(EntityNotFoundException.class, () -> tagService.findById(nonExistingId));
+//        Throwable throwable = assertThrows(EntityNotFoundException.class, () -> tagService.findBy(nonExistingId));
 //
 //        String expectedMessage = "message.entity.notFound.exception";
 //        String actualMessage = throwable.getMessage();
@@ -159,9 +159,9 @@
 //
 //        Optional<Tag> optionalTag = Optional.of(expectedTag);
 //
-//        Mockito.when(tagDao.findById(existsId)).thenReturn(optionalTag);
+//        Mockito.when(tagDao.findBy(existsId)).thenReturn(optionalTag);
 //
-//        assertDoesNotThrow(() -> tagService.findById(existsId));
+//        assertDoesNotThrow(() -> tagService.findBy(existsId));
 //    }
 //
 //    @Test
@@ -171,7 +171,7 @@
 //        Tag expectedTag = new Tag(2, "gift");
 //        Optional<Tag> optionalTag = Optional.of(expectedTag);
 //
-//        Mockito.when(tagDao.findById(existsId)).thenReturn(optionalTag);
+//        Mockito.when(tagDao.findBy(existsId)).thenReturn(optionalTag);
 //        Mockito.when(tagDao.delete(existsId)).thenReturn(true);
 //
 //        boolean actualResult = tagService.delete(existsId);
@@ -186,7 +186,7 @@
 //        Tag expectedTag = new Tag(2, "gift");
 //        Optional<Tag> optionalTag = Optional.of(expectedTag);
 //
-//        Mockito.when(tagDao.findById(existsId)).thenReturn(optionalTag);
+//        Mockito.when(tagDao.findBy(existsId)).thenReturn(optionalTag);
 //        Mockito.when(tagDao.delete(nonExistingId)).thenReturn(false);
 //
 //        boolean actualResult = tagService.delete(existsId);

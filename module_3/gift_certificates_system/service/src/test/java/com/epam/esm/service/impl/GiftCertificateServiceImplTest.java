@@ -97,7 +97,7 @@
 //                existsGiftCertificateThree
 //        );
 //
-//        Mockito.when(giftCertificateDao.findAll()).thenReturn(giftCertificates);
+//        Mockito.when(giftCertificateDao.findAllBy()).thenReturn(giftCertificates);
 //
 //        existsGiftCertificateOne.setTags(existsTagsOne);
 //        existsGiftCertificateTwo.setTags(existsTagsTwo);
@@ -108,7 +108,7 @@
 //                existsGiftCertificateTwo,
 //                existsGiftCertificateThree);
 //
-//        List<GiftCertificate> actualGiftCertificates = giftCertificateService.findAll();
+//        List<GiftCertificate> actualGiftCertificates = giftCertificateService.findAllBy();
 //
 //        assertEquals(expectedGiftCertificates, actualGiftCertificates);
 //    }
@@ -122,7 +122,7 @@
 //                existsGiftCertificateThree
 //        );
 //
-//        Mockito.when(giftCertificateDao.findAll()).thenReturn(giftCertificates);
+//        Mockito.when(giftCertificateDao.findAllBy()).thenReturn(giftCertificates);
 //
 //        // Step 2
 //        existsGiftCertificateOne.setTags(existsTagsOne);
@@ -153,7 +153,7 @@
 //                existsGiftCertificateThree
 //        );
 //
-//        Mockito.when(giftCertificateDao.findAll()).thenReturn(giftCertificates);
+//        Mockito.when(giftCertificateDao.findAllBy()).thenReturn(giftCertificates);
 //
 //        // Step 2
 //        existsGiftCertificateOne.setTags(existsTagsOne);
@@ -184,7 +184,7 @@
 //                existsGiftCertificateThree
 //        );
 //
-//        Mockito.when(giftCertificateDao.findAll()).thenReturn(giftCertificates);
+//        Mockito.when(giftCertificateDao.findAllBy()).thenReturn(giftCertificates);
 //
 //        // Step 2
 //        existsGiftCertificateOne.setTags(existsTagsOne);
@@ -215,7 +215,7 @@
 //                existsGiftCertificateThree
 //        );
 //
-//        Mockito.when(giftCertificateDao.findAll()).thenReturn(giftCertificates);
+//        Mockito.when(giftCertificateDao.findAllBy()).thenReturn(giftCertificates);
 //
 //        // Step 2
 //        existsGiftCertificateOne.setTags(existsTagsOne);
@@ -240,18 +240,18 @@
 //    @Test
 //    public void findByIdPositive() {
 //        long certificateId = 1;
-//        Mockito.when(giftCertificateDao.findById(certificateId)).thenReturn(Optional.of(existsGiftCertificateOne));
+//        Mockito.when(giftCertificateDao.findBy(certificateId)).thenReturn(Optional.of(existsGiftCertificateOne));
 //        Mockito.when(tagDao.findByGiftCertificateId(certificateId)).thenReturn(existsTagsOne);
 //        existsGiftCertificateOne.setTags(existsTagsOne);
-//        GiftCertificate actualGiftCertificate = giftCertificateService.findById(certificateId);
+//        GiftCertificate actualGiftCertificate = giftCertificateService.findBy(certificateId);
 //        assertEquals(existsGiftCertificateOne, actualGiftCertificate);
 //    }
 //
 //    @Test
 //    public void findByIdExceptionPositive() {
 //        long nonExistsCertificateId = 100;
-//        Mockito.when(giftCertificateDao.findById(nonExistsCertificateId)).thenThrow(EntityNotFoundException.class);
-//        Throwable throwable = assertThrows(EntityNotFoundException.class, () -> giftCertificateService.findById(nonExistsCertificateId));
+//        Mockito.when(giftCertificateDao.findBy(nonExistsCertificateId)).thenThrow(EntityNotFoundException.class);
+//        Throwable throwable = assertThrows(EntityNotFoundException.class, () -> giftCertificateService.findBy(nonExistsCertificateId));
 //        assertNotNull(throwable);
 //    }
 //
