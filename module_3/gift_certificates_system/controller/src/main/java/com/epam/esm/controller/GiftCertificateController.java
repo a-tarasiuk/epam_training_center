@@ -116,20 +116,18 @@ public class GiftCertificateController {
      * @return - List of gift certificates.
      */
     @GetMapping(params = ParameterName.TAG_NAME)
-    public CollectionModel<GiftCertificateDto> findByTagNames(@RequestParam(name = ParameterName.TAG_NAME)
+    public EntityModel<GiftCertificateDto> findByTagNames(@RequestParam(name = ParameterName.TAG_NAME)
                                                                       Set<@NotBlank(message = MessagePropertyKey.VALIDATION_TAG_NAME_NOT_EMPTY) String> tagNames) {
-        Set<GiftCertificateDto> gcs = service.findByTagNames(tagNames);
+        GiftCertificateDto gc = service.findByTagNames(tagNames);
+        long id = gc.getId();
 
-        for (GiftCertificateDto gc : gcs) {
-            long id = gc.getId();
-            Link selfLink = linkTo(GiftCertificateController.class).slash(id).withSelfRel();
-            Link findById = linkTo(methodOn(GiftCertificateController.class).findById(id))
-                    .withRel("findById").withType(HttpMethod.GET.name());
+        Link selfLink = linkTo(GiftCertificateController.class).slash(id).withSelfRel();
+        Link findById = linkTo(methodOn(GiftCertificateController.class).findById(id))
+                .withRel("findById").withType(HttpMethod.GET.name());
 
-            gc.add(selfLink).add(findById);
-        }
+        gc.add(selfLink).add(findById);
 
-        return CollectionModel.of(gcs);
+        return EntityModel.of(gc);
     }
 
     /**

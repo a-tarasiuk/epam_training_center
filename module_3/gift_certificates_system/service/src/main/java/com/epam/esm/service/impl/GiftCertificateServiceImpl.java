@@ -11,6 +11,7 @@ import com.epam.esm.entity.GiftCertificateToTagRelation;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GitCertificateService;
 import com.epam.esm.util.GiftCertificateUpdater;
+import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.pagination.EsmPagination;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
@@ -80,7 +81,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
                     .map(tag -> tagDao.findByName(tag.getName()).orElseGet(() -> tagDao.create(tag)))
                     .map(tag -> new GiftCertificateToTagRelation(createdGc, tag))
                     .forEach(relation -> {
-                        if (!relationDao.find(relation).isPresent()) {
+                        if (!relationDao.findBy(relation).isPresent()) {
                             relationDao.create(relation);
                         }
                     });
@@ -116,21 +117,16 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     }
 
     @Override
-    public Set<GiftCertificateDto> findByTagName(String tagName) {
-        Tag tag = tagDao.findByName(tagName).orElseThrow(() -> new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_TAG_NAME_NOT_FOUND));
-        Set<GiftCertificate> gcs = gcDao.findBy(tag);
-        return createGiftCertificatesDto(gcs);
-    }
-
-    @Override
-    public Set<GiftCertificateDto> findByTagNames(Set<String> names) {
+    public GiftCertificateDto findByTagNames(Set<String> names) {
         Set<Tag> tags = names.stream()
                 .map(tagDao::findByName)
                 .map(o -> o.orElseThrow(() -> new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_TAG_NAME_NOT_FOUND)))
                 .collect(Collectors.toSet());
 
-        Set<GiftCertificate> gcs = gcDao.findBy(tags);
-        return createGiftCertificatesDto(gcs);
+        GiftCertificate gc = gcDao.findBy(tags)
+                .orElseThrow(() -> new EntityNotFoundException(MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_TAG_NAMES_NOT_FOUND));
+
+        return createGiftCertificateDto(gc);
     }
 
     @Override
@@ -221,7 +217,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     }
 
     private void deleteRelations(GiftCertificate gc) {
-        relationDao.findAll(gc)
+        relationDao.findAllBy(gc)
                 .forEach(relationDao::delete);
     }
 

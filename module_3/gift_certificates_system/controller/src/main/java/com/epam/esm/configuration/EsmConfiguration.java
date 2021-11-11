@@ -70,17 +70,6 @@ public class EsmConfiguration implements WebMvcConfigurer {
     }
 
     /**
-     * Pagination for GET request.<br>
-     * Contain page and elements on page.
-     *
-     * @return EsmPagination.
-     */
-    @Bean
-    public EsmPagination esmPagination() {
-        return new EsmPagination();
-    }
-
-    /**
      * Provides an opportunity to use ENUM's as request parameters.
      * The input name string must exactly match one of the declared enum values.
      * When we make a web request with a string value that doesn't match one of our enum values,

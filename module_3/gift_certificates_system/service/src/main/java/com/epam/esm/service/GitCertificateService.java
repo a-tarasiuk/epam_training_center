@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateUpdateDto;
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.util.pagination.EsmPagination;
 
 import java.util.Set;
@@ -14,23 +13,28 @@ public interface GitCertificateService extends AbstractService<GiftCertificateDt
     /**
      * Update gift certificate by it is ID and gift certificate entity.
      *
-     * @param id              - Gift certificate ID.
+     * @param id          - Gift certificate ID.
      * @param gcUpdateDto - Gift certificate DTO.
      * @return - Updated gift certificate
      */
     GiftCertificateDto update(long id, GiftCertificateUpdateDto gcUpdateDto);
 
+    /**
+     * Find all gift certificates DTO with sorting.
+     *
+     * @param esmPagination Pagination entity.
+     * @param sortBy        Sorting parameters.
+     * @return Set of gift certificate DTO.
+     */
     Set<GiftCertificateDto> findAll(EsmPagination esmPagination, Set<String> sortBy);
-
-    Set<GiftCertificateDto> findByTagName(String tagName);
 
     /**
      * Finding list of gift certificates by tag name.
      *
-     * @param names - Tag names.
-     * @return - Set of gift certificates.
+     * @param names Tag names.
+     * @return Found gift certificate.
      */
-    Set<GiftCertificateDto> findByTagNames(Set<String> names);
+    GiftCertificateDto findByTagNames(Set<String> names);
 
     /**
      * Finding list of gift certificates by keyword.

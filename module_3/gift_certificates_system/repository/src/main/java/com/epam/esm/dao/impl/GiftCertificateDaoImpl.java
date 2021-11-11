@@ -2,16 +2,18 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateToTagRelation;
+import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
 import com.epam.esm.util.CriteriaQueryGenerator;
 import com.epam.esm.util.DatabaseColumnName;
-import com.epam.esm.util.EntityFieldName;
 import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.ParameterName;
 import com.epam.esm.util.SqlGenerator;
 import com.epam.esm.util.pagination.EsmPagination;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -31,22 +33,17 @@ import java.util.stream.Collectors;
 @Log4j2
 @Repository
 public class GiftCertificateDaoImpl extends GiftCertificateDao {
-    private static final String FIND_GIFT_CERTIFICATES_BY_TAG_SQL
-            = "SELECT gc FROM GiftCertificate AS gc INNER JOIN GiftCertificateToTagRelation AS relation ON relation.giftCertificate = gc WHERE relation.tag = :tag";
-    private static final String FIND_GIFT_CERTIFICATE_BY_TAGS_SQL
-            = "SELECT gc FROM GiftCertificate gc JOIN GiftCertificateToTagRelation relation on gc = relation.giftCertificate WHERE relation.tag IN (:tags) GROUP BY gc HAVING COUNT(gc) = :countTags";
-    private static final String FIND_GIFT_CERTIFICATES_BY_USER_SQL
-            = "SELECT gc FROM GiftCertificate gc JOIN Order o ON gc = o.giftCertificate WHERE o.user = :user";
+    private final GiftCertificateToTagRelationDaoImpl relationDao;
+
+    @Autowired
+    public GiftCertificateDaoImpl(GiftCertificateToTagRelationDaoImpl relationDao) {
+        this.relationDao = relationDao;
+    }
 
     @Override
     public GiftCertificate create(GiftCertificate giftCertificate) {
         em.persist(giftCertificate);
         return giftCertificate;
-    }
-
-    @Override
-    public void delete(GiftCertificate giftCertificate) {
-        em.remove(giftCertificate);
     }
 
     @Override
@@ -111,25 +108,47 @@ public class GiftCertificateDaoImpl extends GiftCertificateDao {
 
     @Override
     public Set<GiftCertificate> findBy(Tag tag) {
-        return em.createQuery(FIND_GIFT_CERTIFICATES_BY_TAG_SQL, GiftCertificate.class)
-                .setParameter(EntityFieldName.TAG, tag)
-                .getResultStream()
+        return relationDao.findAllBy(tag).stream()
+                .map(GiftCertificateToTagRelation::getGiftCertificate)
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Full JPA query:<br>
+     * SELECT gc FROM GiftCertificate gc JOIN GiftCertificateToTagRelation relation on gc = relation.giftCertificate WHERE relation.tag IN (:tags) GROUP BY gc HAVING COUNT(gc) = :countTags
+     */
     @Override
-    public Set<GiftCertificate> findBy(Set<Tag> tags) {
-        return em.createQuery(FIND_GIFT_CERTIFICATE_BY_TAGS_SQL, GiftCertificate.class)
-                .setParameter(ParameterName.TAGS, tags)
-                .setParameter(ParameterName.COUNT_TAGS, (long) tags.size())
-                .getResultStream()
-                .collect(Collectors.toSet());
+    public Optional<GiftCertificate> findBy(Set<Tag> tags) {
+        Optional<GiftCertificate> optional;
+
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<GiftCertificate> cq = cb.createQuery(GiftCertificate.class);
+            Root<GiftCertificateToTagRelation> from = cq.from(GiftCertificateToTagRelation.class);
+            Path<GiftCertificate> choose = from.get(ParameterName.GIFT_CERTIFICATE);
+            cq.select(choose).where(from.get(ParameterName.TAG).in(tags)).groupBy(choose).having(cb.count(choose).in(tags.size()));
+
+            GiftCertificate gc = em.createQuery(cq).getSingleResult();
+            optional = Optional.of(gc);
+        } catch (NoResultException e) {
+            optional = Optional.empty();
+        }
+
+        return optional;
     }
 
+    /**
+     * Full JPA query:<br>
+     * SELECT gc FROM GiftCertificate gc JOIN Order o ON gc = o.giftCertificate WHERE o.user = :user
+     */
     @Override
     public Set<GiftCertificate> findBy(User user) {
-        return em.createQuery(FIND_GIFT_CERTIFICATES_BY_USER_SQL, GiftCertificate.class)
-                .setParameter(EntityFieldName.USER, user)
+        CriteriaQuery<GiftCertificate> cq = cb.createQuery(GiftCertificate.class);
+        Root<Order> from = cq.from(Order.class);
+        Predicate condition = cb.equal(from.get(ParameterName.USER), user);
+        cq.select(from.get(ParameterName.GIFT_CERTIFICATE)).where(condition);
+
+        return em.createQuery(cq)
                 .getResultStream()
                 .collect(Collectors.toSet());
     }

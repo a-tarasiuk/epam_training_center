@@ -5,6 +5,7 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
 import com.epam.esm.util.pagination.EsmPagination;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -49,9 +50,9 @@ public abstract class GiftCertificateDao extends AbstractDao<GiftCertificate> {
      * Finding set of gift certificates by set of tags.
      *
      * @param tags Set of tags.
-     * @return Set of found gift certificates.
+     * @return Optional of found gift certificates.
      */
-    public abstract Set<GiftCertificate> findBy(Set<Tag> tags);
+    public abstract Optional<GiftCertificate> findBy(Set<Tag> tags);
 
     /**
      * Finding set of gift certificates by User entity.

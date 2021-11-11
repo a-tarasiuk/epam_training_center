@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Optional;
@@ -22,8 +23,6 @@ import java.util.stream.Collectors;
  */
 @Repository
 public class OrderDaoImpl extends OrderDao {
-    private static final String FIND_USERS_WITH_HIGHEST_COST_OF_ALL_ORDERS
-            = "SELECT o.user FROM Order o GROUP BY o.user ORDER BY SUM(o.price) DESC";
 
     @Override
     public Order create(Order order) {
@@ -65,9 +64,21 @@ public class OrderDaoImpl extends OrderDao {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Full query:<br>
+     * SELECT o.user FROM Order o GROUP BY o.user ORDER BY SUM(o.price) DESC
+     */
     @Override
     public Set<User> findUsersWithHighestCostOfAllOrders() {
-        return em.createQuery(FIND_USERS_WITH_HIGHEST_COST_OF_ALL_ORDERS, User.class)
+        CriteriaQuery<User> cq = cb.createQuery(User.class);
+        Root<Order> from = cq.from(Order.class);
+        Path<User> user = from.get(ParameterName.USER);
+
+        cq.select(user)
+                .orderBy(cb.desc(cb.sum(from.get(ParameterName.PRICE))))
+                .groupBy(user);
+
+        return em.createQuery(cq)
                 .setMaxResults(NumberUtils.INTEGER_ONE)
                 .getResultStream()
                 .collect(Collectors.toSet());
