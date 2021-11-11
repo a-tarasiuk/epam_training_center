@@ -3,8 +3,10 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateToTagRelation;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
 import com.epam.esm.service.AbstractService;
@@ -35,6 +37,7 @@ public class TagServiceImpl implements AbstractService<TagDto> {
     private final TagDao tagDao;
     private final OrderDao orderDao;
     private final GiftCertificateDao gcDao;
+    private final GiftCertificateToTagRelationDaoImpl relationDao;
 
     /**
      * Instantiates a new tag service.
@@ -42,11 +45,12 @@ public class TagServiceImpl implements AbstractService<TagDto> {
      * @param tagDao - Tag DAO layer.
      */
     @Autowired
-    public TagServiceImpl(ModelMapper modelMapper, TagDao tagDao, OrderDao orderDao, GiftCertificateDao gcDao) {
+    public TagServiceImpl(ModelMapper modelMapper, TagDao tagDao, OrderDao orderDao, GiftCertificateDao gcDao, GiftCertificateToTagRelationDaoImpl relationDao) {
         this.modelMapper = modelMapper;
         this.tagDao = tagDao;
         this.orderDao = orderDao;
         this.gcDao = gcDao;
+        this.relationDao = relationDao;
     }
 
     @Override
@@ -73,9 +77,14 @@ public class TagServiceImpl implements AbstractService<TagDto> {
 
     @Override
     public void delete(long id) {
-        Tag foundTag = tagDao.findById(id)
+        Tag tag = tagDao.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND));
-        tagDao.delete(foundTag);
+
+        // Delete all relations
+        relationDao.findAllBy(tag).forEach(relationDao::delete);
+
+        // Delete tag
+        tagDao.delete(tag);
     }
 
     public Map<Tag, User> findMostWidelyUsedTags() {
@@ -85,6 +94,7 @@ public class TagServiceImpl implements AbstractService<TagDto> {
         // Find all gift certificates by users
         Map<User, Set<GiftCertificate>> userGcMap = findAllGiftCertificatesByUsers(users);
         Map<Tag, User> tagUserMap = new HashMap<>();
+
         // Find all tags by gift certificates
         for (Map.Entry<User, Set<GiftCertificate>> entry : userGcMap.entrySet()) {
             Set<GiftCertificate> gcs = entry.getValue();

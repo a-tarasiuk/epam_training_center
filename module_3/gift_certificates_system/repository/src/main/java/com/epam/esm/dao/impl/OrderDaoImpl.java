@@ -8,12 +8,11 @@ import com.epam.esm.util.pagination.EsmPagination;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -65,11 +64,13 @@ public class OrderDaoImpl extends OrderDao {
     public Set<User> findUsersWithHighestCostOfAllOrders() {
         CriteriaQuery<User> cq = cb.createQuery(User.class);
         Root<Order> from = cq.from(Order.class);
+
         Path<User> user = from.get(ParameterName.USER);
+        Path<BigDecimal> price = from.get(ParameterName.USER);
 
         cq.select(user)
-                .orderBy(cb.desc(cb.sum(from.get(ParameterName.PRICE))))
-                .groupBy(user);
+                .groupBy(user)
+                .orderBy(cb.desc(cb.sum(price)));
 
         return em.createQuery(cq)
                 .setMaxResults(NumberUtils.INTEGER_ONE)

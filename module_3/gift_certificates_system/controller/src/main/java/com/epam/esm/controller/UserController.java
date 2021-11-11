@@ -53,6 +53,9 @@ public class UserController {
     public EntityModel<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         UserDto user = userService.create(userDto);
 
+        Link self = linkTo(UserController.class).slash(user.getId()).withSelfRel().withType(HttpMethod.GET.name());
+        user.add(self);
+
         return EntityModel.of(user,
                 linkTo(methodOn(UserController.class).findUserById(user.getId()))
                         .withSelfRel(),

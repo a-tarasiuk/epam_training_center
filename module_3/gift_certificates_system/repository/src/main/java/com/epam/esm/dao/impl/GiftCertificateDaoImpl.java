@@ -88,9 +88,7 @@ public class GiftCertificateDaoImpl extends GiftCertificateDao {
 
     @Override
     public Set<GiftCertificate> findBy(String keyword) {
-        //Get criteria builder
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        //Create the CriteriaQuery for Gift certificate object
         CriteriaQuery<GiftCertificate> cq = cb.createQuery(GiftCertificate.class);
 
         Root<GiftCertificate> root = cq.from(GiftCertificate.class);

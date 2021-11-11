@@ -13,6 +13,8 @@ import javax.persistence.criteria.Root;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.epam.esm.util.MessagePropertyKey.*;
+
 public abstract class FindAllDao<T> {
     @PersistenceContext
     protected EntityManager em;
@@ -45,7 +47,7 @@ public abstract class FindAllDao<T> {
         Long maxPages = getMaxPages(elementsOnPage, totalRows);
 
         if (countPages > maxPages) {
-            throw new IllegalArgumentException(MessagePropertyKey.EXCEPTION_ESM_PAGINATION_PAGE_OUT_OF_RANGE);
+            throw new IllegalArgumentException(EXCEPTION_ESM_PAGINATION_PAGE_OUT_OF_RANGE);
         }
     }
 

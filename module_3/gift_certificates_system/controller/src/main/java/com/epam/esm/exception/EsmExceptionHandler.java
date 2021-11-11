@@ -1,20 +1,14 @@
 package com.epam.esm.exception;
 
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.convert.ConversionFailedException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -27,7 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
-public class EsmExceptionHandler extends ResponseEntityExceptionHandler {
+public class EsmExceptionHandler {
     private final ResourceBundleMessageSource messageSource;
 
     public EsmExceptionHandler(ResourceBundleMessageSource messageSource) {
@@ -42,7 +36,6 @@ public class EsmExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ConversionFailedException.class)
     private ResponseEntity<?> handleEntityNotFoundException(RuntimeException e, Locale locale) {
-        System.out.println("Fuck");
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
@@ -63,7 +56,7 @@ public class EsmExceptionHandler extends ResponseEntityExceptionHandler {
      * Contain format message: <code>method_name.method_argument_name: message_from_annotation</code> <br>
      * Example: <code>delete.id: validation.id</code>
      *
-     * @param e ConstraintViolationException
+     * @param e      ConstraintViolationException
      * @param locale User locale
      * @return ResponseEntity
      */
@@ -80,17 +73,22 @@ public class EsmExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(esmException, esmException.getHttpStatus());
     }
 
-    @Override
-    protected @NotNull ResponseEntity<Object> handleMethodArgumentNotValid(
-            @NotNull MethodArgumentNotValidException e, @NotNull HttpHeaders headers, @NotNull HttpStatus httpStatus, WebRequest request) {
-        Locale locale = request.getLocale();
+    /**
+     * Throw if method argument contain <code>@Valid</code> and any variable(s) not valid.<br>
+     * Or if method arguments are primitive type(s) and not valid.
+     *
+     * @param e      BindException
+     * @param locale Request locale.
+     * @return ResponseEntity
+     */
+    @ExceptionHandler(BindException.class)
+    private ResponseEntity<?> handleConstraintViolationException(BindException e, Locale locale) {
         EsmHttpErrorCode esmHttpErrorCode = EsmHttpErrorCode.ENTITY_VALIDATION;
-        return createResponseEntity(e, httpStatus, esmHttpErrorCode, locale);
+        return createResponseEntity(e, HttpStatus.BAD_REQUEST, esmHttpErrorCode, locale);
     }
 
     private ResponseEntity<Object> createResponseEntity(
             Exception exception, HttpStatus httpStatus, EsmHttpErrorCode esmHttpErrorCode, Locale locale) {
-
         Set<String> validationMessages;
 
         if (exception instanceof BindException) {
