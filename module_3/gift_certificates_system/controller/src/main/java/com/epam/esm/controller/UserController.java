@@ -14,6 +14,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,8 +56,6 @@ public class UserController {
         return EntityModel.of(user,
                 linkTo(methodOn(UserController.class).findUserById(user.getId()))
                         .withSelfRel(),
-                linkTo(methodOn(UserController.class).findAllUsers(new EsmPagination()))
-                        .withRel("findAllUsers").withType(HttpMethod.GET.name()),
                 linkTo(methodOn(UserController.class).createOrderForUser(user.getId(), new OrderCreateDto()))
                         .withRel("createOrderForUser").withType(HttpMethod.POST.name()),
                 linkTo(methodOn(UserController.class).findAllOrdersByUserId(user.getId(), new EsmPagination()))
@@ -71,14 +70,13 @@ public class UserController {
      * @return User DTO.
      */
     @GetMapping(UrlMapping.ID)
-    public EntityModel<UserDto> findUserById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID) @PathVariable long id) {
+    public EntityModel<UserDto> findUserById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
+                                             @PathVariable long id) {
         UserDto user = userService.findById(id);
 
         return EntityModel.of(user,
                 linkTo(methodOn(UserController.class).createUser(user))
                         .withRel("createUser").withType(HttpMethod.POST.name()),
-                linkTo(methodOn(UserController.class).findAllUsers(new EsmPagination()))
-                        .withRel("findAllUsers").withType(HttpMethod.GET.name()),
                 linkTo(methodOn(UserController.class).createOrderForUser(user.getId(), new OrderCreateDto()))
                         .withRel("createOrderForUser").withType(HttpMethod.POST.name()),
                 linkTo(methodOn(UserController.class).findAllOrdersByUserId(user.getId(), new EsmPagination()))
@@ -93,7 +91,7 @@ public class UserController {
      * @return Set of found user DTO.
      */
     @GetMapping
-    public CollectionModel<UserDto> findAllUsers(@Valid EsmPagination esmPagination) {
+    public CollectionModel<UserDto> findAllUsers(@Valid EsmPagination esmPagination, BindingResult br) {
         Set<UserDto> users = userService.findAll(esmPagination);
 
         for (UserDto user : users) {
@@ -114,7 +112,8 @@ public class UserController {
      * @return Created order DTO.
      */
     @PostMapping(UrlMapping.ORDER_USER)
-    public EntityModel<OrderDto> createOrderForUser(@Min(value = 1, message = MessagePropertyKey.VALIDATION_USER_ID) @PathVariable long userId,
+    public EntityModel<OrderDto> createOrderForUser(@Min(value = 1, message = MessagePropertyKey.VALIDATION_USER_ID)
+                                                    @PathVariable long userId,
                                                     @Valid @RequestBody OrderCreateDto orderCreateDto) {
         orderCreateDto.setUserId(userId);
         OrderDto order = orderService.create(orderCreateDto);
@@ -137,7 +136,8 @@ public class UserController {
      * @return Set of found order DTO.
      */
     @GetMapping(UrlMapping.ORDER_USER)
-    public CollectionModel<OrderDto> findAllOrdersByUserId(@Min(value = 1, message = MessagePropertyKey.VALIDATION_USER_ID) @PathVariable long userId,
+    public CollectionModel<OrderDto> findAllOrdersByUserId(@Min(value = 1, message = MessagePropertyKey.VALIDATION_USER_ID)
+                                                           @PathVariable long userId,
                                                            @Valid EsmPagination esmPagination) {
         Set<OrderDto> orders = orderService.findAllByUserId(userId, esmPagination);
 

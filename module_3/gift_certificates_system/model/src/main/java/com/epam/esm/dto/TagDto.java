@@ -3,6 +3,7 @@ package com.epam.esm.dto;
 import com.epam.esm.util.DtoRegexValidator;
 import com.epam.esm.util.MessagePropertyKey;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,7 +17,8 @@ import java.io.Serializable;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class TagDto extends RepresentationModel<TagDto> implements Serializable {
+@EqualsAndHashCode(callSuper = false)
+public class TagDto extends RepresentationModel<TagDto> {
     private Long id;
 
     @NotBlank(message = MessagePropertyKey.VALIDATION_TAG_NAME_NOT_EMPTY)

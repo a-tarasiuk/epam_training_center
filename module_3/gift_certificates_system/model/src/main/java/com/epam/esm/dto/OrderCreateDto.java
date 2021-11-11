@@ -2,6 +2,7 @@ package com.epam.esm.dto;
 
 import com.epam.esm.util.MessagePropertyKey;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -20,8 +21,8 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Setter
 @Getter
-@ToString
-public class OrderCreateDto extends RepresentationModel<OrderCreateDto> implements Serializable {
+@EqualsAndHashCode(callSuper = false)
+public class OrderCreateDto extends RepresentationModel<OrderCreateDto> {
     @Min(value = 1, message = MessagePropertyKey.VALIDATION_USER_ID)
     Long userId;
 

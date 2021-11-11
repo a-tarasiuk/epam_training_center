@@ -3,6 +3,7 @@ package com.epam.esm.dto;
 import com.epam.esm.util.DtoRegexValidator;
 import com.epam.esm.util.MessagePropertyKey;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -26,7 +27,9 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class GiftCertificateDto extends AbstractDto<GiftCertificateDto> {
+@EqualsAndHashCode(callSuper = false)
+
+public class GiftCertificateDto extends RepresentationModel<OrderCreateDto> {
     private Long id;
 
     @NotBlank(message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_NAME_NOT_EMPTY)

@@ -1,6 +1,7 @@
 package com.epam.esm.exception;
 
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.convert.ConversionFailedException;
@@ -42,7 +43,7 @@ public class EsmExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConversionFailedException.class)
     private ResponseEntity<?> handleEntityNotFoundException(RuntimeException e, Locale locale) {
         System.out.println("Fuck");
-        return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

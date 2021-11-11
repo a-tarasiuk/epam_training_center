@@ -1,6 +1,7 @@
 package com.epam.esm.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,8 +17,8 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Setter
 @Getter
-@ToString
-public class OrderDto extends RepresentationModel<OrderDto> implements Serializable {
+@EqualsAndHashCode(callSuper = false)
+public class OrderDto extends RepresentationModel<OrderDto> {
     private Long id;
 
     @Valid

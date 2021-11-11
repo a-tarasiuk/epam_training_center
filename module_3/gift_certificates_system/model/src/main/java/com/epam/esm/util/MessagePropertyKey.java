@@ -42,6 +42,7 @@ public final class MessagePropertyKey {
 
     // Exceptions - Tag
     public static final String EXCEPTION_TAG_NAME_EXISTS = "exception.tag.name.exists";
+    public static final String EXCEPTION_TAG_NAME_NOT_FOUND = "exception.tag.name.not-found";
     public static final String EXCEPTION_TAG_ID_NOT_FOUND = "exception.tag.id.not-found";
 
     // Exceptions - Gift certificate

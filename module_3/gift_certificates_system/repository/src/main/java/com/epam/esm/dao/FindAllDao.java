@@ -23,34 +23,41 @@ public abstract class FindAllDao<T> {
     /**
      * Find all entities with paginate.
      *
-     * @param esmPagination Contain number of page and count elements on page.
+     * @param pagination Contain number of page and count elements on page.
      * @param entity        Entity.
      * @return Set of entities.
      */
-    public Set<T> findAll(EsmPagination esmPagination, Class<T> entity) {
-        int countPages = esmPagination.getPage();
-        int elementsOnPage = esmPagination.getSize();
-
-        checkEsmPaginationForValidityOrElseThrow(entity, countPages, elementsOnPage);
+    public Set<T> findAll(EsmPagination pagination, Class<T> entity) {
+        validatePaginationOrElseThrow(pagination, entity);
 
         CriteriaQuery<T> cq = cb.createQuery(entity);
         Root<T> root = cq.from(entity);
         cq.select(root);
 
-        return em.createQuery(cq)
-                .setFirstResult((countPages - NumberUtils.INTEGER_ONE) * elementsOnPage)
-                .setMaxResults(elementsOnPage)
-                .getResultStream()
-                .collect(Collectors.toSet());
+        return executeQuery(cq, pagination);
     }
 
-    protected void checkEsmPaginationForValidityOrElseThrow(Class<T> entity, int countPages, int elementsOnPage) {
+    protected void validatePaginationOrElseThrow(EsmPagination pagination, Class<T> entity) {
+        int countPages = pagination.getPage();
+        int elementsOnPage = pagination.getSize();
+
         Long totalRows = findTotalRows(entity);
         Long maxPages = getMaxPages(elementsOnPage, totalRows);
 
         if (countPages > maxPages) {
             throw new IllegalArgumentException(MessagePropertyKey.EXCEPTION_ESM_PAGINATION_PAGE_OUT_OF_RANGE);
         }
+    }
+
+    protected Set<T> executeQuery(CriteriaQuery<T> cq, EsmPagination pagination) {
+        int countPages = pagination.getPage();
+        int elementsOnPage = pagination.getSize();
+
+        return em.createQuery(cq)
+                .setFirstResult((countPages - NumberUtils.INTEGER_ONE) * elementsOnPage)
+                .setMaxResults(elementsOnPage)
+                .getResultStream()
+                .collect(Collectors.toSet());
     }
 
     private Long findTotalRows(Class<T> entity) {

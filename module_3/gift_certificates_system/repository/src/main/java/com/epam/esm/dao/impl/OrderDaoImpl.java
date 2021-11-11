@@ -46,22 +46,15 @@ public class OrderDaoImpl extends OrderDao {
     }
 
     @Override
-    public Set<Order> findAllBy(User user, EsmPagination esmPagination) {
-        int countPages = esmPagination.getPage();
-        int elementsOnPage = esmPagination.getSize();
-
-        checkEsmPaginationForValidityOrElseThrow(Order.class, countPages, elementsOnPage);
+    public Set<Order> findAllBy(User user, EsmPagination pagination) {
+        validatePaginationOrElseThrow(pagination, Order.class);
 
         CriteriaQuery<Order> cq = cb.createQuery(Order.class);
         Root<Order> fromOrder = cq.from(Order.class);
         Predicate condition = cb.equal(fromOrder.get(ParameterName.USER), user);
         cq.select(fromOrder).where(condition);
 
-        return em.createQuery(cq)
-                .setFirstResult((countPages - NumberUtils.INTEGER_ONE) * elementsOnPage)
-                .setMaxResults(elementsOnPage)
-                .getResultStream()
-                .collect(Collectors.toSet());
+        return executeQuery(cq, pagination);
     }
 
     /**

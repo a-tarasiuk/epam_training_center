@@ -136,12 +136,12 @@ public class GiftCertificateController {
         long id = gc.getId();
 
         Link selfLink = linkTo(GiftCertificateController.class).slash(id).withSelfRel();
-        Link findById = linkTo(methodOn(GiftCertificateController.class).findById(id))
-                .withRel("findById").withType(HttpMethod.GET.name());
 
-        gc.add(selfLink).add(findById);
+        gc.add(selfLink);
 
-        return EntityModel.of(gc);
+        return EntityModel.of(gc,
+                linkTo(methodOn(GiftCertificateController.class).findById(id))
+                        .withRel("findById").withType(HttpMethod.GET.name()));
     }
 
     /**

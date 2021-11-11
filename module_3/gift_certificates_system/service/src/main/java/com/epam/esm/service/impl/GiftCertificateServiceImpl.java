@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.epam.esm.util.MessagePropertyKey.*;
 import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
 import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS;
 import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_TAG_NAME_NOT_FOUND;
@@ -120,11 +121,11 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     public GiftCertificateDto findByTagNames(Set<String> names) {
         Set<Tag> tags = names.stream()
                 .map(tagDao::findByName)
-                .map(o -> o.orElseThrow(() -> new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_TAG_NAME_NOT_FOUND)))
+                .map(o -> o.orElseThrow(() -> new EntityNotFoundException(EXCEPTION_TAG_NAME_NOT_FOUND)))
                 .collect(Collectors.toSet());
 
         GiftCertificate gc = gcDao.findBy(tags)
-                .orElseThrow(() -> new EntityNotFoundException(MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_TAG_NAMES_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_TAG_NAMES_NOT_FOUND));
 
         return createGiftCertificateDto(gc);
     }

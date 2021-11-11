@@ -3,12 +3,13 @@ package com.epam.esm.dto;
 import com.epam.esm.util.DtoRegexValidator;
 import com.epam.esm.util.MessagePropertyKey;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
@@ -17,8 +18,9 @@ import java.io.Serializable;
 @RequiredArgsConstructor
 @Setter
 @Getter
-public class UserDto extends RepresentationModel<UserDto> implements Serializable {
-    @Min(value = 1, message = MessagePropertyKey.VALIDATION_USER_ID)
+@ToString
+@EqualsAndHashCode(callSuper = false)
+public class UserDto extends RepresentationModel<UserDto> {
     private Long id;
 
     @NotBlank(message = MessagePropertyKey.VALIDATION_USER_LOGIN_NOT_EMPTY)

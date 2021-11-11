@@ -4,7 +4,9 @@ import com.epam.esm.util.MessagePropertyKey;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;

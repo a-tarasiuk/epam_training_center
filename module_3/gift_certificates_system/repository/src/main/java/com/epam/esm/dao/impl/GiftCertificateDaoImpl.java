@@ -52,10 +52,11 @@ public class GiftCertificateDaoImpl extends GiftCertificateDao {
     }
 
     @Override
-    public Set<GiftCertificate> findAll(EsmPagination esmPagination, Set<String> sortBy) {
+    public Set<GiftCertificate> findAll(EsmPagination pagination, Set<String> sortBy) {
         CriteriaQueryGenerator<GiftCertificate> cqg = new CriteriaQueryGenerator<>(em, GiftCertificate.class);
         CriteriaQuery<GiftCertificate> cq = cqg.generate(sortBy);
-        return executeCriteriaQuery(cq, esmPagination);
+        validatePaginationOrElseThrow(pagination, GiftCertificate.class);
+        return executeQuery(cq, pagination);
     }
 
     @Override
@@ -155,28 +156,6 @@ public class GiftCertificateDaoImpl extends GiftCertificateDao {
 
     private <T> Set<T> executeCriteriaQuery(CriteriaQuery<T> criteriaQuery) {
         return em.createQuery(criteriaQuery)
-                .getResultStream()
-                .collect(Collectors.toSet());
-    }
-
-    private <T> Set<T> executeCriteriaQuery(CriteriaQuery<T> criteriaQuery, EsmPagination esmPagination) {
-        TypedQuery<T> typedQuery = em.createQuery(criteriaQuery);
-
-        int elementsOnPage = esmPagination.getSize();
-        int numberOfPage = esmPagination.getPage();
-
-        int maxElements = typedQuery.getMaxResults();
-        int maxPages = maxElements % elementsOnPage;
-
-        int firstResult = numberOfPage * elementsOnPage;
-
-        if (firstResult > maxPages) {
-            throw new IllegalArgumentException(MessagePropertyKey.EXCEPTION_ESM_PAGINATION_PAGE_OUT_OF_RANGE);
-        }
-
-        return typedQuery
-                .setFirstResult(firstResult)
-                .setMaxResults(elementsOnPage)
                 .getResultStream()
                 .collect(Collectors.toSet());
     }
