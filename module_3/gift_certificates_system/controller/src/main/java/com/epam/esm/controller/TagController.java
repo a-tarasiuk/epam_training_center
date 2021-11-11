@@ -69,7 +69,7 @@ public class TagController {
                         .withRel("findTagById").withType(HttpMethod.GET.name()),
                 linkTo(methodOn(TagController.class).findMostWidelyUsedTags())
                         .withRel("findMostWidelyUsedTags").withType(HttpMethod.GET.name())
-                );
+        );
     }
 
     /**
@@ -80,13 +80,13 @@ public class TagController {
      */
     @GetMapping(UrlMapping.ID)
     public EntityModel<TagDto> findTagById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
-                              @PathVariable long id) {
+                                           @PathVariable long id) {
         TagDto tag = tagService.findById(id);
         return EntityModel.of(tag,
                 linkTo(TagController.class).slash(tag.getId()).withSelfRel(),
                 linkTo(methodOn(TagController.class).findMostWidelyUsedTags())
                         .withRel("findMostWidelyUsedTags").withType(HttpMethod.GET.name())
-                );
+        );
     }
 
     /**
@@ -101,6 +101,11 @@ public class TagController {
         tagService.delete(id);
     }
 
+    /**
+     * Find most widely used tags.
+     *
+     * @return Map with tag and user.
+     */
     @GetMapping(UrlMapping.MOST_WIDELY_USED_TAG_OF_USER_WITH_HIGHEST_COST_OF_ALL_ORDERS)
     public Map<Tag, User> findMostWidelyUsedTags() {
         return tagService.findMostWidelyUsedTags();

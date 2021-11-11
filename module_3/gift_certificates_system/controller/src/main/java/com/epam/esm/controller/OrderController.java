@@ -35,6 +35,12 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    /**
+     * Find order by ID.
+     *
+     * @param id Order ID.
+     * @return Order DTO.
+     */
     @GetMapping(UrlMapping.ID)
     public EntityModel<OrderDto> findOrderById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
                                                @PathVariable long id) {
@@ -47,6 +53,12 @@ public class OrderController {
         );
     }
 
+    /**
+     * Find all orders.
+     *
+     * @param esmPagination Pagination parameters.
+     * @return Set of found orders DTO.
+     */
     @GetMapping
     public CollectionModel<OrderDto> findAllOrders(@Valid EsmPagination esmPagination) {
         Set<OrderDto> orders = orderService.findAll(esmPagination);

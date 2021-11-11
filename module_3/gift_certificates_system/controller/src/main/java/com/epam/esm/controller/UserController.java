@@ -43,9 +43,11 @@ public class UserController {
     }
 
     /**
-     * Operations only for User.
+     * Create user.
+     *
+     * @param userDto User DTO.
+     * @return Created user DTO.
      */
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public EntityModel<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         UserDto user = userService.create(userDto);
@@ -62,6 +64,12 @@ public class UserController {
         );
     }
 
+    /**
+     * Find user DTO by user ID.
+     *
+     * @param id User ID.
+     * @return User DTO.
+     */
     @GetMapping(UrlMapping.ID)
     public EntityModel<UserDto> findUserById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID) @PathVariable long id) {
         UserDto user = userService.findById(id);
@@ -78,6 +86,12 @@ public class UserController {
         );
     }
 
+    /**
+     * Find all users.
+     *
+     * @param esmPagination Pagination parameters.
+     * @return Set of found user DTO.
+     */
     @GetMapping
     public CollectionModel<UserDto> findAllUsers(@Valid EsmPagination esmPagination) {
         Set<UserDto> users = userService.findAll(esmPagination);
@@ -91,11 +105,14 @@ public class UserController {
         return CollectionModel.of(users, linkTo(UserController.class).withSelfRel());
     }
 
-    /**
-     * Operations for User with Order.
-     */
 
-    // Create order for user by user ID.
+    /**
+     * Create order for user by user ID.
+     *
+     * @param userId         User ID.
+     * @param orderCreateDto Order DTO for creating.
+     * @return Created order DTO.
+     */
     @PostMapping(UrlMapping.ORDER_USER)
     public EntityModel<OrderDto> createOrderForUser(@Min(value = 1, message = MessagePropertyKey.VALIDATION_USER_ID) @PathVariable long userId,
                                                     @Valid @RequestBody OrderCreateDto orderCreateDto) {
@@ -111,7 +128,14 @@ public class UserController {
         );
     }
 
-    // Find all orders by user ID.
+
+    /**
+     * Find all orders by user ID.
+     *
+     * @param userId        User ID.
+     * @param esmPagination Pagination parameters.
+     * @return Set of found order DTO.
+     */
     @GetMapping(UrlMapping.ORDER_USER)
     public CollectionModel<OrderDto> findAllOrdersByUserId(@Min(value = 1, message = MessagePropertyKey.VALIDATION_USER_ID) @PathVariable long userId,
                                                            @Valid EsmPagination esmPagination) {

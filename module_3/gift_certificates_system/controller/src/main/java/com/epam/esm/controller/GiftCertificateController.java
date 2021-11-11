@@ -66,6 +66,12 @@ public class GiftCertificateController {
         );
     }
 
+    /**
+     * Find all gift certificates DTO.
+     *
+     * @param esmPagination Pagination parameters.
+     * @return Set of found gift certificates DTO.
+     */
     @GetMapping
     public CollectionModel<GiftCertificateDto> findAll(@Valid EsmPagination esmPagination) {
         Set<GiftCertificateDto> gcs = service.findAll(esmPagination);
@@ -84,6 +90,14 @@ public class GiftCertificateController {
         return CollectionModel.of(gcs, currentLink);
     }
 
+    /**
+     * Find all gift certificates DTO with sort parameters and pagination.
+     *
+     * @param sortBy        Set of gift certificate field names.
+     * @param esmPagination Pagination parameters.
+     * @param br            Binding result.
+     * @return Set of found gift certificates DTO.
+     */
     @GetMapping(params = ParameterName.SORT_BY)
     public Set<GiftCertificateDto> findAllSortByOrderBy(@RequestParam(value = ParameterName.SORT_BY) Set<String> sortBy,
                                                         @Valid EsmPagination esmPagination, BindingResult br) {
@@ -93,8 +107,8 @@ public class GiftCertificateController {
     /**
      * Finding gift certificate by it is ID.
      *
-     * @param id - Gift certificate ID.
-     * @return - Entity of the gift certificate.
+     * @param id Gift certificate ID.
+     * @return Entity of the gift certificate.
      */
     @GetMapping(path = UrlMapping.ID)
     public EntityModel<GiftCertificateDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
@@ -112,12 +126,12 @@ public class GiftCertificateController {
     /**
      * Finding gift certificate by tag name(s).
      *
-     * @param tagNames - Tag name(s).
-     * @return - List of gift certificates.
+     * @param tagNames Tag name(s).
+     * @return List of gift certificates.
      */
     @GetMapping(params = ParameterName.TAG_NAME)
     public EntityModel<GiftCertificateDto> findByTagNames(@RequestParam(name = ParameterName.TAG_NAME)
-                                                                      Set<@NotBlank(message = MessagePropertyKey.VALIDATION_TAG_NAME_NOT_EMPTY) String> tagNames) {
+                                                                  Set<@NotBlank(message = MessagePropertyKey.VALIDATION_TAG_NAME_NOT_EMPTY) String> tagNames) {
         GiftCertificateDto gc = service.findByTagNames(tagNames);
         long id = gc.getId();
 
@@ -133,8 +147,8 @@ public class GiftCertificateController {
     /**
      * Finding gift certificate by keyword.
      *
-     * @param keyword - Keyword.
-     * @return - List of gift certificates.
+     * @param keyword Keyword.
+     * @return List of gift certificates.
      */
     @GetMapping(params = ParameterName.KEYWORD)
     public Set<GiftCertificateDto> findByKeyword(@RequestParam(name = ParameterName.KEYWORD)
@@ -146,7 +160,7 @@ public class GiftCertificateController {
     /**
      * Delete gift certificate by it is ID.
      *
-     * @param id - Gift certificate ID.
+     * @param id Gift certificate ID.
      */
     @DeleteMapping(path = UrlMapping.ID)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -157,11 +171,10 @@ public class GiftCertificateController {
     /**
      * Update gift certificate by it is ID.
      *
-     * @param id          - Gift certificate ID.
-     * @param gcUpdateDto - Gift certificate DTO.
+     * @param id          Gift certificate ID.
+     * @param gcUpdateDto Gift certificate DTO.
      */
     @PatchMapping(path = UrlMapping.ID)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public EntityModel<GiftCertificateDto> update(@PathVariable long id,
                                                   @Valid @RequestBody GiftCertificateUpdateDto gcUpdateDto) {
         GiftCertificateDto gc = service.update(id, gcUpdateDto);
