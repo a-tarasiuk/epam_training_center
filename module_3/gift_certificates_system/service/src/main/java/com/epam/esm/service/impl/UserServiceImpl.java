@@ -3,9 +3,11 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
+import com.epam.esm.exception.EntityExistingException;
+import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.service.AbstractService;
 import com.epam.esm.util.MessagePropertyKey;
-import com.epam.esm.util.pagination.EsmPagination;
+import com.epam.esm.util.EsmPagination;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class UserServiceImpl implements AbstractService<UserDto> {
     public UserDto findById(long id) {
         return userDao.findById(id)
                 .map(user -> modelMapper.map(user, UserDto.class))
-                .orElseThrow(() -> new EntityNotFoundException(MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND));
+                .orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND, id));
     }
 
     @Override
@@ -67,7 +68,7 @@ public class UserServiceImpl implements AbstractService<UserDto> {
     private void checkIfUserExistsOrElseThrow(User user) {
         String login = user.getLogin();
         userDao.findBy(login).ifPresent(t -> {
-            throw new EntityExistsException(MessagePropertyKey.EXCEPTION_USER_LOGIN_EXISTS);
+            throw new EntityExistingException(MessagePropertyKey.EXCEPTION_USER_LOGIN_EXISTS, login);
         });
     }
 }

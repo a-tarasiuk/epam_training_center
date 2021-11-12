@@ -6,7 +6,7 @@ import com.epam.esm.service.GitCertificateService;
 import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.ParameterName;
 import com.epam.esm.util.UrlMapping;
-import com.epam.esm.util.pagination.EsmPagination;
+import com.epam.esm.util.EsmPagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;

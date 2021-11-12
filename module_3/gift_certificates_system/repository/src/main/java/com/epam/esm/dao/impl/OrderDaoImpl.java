@@ -4,7 +4,7 @@ import com.epam.esm.dao.OrderDao;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.util.ParameterName;
-import com.epam.esm.util.pagination.EsmPagination;
+import com.epam.esm.util.EsmPagination;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Repository;
 

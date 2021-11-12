@@ -6,7 +6,7 @@ import com.epam.esm.entity.User;
 import com.epam.esm.service.impl.TagServiceImpl;
 import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.UrlMapping;
-import com.epam.esm.util.pagination.EsmPagination;
+import com.epam.esm.util.EsmPagination;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;

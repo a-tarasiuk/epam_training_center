@@ -1,7 +1,7 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.util.MessagePropertyKey;
-import com.epam.esm.util.pagination.EsmPagination;
+import com.epam.esm.exception.IncorrectArgumentException;
+import com.epam.esm.util.EsmPagination;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,7 +13,7 @@ import javax.persistence.criteria.Root;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.util.MessagePropertyKey.*;
+import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_ESM_PAGINATION_PAGE_OUT_OF_RANGE;
 
 public abstract class FindAllDao<T> {
     @PersistenceContext
@@ -47,7 +47,7 @@ public abstract class FindAllDao<T> {
         Long maxPages = getMaxPages(elementsOnPage, totalRows);
 
         if (countPages > maxPages) {
-            throw new IllegalArgumentException(EXCEPTION_ESM_PAGINATION_PAGE_OUT_OF_RANGE);
+            throw new IncorrectArgumentException(EXCEPTION_ESM_PAGINATION_PAGE_OUT_OF_RANGE, maxPages);
         }
     }
 

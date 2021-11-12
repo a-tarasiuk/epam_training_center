@@ -1,4 +1,4 @@
-package com.epam.esm.util.pagination;
+package com.epam.esm.util;
 
 import com.epam.esm.util.MessagePropertyKey;
 import lombok.AllArgsConstructor;

@@ -8,16 +8,14 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
 import com.epam.esm.util.CriteriaQueryGenerator;
 import com.epam.esm.util.DatabaseColumnName;
-import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.ParameterName;
 import com.epam.esm.util.SqlGenerator;
-import com.epam.esm.util.pagination.EsmPagination;
+import com.epam.esm.util.EsmPagination;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;

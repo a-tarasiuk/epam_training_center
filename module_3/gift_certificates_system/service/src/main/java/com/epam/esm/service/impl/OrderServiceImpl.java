@@ -11,11 +11,11 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
+import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.MessagePropertyKey;
-import com.epam.esm.util.pagination.EsmPagination;
+import com.epam.esm.util.EsmPagination;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,10 +119,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private User getUserOrElseThrow(long userId) {
-        return userDao.findById(userId).orElseThrow(() -> new EntityNotFoundException(MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND));
+        return userDao.findById(userId).orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND, userId));
     }
 
     private GiftCertificate getGiftCertificateOrElseThrow(long gcId) {
-        return gcDao.findById(gcId).orElseThrow(() -> new EntityNotFoundException(MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND));
+        return gcDao.findById(gcId).orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, gcId));
     }
 }

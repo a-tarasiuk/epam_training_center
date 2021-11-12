@@ -1,11 +1,7 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.OrderDto;
-import com.epam.esm.util.pagination.EsmPagination;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.epam.esm.util.EsmPagination;
 
-import java.util.List;
 import java.util.Set;
 
 /**

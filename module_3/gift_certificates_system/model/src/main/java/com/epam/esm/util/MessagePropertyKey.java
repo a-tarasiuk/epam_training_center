@@ -48,7 +48,6 @@ public final class MessagePropertyKey {
     // Exceptions - Gift certificate
     public static final String EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS = "exception.gift-certificate.name.exists";
     public static final String EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND = "exception.gift-certificate.id.not-found";
-    public static final String EXCEPTION_GIFT_CERTIFICATE_TAG_NAME_NOT_FOUND = "exception.gift-certificate.tag-name.not-found";
     public static final String EXCEPTION_GIFT_CERTIFICATE_TAG_NAMES_NOT_FOUND = "exception.gift-certificate.tag-names.not-found";
     public static final String EXCEPTION_GIFT_CERTIFICATE_COLUMN_NAME_NOT_FOUND = "exception.gift-certificate.column-name.incorrect-value";
     public static final String EXCEPTION_GIFT_CERTIFICATE_UPDATE_FIELDS_EMPTY = "exception.gift-certificate.update.fields.empty";

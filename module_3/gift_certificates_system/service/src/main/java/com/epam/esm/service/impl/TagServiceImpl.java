@@ -6,19 +6,18 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.GiftCertificateToTagRelation;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
+import com.epam.esm.exception.EntityExistingException;
+import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.service.AbstractService;
 import com.epam.esm.util.MessagePropertyKey;
-import com.epam.esm.util.pagination.EsmPagination;
+import com.epam.esm.util.EsmPagination;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -72,13 +71,13 @@ public class TagServiceImpl implements AbstractService<TagDto> {
     public TagDto findById(long id) {
         return tagDao.findById(id)
                 .map(tag -> modelMapper.map(tag, TagDto.class))
-                .orElseThrow(() -> new EntityNotFoundException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND));
+                .orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND, id));
     }
 
     @Override
     public void delete(long id) {
         Tag tag = tagDao.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND));
+                .orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND, id));
 
         // Delete all relations
         relationDao.findAllBy(tag).forEach(relationDao::delete);
@@ -125,9 +124,9 @@ public class TagServiceImpl implements AbstractService<TagDto> {
     }
 
     private void checkIfTagExistsOrElseThrow(Tag tag) {
-        String tagName = tag.getName();
-        tagDao.findByName(tagName).ifPresent(t -> {
-            throw new EntityExistsException(MessagePropertyKey.EXCEPTION_TAG_NAME_EXISTS);
+        String name = tag.getName();
+        tagDao.findByName(name).ifPresent(t -> {
+            throw new EntityExistingException(MessagePropertyKey.EXCEPTION_TAG_NAME_EXISTS, name);
         });
     }
 }

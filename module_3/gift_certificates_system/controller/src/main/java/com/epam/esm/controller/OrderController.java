@@ -4,7 +4,7 @@ import com.epam.esm.dto.OrderDto;
 import com.epam.esm.service.impl.OrderServiceImpl;
 import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.UrlMapping;
-import com.epam.esm.util.pagination.EsmPagination;
+import com.epam.esm.util.EsmPagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;

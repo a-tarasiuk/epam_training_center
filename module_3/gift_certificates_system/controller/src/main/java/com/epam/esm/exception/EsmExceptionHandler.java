@@ -1,5 +1,6 @@
 package com.epam.esm.exception;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.convert.ConversionFailedException;
@@ -20,31 +21,119 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * ESM exception handler.
+ */
 @ControllerAdvice
 public class EsmExceptionHandler {
     private final ResourceBundleMessageSource messageSource;
 
+    /**
+     * Constructor.
+     *
+     * @param messageSource ResourceBundleMessageSource.
+     * @see ResourceBundleMessageSource
+     */
     public EsmExceptionHandler(ResourceBundleMessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
+    /**
+     * Throw this exception if class with implements <code>Converter<String, ColumnName></code>.
+     *
+     * @param e      exception.
+     * @param locale request locale from http header.
+     * @return response entity.
+     * @see ResponseEntity
+     */
+    @ExceptionHandler(ConversionFailedException.class)
+    private ResponseEntity<?> handleEntityNotFoundException(RuntimeException e, Locale locale) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Thrown to indicate that a method has been passed an illegal or inappropriate argument.
+     *
+     * @param e      IllegalArgumentException.
+     * @param locale request locale from http header.
+     * @return response entity.
+     * @see ResponseEntity
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     private ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e, Locale locale) {
         EsmHttpErrorCode esmHttpErrorCode = EsmHttpErrorCode.INVALID_ARGUMENT_METHOD;
         return createResponseEntity(e, HttpStatus.CONFLICT, esmHttpErrorCode, locale);
     }
 
-    @ExceptionHandler(ConversionFailedException.class)
-    private ResponseEntity<?> handleEntityNotFoundException(RuntimeException e, Locale locale) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    /**
+     * Custom ESM exception with parameter.<br>
+     * Throw to indicate that a method has been passed an illegal or inappropriate argument.
+     *
+     * @param e      IncorrectArgumentException.
+     * @param locale request locale from http header.
+     * @return response entity.
+     * @see ResponseEntity
+     */
+    @ExceptionHandler(IncorrectArgumentException.class)
+    private ResponseEntity<?> handleIncorrectArgumentException(IncorrectArgumentException e, Locale locale) {
+        return getResponseEntity(locale, e.getArgument(), e.getMessage());
     }
 
+    /**
+     * Custom ESM exception with parameter.<br>
+     * Throw to indicate that the entity not found in the database.
+     *
+     * @param e      EntityNonExistentException.
+     * @param locale request locale from http header.
+     * @return response entity.
+     * @see ResponseEntity
+     */
+    @ExceptionHandler(EntityNonExistentException.class)
+    private ResponseEntity<?> handleEntityNonExistentException(EntityNonExistentException e, Locale locale) {
+        return getResponseEntity(locale, e.getArgument(), e.getMessage());
+    }
+
+    /**
+     * Custom ESM exception with parameter.<br>
+     * Throw to indicate that the entity already existing in the database.
+     *
+     * @param e      EntityExistingException
+     * @param locale request locale from http header.
+     * @return response entity.
+     * @see ResponseEntity
+     */
+    @ExceptionHandler(EntityExistingException.class)
+    private ResponseEntity<?> handleEntityExistingException(EntityExistingException e, Locale locale) {
+        return getResponseEntity(locale, e.getArgument(), e.getMessage());
+    }
+
+    /**
+     * Exception from JPA.<br>
+     * Thrown by the persistence provider when an entity reference obtained by EntityManager.getReference
+     * is accessed but the entity does not exist. Thrown when <code>EntityManager.refresh</code> is called and the object
+     * no longer exists in the database. Thrown when <code>EntityManager.lock</code> is used with pessimistic locking
+     * is used and the entity no longer exists in the database.
+     * The current transaction, if one is active and the persistence context has been joined to it, will be marked for rollback.
+     *
+     * @param e      EntityNotFoundException.
+     * @param locale request locale from http header.
+     * @return response entity.
+     * @see ResponseEntity
+     */
     @ExceptionHandler(EntityNotFoundException.class)
     private ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException e, Locale locale) {
         EsmHttpErrorCode esmHttpErrorCode = EsmHttpErrorCode.ENTITY_NOT_FOUND;
         return createResponseEntity(e, HttpStatus.NOT_FOUND, esmHttpErrorCode, locale);
     }
 
+    /**
+     * Exception from JPA.
+     *
+     * @param e      EntityExistsException.
+     * @param locale request locale from http header.
+     * @return response entity.
+     * @see ResponseEntity
+     */
     @ExceptionHandler(EntityExistsException.class)
     private ResponseEntity<?> handleEntityExistsException(EntityExistsException e, Locale locale) {
         EsmHttpErrorCode esmHttpErrorCode = EsmHttpErrorCode.ENTITY_EXISTS;
@@ -59,6 +148,7 @@ public class EsmExceptionHandler {
      * @param e      ConstraintViolationException
      * @param locale User locale
      * @return ResponseEntity
+     * @see ResponseEntity
      */
     @ExceptionHandler(ConstraintViolationException.class)
     private ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException e, Locale locale) {
@@ -80,6 +170,7 @@ public class EsmExceptionHandler {
      * @param e      BindException
      * @param locale Request locale.
      * @return ResponseEntity
+     * @see ResponseEntity
      */
     @ExceptionHandler(BindException.class)
     private ResponseEntity<?> handleConstraintViolationException(BindException e, Locale locale) {
@@ -87,8 +178,28 @@ public class EsmExceptionHandler {
         return createResponseEntity(e, HttpStatus.BAD_REQUEST, esmHttpErrorCode, locale);
     }
 
-    private ResponseEntity<Object> createResponseEntity(
-            Exception exception, HttpStatus httpStatus, EsmHttpErrorCode esmHttpErrorCode, Locale locale) {
+    /**
+     * Build response entity for custom ESM exceptions.
+     *
+     * @param locale   locale.
+     * @param argument exception argument.
+     * @param message  key from message properties.
+     * @return response entity.
+     * @see ResponseEntity
+     */
+    @NotNull
+    private ResponseEntity<?> getResponseEntity(Locale locale, String argument, String message) {
+        String validationMessage = String.format(messageSource.getMessage(message, null, locale), argument);
+        EsmHttpErrorCode httpErrorCode = EsmHttpErrorCode.INVALID_ARGUMENT_METHOD;
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
+        EsmException esmException = createEsmException(Collections.singleton(validationMessage), httpStatus, httpErrorCode);
+        return new ResponseEntity<>(esmException, httpStatus);
+    }
+
+    private ResponseEntity<Object> createResponseEntity(Exception exception,
+                                                        HttpStatus httpStatus,
+                                                        EsmHttpErrorCode esmHttpErrorCode,
+                                                        Locale locale) {
         Set<String> validationMessages;
 
         if (exception instanceof BindException) {

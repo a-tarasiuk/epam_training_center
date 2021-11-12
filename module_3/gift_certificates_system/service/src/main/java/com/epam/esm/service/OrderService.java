@@ -2,7 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.dto.OrderCreateDto;
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.util.pagination.EsmPagination;
+import com.epam.esm.util.EsmPagination;
 
 import java.util.Set;
 
