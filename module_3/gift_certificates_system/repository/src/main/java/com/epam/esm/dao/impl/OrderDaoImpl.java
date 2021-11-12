@@ -49,9 +49,9 @@ public class OrderDaoImpl extends OrderDao {
         validatePaginationOrElseThrow(pagination, Order.class);
 
         CriteriaQuery<Order> cq = cb.createQuery(Order.class);
-        Root<Order> fromOrder = cq.from(Order.class);
-        Predicate condition = cb.equal(fromOrder.get(ParameterName.USER), user);
-        cq.select(fromOrder).where(condition);
+        Root<Order> order = cq.from(Order.class);
+        Predicate condition = cb.equal(order.get(ParameterName.USER), user);
+        cq.select(order).where(condition);
 
         return executeQuery(cq, pagination);
     }

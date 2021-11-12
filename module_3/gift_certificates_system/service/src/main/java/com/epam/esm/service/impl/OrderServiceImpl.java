@@ -14,14 +14,14 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.EsmPagination;
+import com.epam.esm.util.MessagePropertyKey;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,10 +32,10 @@ import java.util.stream.Collectors;
 @Transactional
 public class OrderServiceImpl implements OrderService {
     private final ModelMapper modelMapper;
+    private final GiftCertificateServiceImpl gcService;
     private final OrderDao orderDao;
     private final UserDao userDao;
     private final GiftCertificateDao gcDao;
-    private final TagDao tagDao;
 
     /**
      * Instantiates a new tag service.
@@ -44,13 +44,14 @@ public class OrderServiceImpl implements OrderService {
      * @param orderDao    Tag DAO layer.
      * @param userDao     User DAO layer.
      * @param gcDao       Gift certificate DAO layer.
+     * @param gcService   Gift certificate service layer.
      */
-    public OrderServiceImpl(ModelMapper modelMapper, OrderDao orderDao, UserDao userDao, GiftCertificateDao gcDao, TagDao tagDao) {
+    public OrderServiceImpl(ModelMapper modelMapper, GiftCertificateServiceImpl gcService, OrderDao orderDao, UserDao userDao, GiftCertificateDao gcDao) {
         this.modelMapper = modelMapper;
+        this.gcService = gcService;
         this.orderDao = orderDao;
         this.userDao = userDao;
         this.gcDao = gcDao;
-        this.tagDao = tagDao;
     }
 
     @Override
@@ -82,29 +83,21 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(user);
         order.setGiftCertificate(gc);
 
-        Order createdOrder = orderDao.create(order);
-        OrderDto createdOrderDto = modelMapper.map(createdOrder, OrderDto.class);
-        Set<TagDto> tagsDto = tagDao.findAllBy(gc).stream()
-                .map(tag -> modelMapper.map(tag, TagDto.class))
-                .collect(Collectors.toSet());
-        gcDto.setTags(tagsDto);
-        createdOrderDto.setGiftCertificate(gcDto);
-        return createdOrderDto;
+        return this.build(orderDao.create(order));
     }
 
     @Override
     public Set<OrderDto> findAll(EsmPagination esmPagination) {
         return orderDao.findAll(esmPagination, Order.class).stream()
-                .map(order -> modelMapper.map(order, OrderDto.class))
+                .map(this::build)
                 .collect(Collectors.toSet());
     }
 
     @Override
-    public Set<OrderDto> findAllByUserId(long userId, EsmPagination esmPagination) {
+    public Set<OrderDto> findAllByUserId(long userId, EsmPagination pagination) {
         User user = getUserOrElseThrow(userId);
-
-        return orderDao.findAllBy(user, esmPagination).stream()
-                .map(order -> modelMapper.map(order, OrderDto.class))
+        return orderDao.findAllBy(user, pagination).stream()
+                .map(this::build)
                 .collect(Collectors.toSet());
     }
 
@@ -124,5 +117,13 @@ public class OrderServiceImpl implements OrderService {
 
     private GiftCertificate getGiftCertificateOrElseThrow(long gcId) {
         return gcDao.findById(gcId).orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, gcId));
+    }
+
+    private OrderDto build(Order order) {
+        GiftCertificate gc = order.getGiftCertificate();
+        GiftCertificateDto gcDto = gcService.findById(gc.getId());
+        OrderDto orderDto = modelMapper.map(order, OrderDto.class);
+        orderDto.setGiftCertificate(gcDto);
+        return orderDto;
     }
 }

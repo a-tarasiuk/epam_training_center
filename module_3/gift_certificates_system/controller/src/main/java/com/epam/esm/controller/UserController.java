@@ -53,16 +53,13 @@ public class UserController {
     public EntityModel<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         UserDto user = userService.create(userDto);
 
-        Link self = linkTo(UserController.class).slash(user.getId()).withSelfRel().withType(HttpMethod.GET.name());
-        user.add(self);
-
         return EntityModel.of(user,
                 linkTo(methodOn(UserController.class).findUserById(user.getId()))
                         .withSelfRel(),
                 linkTo(methodOn(UserController.class).createOrderForUser(user.getId(), new OrderCreateDto()))
                         .withRel("createOrderForUser").withType(HttpMethod.POST.name()),
                 linkTo(methodOn(UserController.class).findAllOrdersByUserId(user.getId(), new EsmPagination()))
-                        .withRel("createOrderForUser").withType(HttpMethod.GET.name())
+                        .withRel("findAllOrdersByUserId").withType(HttpMethod.GET.name())
         );
     }
 
@@ -78,12 +75,12 @@ public class UserController {
         UserDto user = userService.findById(id);
 
         return EntityModel.of(user,
-                linkTo(methodOn(UserController.class).createUser(user))
-                        .withRel("createUser").withType(HttpMethod.POST.name()),
+                linkTo(methodOn(UserController.class).findUserById(user.getId()))
+                        .withSelfRel(),
                 linkTo(methodOn(UserController.class).createOrderForUser(user.getId(), new OrderCreateDto()))
                         .withRel("createOrderForUser").withType(HttpMethod.POST.name()),
                 linkTo(methodOn(UserController.class).findAllOrdersByUserId(user.getId(), new EsmPagination()))
-                        .withRel("createOrderForUser").withType(HttpMethod.GET.name())
+                        .withRel("findAllOrdersByUserId").withType(HttpMethod.GET.name())
         );
     }
 
@@ -94,7 +91,7 @@ public class UserController {
      * @return Set of found user DTO.
      */
     @GetMapping
-    public CollectionModel<UserDto> findAllUsers(@Valid EsmPagination esmPagination, BindingResult br) {
+    public CollectionModel<UserDto> findAllUsers(@Valid EsmPagination esmPagination) {
         Set<UserDto> users = userService.findAll(esmPagination);
 
         for (UserDto user : users) {
@@ -122,11 +119,10 @@ public class UserController {
         OrderDto order = orderService.create(orderCreateDto);
 
         return EntityModel.of(order,
-                linkTo(UserController.class).withSelfRel(),
                 linkTo(methodOn(OrderController.class).findAllOrders(new EsmPagination()))
                         .withRel("findAllOrders").withType(HttpMethod.GET.name()),
                 linkTo(methodOn(UserController.class).findAllOrdersByUserId(userId, new EsmPagination()))
-                        .withRel("createOrderForUser").withType(HttpMethod.GET.name())
+                        .withRel("findAllOrdersByUserId").withType(HttpMethod.GET.name())
         );
     }
 

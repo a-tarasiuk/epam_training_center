@@ -20,8 +20,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -101,14 +99,14 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     @Override
     public Set<GiftCertificateDto> findAll(EsmPagination esmPagination) {
         return gcDao.findAll(esmPagination, GiftCertificate.class).stream()
-                .map(this::createGiftCertificateDto)
+                .map(this::buildGiftCertificateDtoWithTags)
                 .collect(Collectors.toSet());
     }
 
     @Override
     public Set<GiftCertificateDto> findAll(EsmPagination esmPagination, Set<String> sortBy) {
         return gcDao.findAll(esmPagination, sortBy).stream()
-                .map(this::createGiftCertificateDto)
+                .map(this::buildGiftCertificateDtoWithTags)
                 .collect(Collectors.toSet());
     }
 
@@ -116,7 +114,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     public GiftCertificateDto findById(long id) {
         GiftCertificate gc = gcDao.findById(id)
                 .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
-        return createGiftCertificateDto(gc);
+        return buildGiftCertificateDtoWithTags(gc);
     }
 
     @Override
@@ -129,13 +127,13 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         GiftCertificate gc = gcDao.findBy(tags)
                 .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_TAG_NAMES_NOT_FOUND, String.join(", ", names)));
 
-        return createGiftCertificateDto(gc);
+        return buildGiftCertificateDtoWithTags(gc);
     }
 
     @Override
     public Set<GiftCertificateDto> findByKeyword(String keyword) {
         Set<GiftCertificate> gcs = gcDao.findBy(keyword);
-        return createGiftCertificatesDto(gcs);
+        return buildGiftCertificatesDtoWithTags(gcs);
     }
 
     @Override
@@ -150,7 +148,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
             GiftCertificate created = gcDao.update(updated);
             updateRelations(created, gcUpdateDto);
 
-            return createGiftCertificateDto(created);
+            return buildGiftCertificateDtoWithTags(created);
         } else {
             throw new IllegalArgumentException(EXCEPTION_GIFT_CERTIFICATE_UPDATE_FIELDS_EMPTY);
         }
@@ -164,7 +162,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     }
 
     private void updateRelations(GiftCertificate gc, GiftCertificateUpdateDto updateDto) {
-        Set<Tag> tagsFromRequest = findTags(updateDto);
+        Set<Tag> tagsFromRequest = findTagsBy(updateDto);
         tagsFromRequest.forEach(tag -> createRelationIfNonExist(gc, tag));
         deleteIrrelevantRelations(gc, tagsFromRequest);
     }
@@ -186,32 +184,32 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         }
     }
 
-    private Set<Tag> findTags(GiftCertificate gc) {
+    private Set<Tag> findTagsBy(GiftCertificate gc) {
         return tagDao.findAllBy(gc);
     }
 
-    private Set<TagDto> findTagsDto(GiftCertificate gc) {
-        return findTags(gc).stream()
+    private Set<TagDto> findTagsDtoBy(GiftCertificate gc) {
+        return findTagsBy(gc).stream()
                 .map(tag -> modelMapper.map(tag, TagDto.class))
                 .collect(Collectors.toSet());
     }
 
-    private Set<Tag> findTags(GiftCertificateUpdateDto gc) {
+    private Set<Tag> findTagsBy(GiftCertificateUpdateDto gc) {
         return gc.getTags().stream()
                 .map(tagDto -> modelMapper.map(tagDto, Tag.class))
                 .collect(Collectors.toSet());
     }
 
-    private GiftCertificateDto createGiftCertificateDto(GiftCertificate gc) {
-        Set<TagDto> tagsDto = findTagsDto(gc);
+    private GiftCertificateDto buildGiftCertificateDtoWithTags(GiftCertificate gc) {
+        Set<TagDto> tagsDto = findTagsDtoBy(gc);
         GiftCertificateDto gcDto = modelMapper.map(gc, GiftCertificateDto.class);
         gcDto.setTags(tagsDto);
         return gcDto;
     }
 
-    private Set<GiftCertificateDto> createGiftCertificatesDto(Set<GiftCertificate> gcs) {
+    private Set<GiftCertificateDto> buildGiftCertificatesDtoWithTags(Set<GiftCertificate> gcs) {
         return gcs.stream()
-                .map(this::createGiftCertificateDto)
+                .map(this::buildGiftCertificateDtoWithTags)
                 .collect(Collectors.toSet());
     }
 
@@ -238,7 +236,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     }
 
     private void deleteIrrelevantRelations(GiftCertificate gc, Set<Tag> tagsFromRequest) {
-        Set<Tag> tagsFromDatabase = findTags(gc);
+        Set<Tag> tagsFromDatabase = findTagsBy(gc);
         Set<Tag> tagForRemove = new HashSet<>(tagsFromDatabase);
         tagForRemove.removeAll(tagsFromRequest);
         tagForRemove.forEach(tag -> relationDao.delete(gc, tag));
