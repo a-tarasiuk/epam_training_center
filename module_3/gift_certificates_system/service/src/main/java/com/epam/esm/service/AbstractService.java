@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.entity.MostWidelyUsedTag;
 import com.epam.esm.util.EsmPagination;
 
 import java.util.Set;
@@ -40,4 +41,12 @@ public interface AbstractService<T> {
      * @param id - Entity ID.
      */
     void delete(long id);
+
+    /**
+     * Finds the most used tags with the user with the highest value of all orders.
+     *
+     * @return set of MostWidelyUsedTag.
+     * @see com.epam.esm.entity.MostWidelyUsedTag
+     */
+    Set<MostWidelyUsedTag> findMostWidelyUsedTags();
 }

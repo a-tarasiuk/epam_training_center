@@ -8,28 +8,26 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.MostWidelyUsedTag;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.TagCount;
 import com.epam.esm.entity.User;
 import com.epam.esm.entity.UserPrice;
 import com.epam.esm.exception.EntityExistingException;
 import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.service.AbstractService;
-import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.EsmPagination;
+import com.epam.esm.util.MessagePropertyKey;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Tag service implementation.
@@ -86,27 +84,23 @@ public class TagServiceImpl implements AbstractService<TagDto> {
         delete(tag);
     }
 
+    @Override
     public Set<MostWidelyUsedTag> findMostWidelyUsedTags() {
-        // Find users with the highest cost of all orders
-        Set<UserPrice> userPrices = orderDao.findUsersWithHighestCostOfAllOrders();
-
-        Set<MostWidelyUsedTag> result = new HashSet<>();
-        for (UserPrice userPrice : userPrices) {
-            User user = userPrice.getUser();
-            List<GiftCertificate> gcs = gcDao.findBy(user);
-            List<Tag> tags = findAllTagsFromEachGiftCertificate(gcs);
-            Map<Tag, Long> tagCount = findCountOfRepetitionsOfEachTag(tags);
-            Long max = findMaxCountOfRepetitions(tagCount);
-            Set<Tag> mostWidelyUsed = findMostWidelyUsedTags(tagCount);
-
-            result.add(new MostWidelyUsedTag().setTagCount(new TagCount(max, mostWidelyUsed))
-                    .setUserPrice(userPrice));
-        }
-
-        return result;
+        return orderDao.findUsersWithHighestCostOfAllOrders().stream()
+                .flatMap(up -> Stream.of(up)
+                        .map(UserPrice::getUser)
+                        .map(this::findAllGiftCertificatesByUser)
+                        .map(this::findAllTagsFromGiftCertificates)
+                        .map(this::findCountOfRepetitionsOfEachTag)
+                        .map(map -> buildMostWidelyUsedTag(up, map)))
+                .collect(Collectors.toSet());
     }
 
-    private List<Tag> findAllTagsFromEachGiftCertificate(List<GiftCertificate> gcs) {
+    private List<GiftCertificate> findAllGiftCertificatesByUser(User user) {
+        return gcDao.findBy(user);
+    }
+
+    private List<Tag> findAllTagsFromGiftCertificates(List<GiftCertificate> gcs) {
         return gcs.stream()
                 .map(tagDao::findAllBy)
                 .flatMap(Set::stream)
@@ -125,21 +119,26 @@ public class TagServiceImpl implements AbstractService<TagDto> {
                 .orElse(NumberUtils.LONG_ZERO);
     }
 
-    private Set<Tag> findMostWidelyUsedTags(Map<Tag, Long> map) {
-        Long max = findMaxCountOfRepetitions(map);
-
+    private Set<Tag> findMostWidelyUsedTags(Map<Tag, Long> map, Long maxRepetitions) {
         return map.entrySet().stream()
-                .filter(e -> e.getValue().equals(max))
+                .filter(e -> e.getValue().equals(maxRepetitions))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
     }
 
+    private MostWidelyUsedTag buildMostWidelyUsedTag(UserPrice up, Map<Tag, Long> map) {
+        Long count = findMaxCountOfRepetitions(map);
+        Set<Tag> tags = findMostWidelyUsedTags(map, count);
+
+        return new MostWidelyUsedTag().setTags(tags).setNumberOfUsesTags(count).setUserPrice(up);
+    }
+
     private void delete(Tag tag) {
-        deleteAllRelationsFor(tag);
+        deleteAllRelations(tag);
         tagDao.delete(tag);
     }
 
-    private void deleteAllRelationsFor(Tag tag) {
+    private void deleteAllRelations(Tag tag) {
         relationDao.findAllBy(tag).forEach(relationDao::delete);
     }
 
