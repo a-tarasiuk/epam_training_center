@@ -18,9 +18,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class TagDto extends RepresentationModel<TagDto> {
-    private Long id;
-
+public class TagDto extends AbstractDto<TagDto> {
     @NotBlank(message = MessagePropertyKey.VALIDATION_TAG_NAME_NOT_EMPTY)
     @Pattern(regexp = DtoRegexValidator.TAG_NAME,
             flags = Pattern.Flag.UNICODE_CASE,

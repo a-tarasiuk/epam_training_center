@@ -28,10 +28,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-
-public class GiftCertificateDto extends RepresentationModel<OrderCreateDto> {
-    private Long id;
-
+public class GiftCertificateDto extends AbstractDto<GiftCertificateDto> {
     @NotBlank(message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_NAME_NOT_EMPTY)
     @Pattern(regexp = DtoRegexValidator.GIFT_CERTIFICATE_NAME,
             flags = Pattern.Flag.UNICODE_CASE,

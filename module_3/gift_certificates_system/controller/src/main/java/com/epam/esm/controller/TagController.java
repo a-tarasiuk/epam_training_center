@@ -1,12 +1,11 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.User;
+import com.epam.esm.entity.MostWidelyUsedTag;
 import com.epam.esm.service.impl.TagServiceImpl;
+import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.UrlMapping;
-import com.epam.esm.util.EsmPagination;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Map;
 import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -64,7 +62,6 @@ public class TagController {
     @PostMapping
     public EntityModel<TagDto> create(@Valid @RequestBody TagDto tagDto) {
         TagDto tag = tagService.create(tagDto);
-
         Link delete = linkTo(methodOn(TagController.class).delete(tag.getId())).withRel("delete").withType(HttpMethod.GET.name());
         return EntityModel.of(tag, delete);
     }
@@ -79,7 +76,6 @@ public class TagController {
     public EntityModel<TagDto> findTagById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
                                            @PathVariable long id) {
         TagDto tag = tagService.findById(id);
-
         Link delete = linkTo(methodOn(TagController.class).delete(tag.getId())).withRel("delete").withType(HttpMethod.GET.name());
         return EntityModel.of(tag, delete);
     }
@@ -117,12 +113,12 @@ public class TagController {
     }
 
     /**
-     * Find most widely used tags.
+     * Find most widely used tag.
      *
-     * @return Map with tag and user.
+     * @return Set of MostWidelyUsedTag.
      */
     @GetMapping(UrlMapping.MOST_WIDELY_USED_TAG_OF_USER_WITH_HIGHEST_COST_OF_ALL_ORDERS)
-    public Map<Tag, User> findMostWidelyUsedTags() {
+    public Set<MostWidelyUsedTag> findMostWidelyUsedTag() {
         return tagService.findMostWidelyUsedTags();
     }
 }

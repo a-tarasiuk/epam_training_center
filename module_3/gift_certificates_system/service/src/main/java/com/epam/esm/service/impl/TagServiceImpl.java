@@ -6,13 +6,17 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.MostWidelyUsedTag;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.TagCount;
 import com.epam.esm.entity.User;
+import com.epam.esm.entity.UserPrice;
 import com.epam.esm.exception.EntityExistingException;
 import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.service.AbstractService;
 import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.EsmPagination;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -78,49 +83,64 @@ public class TagServiceImpl implements AbstractService<TagDto> {
     public void delete(long id) {
         Tag tag = tagDao.findById(id)
                 .orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND, id));
+        delete(tag);
+    }
 
-        // Delete all relations
-        relationDao.findAllBy(tag).forEach(relationDao::delete);
+    public Set<MostWidelyUsedTag> findMostWidelyUsedTags() {
+        // Find users with the highest cost of all orders
+        Set<UserPrice> userPrices = orderDao.findUsersWithHighestCostOfAllOrders();
 
-        // Delete tag
+        Set<MostWidelyUsedTag> result = new HashSet<>();
+        for (UserPrice userPrice : userPrices) {
+            User user = userPrice.getUser();
+            List<GiftCertificate> gcs = gcDao.findBy(user);
+            List<Tag> tags = findAllTagsFromEachGiftCertificate(gcs);
+            Map<Tag, Long> tagCount = findCountOfRepetitionsOfEachTag(tags);
+            Long max = findMaxCountOfRepetitions(tagCount);
+            Set<Tag> mostWidelyUsed = findMostWidelyUsedTags(tagCount);
+
+            result.add(new MostWidelyUsedTag().setTagCount(new TagCount(max, mostWidelyUsed))
+                    .setUserPrice(userPrice));
+        }
+
+        return result;
+    }
+
+    private List<Tag> findAllTagsFromEachGiftCertificate(List<GiftCertificate> gcs) {
+        return gcs.stream()
+                .map(tagDao::findAllBy)
+                .flatMap(Set::stream)
+                .collect(Collectors.toList());
+    }
+
+    private Map<Tag, Long> findCountOfRepetitionsOfEachTag(List<Tag> tags) {
+        return tags.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    }
+
+    private Long findMaxCountOfRepetitions(Map<Tag, Long> map) {
+        return map.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getValue)
+                .orElse(NumberUtils.LONG_ZERO);
+    }
+
+    private Set<Tag> findMostWidelyUsedTags(Map<Tag, Long> map) {
+        Long max = findMaxCountOfRepetitions(map);
+
+        return map.entrySet().stream()
+                .filter(e -> e.getValue().equals(max))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+    }
+
+    private void delete(Tag tag) {
+        deleteAllRelationsFor(tag);
         tagDao.delete(tag);
     }
 
-    public Map<Tag, User> findMostWidelyUsedTags() {
-        // Find users with the highest cost of all orders
-        Set<User> users = orderDao.findUsersWithHighestCostOfAllOrders();
-
-        // Find all gift certificates by users
-        Map<User, Set<GiftCertificate>> userGcMap = findAllGiftCertificatesByUsers(users);
-        Map<Tag, User> tagUserMap = new HashMap<>();
-
-        // Find all tags by gift certificates
-        for (Map.Entry<User, Set<GiftCertificate>> entry : userGcMap.entrySet()) {
-            Set<GiftCertificate> gcs = entry.getValue();
-
-            // Find all tags by all gift certificates
-            List<Tag> tags = gcs.stream()
-                    .map(tagDao::findAllBy)
-                    .flatMap(Set::stream)
-                    .collect(Collectors.toList());
-
-            // Find count of repetitions of each tag
-            Map<Tag, Long> tagCount = tags.stream()
-                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-            // Find most usage tags
-            Tag tag = Collections.max(tagCount.entrySet(), Map.Entry.comparingByValue()).getKey();
-            User user = entry.getKey();
-
-            tagUserMap.put(tag, user);
-        }
-
-        return tagUserMap;
-    }
-
-    private Map<User, Set<GiftCertificate>> findAllGiftCertificatesByUsers(Set<User> users) {
-        return users.stream()
-                .collect(Collectors.toMap(user -> user, gcDao::findBy));
+    private void deleteAllRelationsFor(Tag tag) {
+        relationDao.findAllBy(tag).forEach(relationDao::delete);
     }
 
     private void checkIfTagExistsOrElseThrow(Tag tag) {

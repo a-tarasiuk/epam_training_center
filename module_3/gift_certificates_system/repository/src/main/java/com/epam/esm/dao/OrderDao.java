@@ -2,8 +2,10 @@ package com.epam.esm.dao;
 
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
+import com.epam.esm.entity.UserPrice;
 import com.epam.esm.util.EsmPagination;
 
+import javax.persistence.Tuple;
 import java.util.Set;
 
 /**
@@ -22,9 +24,9 @@ public abstract class OrderDao extends AbstractDao<Order> {
     public abstract Set<Order> findAllBy(User user, EsmPagination esmPagination);
 
     /**
-     * Find users with highest cost of all orders.
+     * Find users with the highest cost of all orders.
      *
      * @return Set of users.
      */
-    public abstract Set<User> findUsersWithHighestCostOfAllOrders();
+    public abstract Set<UserPrice> findUsersWithHighestCostOfAllOrders();
 }

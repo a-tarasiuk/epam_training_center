@@ -56,13 +56,12 @@ public class GiftCertificateController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public EntityModel<GiftCertificateDto> create(@Valid @RequestBody GiftCertificateDto gcDto) {
         GiftCertificateDto gc = service.create(gcDto);
+        gc.buildSelfLink(GiftCertificateController.class);
 
         return EntityModel.of(gc,
                 linkTo(GiftCertificateController.class).slash(gc.getId()).withSelfRel(),
                 linkTo(methodOn(GiftCertificateController.class).findAll(new EsmPagination()))
-                        .withRel("findAll").withType(HttpMethod.GET.name()),
-                linkTo(methodOn(GiftCertificateController.class).findById(gc.getId()))
-                        .withRel("findById").withType(HttpMethod.GET.name())
+                        .withRel("findAll").withType(HttpMethod.GET.name())
         );
     }
 
@@ -76,15 +75,7 @@ public class GiftCertificateController {
     public CollectionModel<GiftCertificateDto> findAll(@Valid EsmPagination esmPagination) {
         Set<GiftCertificateDto> gcs = service.findAll(esmPagination);
 
-        for (GiftCertificateDto gc : gcs) {
-            long id = gc.getId();
-            Link selfLink = linkTo(GiftCertificateController.class).slash(id).withSelfRel();
-            Link findById = linkTo(methodOn(GiftCertificateController.class).findById(id))
-                    .withRel("findById").withType(HttpMethod.GET.name());
-
-            gc.add(selfLink).add(findById);
-        }
-
+        gcs.forEach(gc -> gc.add(linkTo(GiftCertificateController.class).slash(gc.getId()).withSelfRel()));
         Link currentLink = linkTo(GiftCertificateController.class).withSelfRel();
 
         return CollectionModel.of(gcs, currentLink);
@@ -95,13 +86,17 @@ public class GiftCertificateController {
      *
      * @param sortBy        Set of gift certificate field names.
      * @param esmPagination Pagination parameters.
-     * @param br            Binding result.
      * @return Set of found gift certificates DTO.
      */
     @GetMapping(params = ParameterName.SORT_BY)
-    public Set<GiftCertificateDto> findAllSortByOrderBy(@RequestParam(value = ParameterName.SORT_BY) Set<String> sortBy,
-                                                        @Valid EsmPagination esmPagination, BindingResult br) {
-        return service.findAll(esmPagination, sortBy);
+    public CollectionModel<GiftCertificateDto> findAllSortByOrderBy(@RequestParam(value = ParameterName.SORT_BY) Set<String> sortBy,
+                                                        @Valid EsmPagination esmPagination) {
+        Set<GiftCertificateDto> gcs = service.findAll(esmPagination, sortBy);
+
+        gcs.forEach(gc -> gc.add(linkTo(GiftCertificateController.class).slash(gc.getId()).withSelfRel()));
+        Link currentLink = linkTo(GiftCertificateController.class).withSelfRel();
+
+        return CollectionModel.of(gcs, currentLink);
     }
 
     /**
@@ -154,6 +149,7 @@ public class GiftCertificateController {
     public Set<GiftCertificateDto> findByKeyword(@RequestParam(name = ParameterName.KEYWORD)
                                                  @NotBlank(message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_KEYWORD_NOT_BLANK)
                                                          String keyword) {
+
         return service.findByKeyword(keyword);
     }
 

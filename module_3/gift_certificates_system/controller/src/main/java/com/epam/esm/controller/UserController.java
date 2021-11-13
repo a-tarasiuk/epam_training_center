@@ -119,6 +119,7 @@ public class UserController {
         OrderDto order = orderService.create(orderCreateDto);
 
         return EntityModel.of(order,
+                linkTo(UserController.class).slash(order.getId()).withSelfRel(),
                 linkTo(methodOn(OrderController.class).findAllOrders(new EsmPagination()))
                         .withRel("findAllOrders").withType(HttpMethod.GET.name()),
                 linkTo(methodOn(UserController.class).findAllOrdersByUserId(userId, new EsmPagination()))

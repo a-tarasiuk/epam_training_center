@@ -21,6 +21,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -139,7 +140,7 @@ public class GiftCertificateDaoImpl extends GiftCertificateDao {
      * SELECT gc FROM GiftCertificate gc JOIN Order o ON gc = o.giftCertificate WHERE o.user = :user
      */
     @Override
-    public Set<GiftCertificate> findBy(User user) {
+    public List<GiftCertificate> findBy(User user) {
         CriteriaQuery<GiftCertificate> cq = cb.createQuery(GiftCertificate.class);
         Root<Order> from = cq.from(Order.class);
         Predicate condition = cb.equal(from.get(ParameterName.USER), user);
@@ -147,7 +148,7 @@ public class GiftCertificateDaoImpl extends GiftCertificateDao {
 
         return em.createQuery(cq)
                 .getResultStream()
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     private <T> Set<T> executeCriteriaQuery(CriteriaQuery<T> criteriaQuery) {

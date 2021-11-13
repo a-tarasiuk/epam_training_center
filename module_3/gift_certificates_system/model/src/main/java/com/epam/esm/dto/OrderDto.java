@@ -18,9 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class OrderDto extends RepresentationModel<OrderDto> {
-    private Long id;
-
+public class OrderDto extends AbstractDto<OrderDto> {
     @Valid
     private UserDto user;
 

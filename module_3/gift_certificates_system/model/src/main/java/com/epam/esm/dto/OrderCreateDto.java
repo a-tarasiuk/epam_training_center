@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class OrderCreateDto extends RepresentationModel<OrderCreateDto> {
+public class OrderCreateDto {
     @Min(value = 1, message = MessagePropertyKey.VALIDATION_USER_ID)
     Long userId;
 

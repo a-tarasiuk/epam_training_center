@@ -8,11 +8,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.io.Serializable;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -20,9 +18,7 @@ import java.io.Serializable;
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class UserDto extends RepresentationModel<UserDto> {
-    private Long id;
-
+public class UserDto extends AbstractDto<UserDto> {
     @NotBlank(message = MessagePropertyKey.VALIDATION_USER_LOGIN_NOT_EMPTY)
     @Pattern(regexp = DtoRegexValidator.USER_LOGIN,
             flags = Pattern.Flag.UNICODE_CASE,
