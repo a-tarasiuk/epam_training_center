@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 
 /**
  * Contain user with the highest cost of all orders and sum of all orders for this user.
+ *
  * @see com.epam.esm.entity.MostWidelyUsedTag
  */
 @AllArgsConstructor

@@ -7,16 +7,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.lang.NonNullFields;
 
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -26,9 +22,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class GiftCertificateUpdateDto implements Serializable {
-    private Long id;
-
+public class GiftCertificateUpdateDto extends AbstractDto<GiftCertificateUpdateDto> {
     @Pattern(regexp = DtoRegexValidator.GIFT_CERTIFICATE_NAME,
             flags = Pattern.Flag.UNICODE_CASE,
             message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_NAME)

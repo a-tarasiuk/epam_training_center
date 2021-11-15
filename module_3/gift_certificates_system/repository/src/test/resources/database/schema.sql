@@ -5,12 +5,12 @@ DROP TABLE IF EXISTS tag;
 CREATE TABLE gift_certificate
 (
     id               bigint unsigned auto_increment not null,
-    name             varchar(50)                    not null,
-    description      varchar(200)                   not null,
-    price            decimal(10, 2)                 not null,
-    duration         smallint unsigned              not null,
-    create_date      datetime(3)                    not null,
-    last_update_date datetime(3)                    not null,
+    name             varchar(50)    not null,
+    description      varchar(200)   not null,
+    price            decimal(10, 2) not null,
+    duration         smallint unsigned not null,
+    create_date      datetime(3) not null,
+    last_update_date datetime(3) not null,
     UNIQUE (name, description),
     PRIMARY KEY (id)
 );
@@ -18,7 +18,7 @@ CREATE TABLE gift_certificate
 CREATE TABLE tag
 (
     id   bigint unsigned NOT NULL AUTO_INCREMENT,
-    name varchar(50)     NOT NULL,
+    name varchar(50) NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
 );

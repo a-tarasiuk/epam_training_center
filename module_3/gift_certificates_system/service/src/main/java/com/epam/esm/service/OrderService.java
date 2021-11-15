@@ -1,6 +1,5 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.OrderCreateDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.util.EsmPagination;
 
@@ -13,10 +12,11 @@ public interface OrderService extends AbstractService<OrderDto> {
     /**
      * Create order DTO.
      *
-     * @param orderCreateDto Order DTO entity.
+     * @param userId            user ID.
+     * @param giftCertificateId gift certificate ID.
      * @return Created order DTO.
      */
-    OrderDto create(OrderCreateDto orderCreateDto);
+    OrderDto create(long userId, long giftCertificateId);
 
     /**
      * Find all orders DTO by user ID.

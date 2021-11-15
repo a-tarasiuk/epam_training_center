@@ -26,7 +26,7 @@ public abstract class GiftCertificateDao extends AbstractDao<GiftCertificate> {
      * Find set of gift certificates with paginate and sorting by field(s) by DESC\ASC.
      *
      * @param esmPagination Contain number of page and count elements on page.
-     * @param sortBy Set of gift certificate fields name.
+     * @param sortBy        Set of gift certificate fields name.
      * @return Set of gift certificate.
      */
     public abstract Set<GiftCertificate> findAll(EsmPagination esmPagination, Set<String> sortBy);

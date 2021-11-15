@@ -1,8 +1,8 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.UserDao;
 import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
@@ -12,7 +12,7 @@ import com.epam.esm.entity.User;
 import com.epam.esm.entity.UserPrice;
 import com.epam.esm.exception.EntityExistingException;
 import com.epam.esm.exception.EntityNonExistentException;
-import com.epam.esm.service.AbstractService;
+import com.epam.esm.service.TagService;
 import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.MessagePropertyKey;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,10 +33,10 @@ import java.util.stream.Stream;
  */
 @Service
 @Transactional
-public class TagServiceImpl implements AbstractService<TagDto> {
+public class TagServiceImpl implements TagService<TagDto> {
     private final ModelMapper modelMapper;
     private final TagDao tagDao;
-    private final OrderDao orderDao;
+    private final UserDao userDao;
     private final GiftCertificateDao gcDao;
     private final GiftCertificateToTagRelationDaoImpl relationDao;
 
@@ -47,10 +46,10 @@ public class TagServiceImpl implements AbstractService<TagDto> {
      * @param tagDao - Tag DAO layer.
      */
     @Autowired
-    public TagServiceImpl(ModelMapper modelMapper, TagDao tagDao, OrderDao orderDao, GiftCertificateDao gcDao, GiftCertificateToTagRelationDaoImpl relationDao) {
+    public TagServiceImpl(ModelMapper modelMapper, TagDao tagDao, UserDao userDao, GiftCertificateDao gcDao, GiftCertificateToTagRelationDaoImpl relationDao) {
         this.modelMapper = modelMapper;
         this.tagDao = tagDao;
-        this.orderDao = orderDao;
+        this.userDao = userDao;
         this.gcDao = gcDao;
         this.relationDao = relationDao;
     }
@@ -86,7 +85,7 @@ public class TagServiceImpl implements AbstractService<TagDto> {
 
     @Override
     public Set<MostWidelyUsedTag> findMostWidelyUsedTags() {
-        return orderDao.findUsersWithHighestCostOfAllOrders().stream()
+        return userDao.findUsersWithHighestCostOfAllOrders().stream()
                 .flatMap(up -> Stream.of(up)
                         .map(UserPrice::getUser)
                         .map(this::findAllGiftCertificatesByUser)

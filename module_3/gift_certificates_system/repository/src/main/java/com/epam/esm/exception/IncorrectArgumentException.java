@@ -29,7 +29,7 @@ public class IncorrectArgumentException extends RuntimeException {
     /**
      * Constructs an <code>IncorrectArgumentException</code> with the specified detail message and with argument.
      *
-     * @param message the detail message.
+     * @param message  the detail message.
      * @param argument argument for exception.
      */
     public IncorrectArgumentException(String message, Object argument) {

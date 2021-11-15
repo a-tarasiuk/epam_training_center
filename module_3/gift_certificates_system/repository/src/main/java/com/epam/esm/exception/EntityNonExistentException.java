@@ -29,7 +29,7 @@ public class EntityNonExistentException extends RuntimeException {
     /**
      * Constructs an <code>EntityNonExistentException</code> with the specified detail message and with argument.
      *
-     * @param message the detail message.
+     * @param message  the detail message.
      * @param argument argument for exception.
      */
     public EntityNonExistentException(String message, Object argument) {

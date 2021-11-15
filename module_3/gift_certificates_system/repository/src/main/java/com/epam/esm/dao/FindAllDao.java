@@ -26,7 +26,7 @@ public abstract class FindAllDao<T> {
      * Find all entities with paginate.
      *
      * @param pagination Contain number of page and count elements on page.
-     * @param entity        Entity.
+     * @param entity     Entity.
      * @return Set of entities.
      */
     public Set<T> findAll(EsmPagination pagination, Class<T> entity) {

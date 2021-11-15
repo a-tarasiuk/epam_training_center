@@ -6,13 +6,10 @@ import com.epam.esm.service.impl.TagServiceImpl;
 import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.UrlMapping;
-import lombok.extern.log4j.Log4j2;
+import com.epam.esm.util.hateoas.LinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,30 +24,23 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.Set;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 /**
  * Tag controller.
  * Working with the tag SERVICE layer.
  *
  * @see com.epam.esm.service.impl.GiftCertificateServiceImpl
  */
-@Log4j2
 @RestController
-@RequestMapping(value = UrlMapping.TAGS, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = UrlMapping.TAGS)
 @Validated
 public class TagController {
     private final TagServiceImpl tagService;
+    private final LinkBuilder<TagDto> linkBuilder;
 
-    /**
-     * Initialize of the tag service implementation.
-     *
-     * @param tagService Tag service implementation.
-     */
     @Autowired
-    public TagController(TagServiceImpl tagService) {
+    public TagController(TagServiceImpl tagService, LinkBuilder<TagDto> linkBuilder) {
         this.tagService = tagService;
+        this.linkBuilder = linkBuilder;
     }
 
     /**
@@ -62,8 +52,8 @@ public class TagController {
     @PostMapping
     public EntityModel<TagDto> create(@Valid @RequestBody TagDto tagDto) {
         TagDto tag = tagService.create(tagDto);
-        Link delete = linkTo(methodOn(TagController.class).delete(tag.getId())).withRel("delete").withType(HttpMethod.GET.name());
-        return EntityModel.of(tag, delete);
+        linkBuilder.build(tag);
+        return EntityModel.of(tag);
     }
 
     /**
@@ -73,11 +63,11 @@ public class TagController {
      * @return Tag DTO with HATEOAS.
      */
     @GetMapping(UrlMapping.ID)
-    public EntityModel<TagDto> findTagById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
-                                           @PathVariable long id) {
+    public EntityModel<TagDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
+                                        @PathVariable long id) {
         TagDto tag = tagService.findById(id);
-        Link delete = linkTo(methodOn(TagController.class).delete(tag.getId())).withRel("delete").withType(HttpMethod.GET.name());
-        return EntityModel.of(tag, delete);
+        linkBuilder.build(tag);
+        return EntityModel.of(tag);
     }
 
     /**
@@ -89,15 +79,8 @@ public class TagController {
     @GetMapping
     public CollectionModel<TagDto> findAll(@Valid EsmPagination pagination) {
         Set<TagDto> tags = tagService.findAll(pagination);
-
-        for (TagDto tag : tags) {
-            Link self = linkTo(methodOn(TagController.class).findTagById(tag.getId())).withRel("findTagById").withType(HttpMethod.GET.name());
-            Link delete = linkTo(methodOn(TagController.class).delete(tag.getId())).withRel("delete").withType(HttpMethod.GET.name());
-            tag.add(self).add(delete);
-        }
-
-        Link currentMethod = linkTo(methodOn(TagController.class).findAll(new EsmPagination())).withSelfRel();
-        return CollectionModel.of(tags, currentMethod);
+        linkBuilder.build(tags);
+        return CollectionModel.of(tags);
     }
 
     /**
@@ -118,7 +101,8 @@ public class TagController {
      * @return Set of MostWidelyUsedTag.
      */
     @GetMapping(UrlMapping.MOST_WIDELY_USED_TAG_OF_USER_WITH_HIGHEST_COST_OF_ALL_ORDERS)
-    public Set<MostWidelyUsedTag> findMostWidelyUsedTag() {
-        return tagService.findMostWidelyUsedTags();
+    public CollectionModel<MostWidelyUsedTag> findMostWidelyUsedTag() {
+        Set<MostWidelyUsedTag> tags = tagService.findMostWidelyUsedTags();
+        return CollectionModel.of(tags);
     }
 }

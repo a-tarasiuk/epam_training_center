@@ -1,16 +1,17 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.OrderDto;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.impl.OrderServiceImpl;
+import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.UrlMapping;
-import com.epam.esm.util.EsmPagination;
+import com.epam.esm.util.hateoas.LinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,14 +26,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = UrlMapping.ORDERS, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = UrlMapping.ORDERS)
 @Validated
 public class OrderController {
     private final OrderServiceImpl orderService;
+    private final LinkBuilder<OrderDto> linkBuilder;
 
     @Autowired
-    public OrderController(OrderServiceImpl orderService) {
+    public OrderController(OrderServiceImpl orderService, LinkBuilder<OrderDto> linkBuilder) {
         this.orderService = orderService;
+        this.linkBuilder = linkBuilder;
     }
 
     /**
@@ -42,15 +45,11 @@ public class OrderController {
      * @return Order DTO.
      */
     @GetMapping(UrlMapping.ID)
-    public EntityModel<OrderDto> findOrderById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
-                                               @PathVariable long id) {
+    public EntityModel<OrderDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
+                                          @PathVariable long id) {
         OrderDto order = orderService.findById(id);
-
-        return EntityModel.of(order,
-                linkTo(OrderController.class).slash(order.getId()).withSelfRel(),
-                linkTo(methodOn(OrderController.class).findAllOrders(new EsmPagination()))
-                        .withRel("findAllOrders").withType(HttpMethod.GET.name())
-        );
+        linkBuilder.build(order);
+        return EntityModel.of(order);
     }
 
     /**
@@ -60,17 +59,9 @@ public class OrderController {
      * @return Set of found orders DTO.
      */
     @GetMapping
-    public CollectionModel<OrderDto> findAllOrders(@Valid EsmPagination esmPagination) {
+    public CollectionModel<OrderDto> findAll(@Valid EsmPagination esmPagination) {
         Set<OrderDto> orders = orderService.findAll(esmPagination);
-
-        for (OrderDto orderDto : orders) {
-            long id = orderDto.getId();
-            Link selfLink = linkTo(OrderController.class).slash(id).withSelfRel();
-            Link findOrderById = linkTo(methodOn(OrderController.class).findOrderById(id))
-                    .withRel("findOrderById").withType(HttpMethod.GET.name());
-            orderDto.add(selfLink).add(findOrderById);
-        }
-
-        return CollectionModel.of(orders, linkTo(OrderController.class).withSelfRel());
+        linkBuilder.build(orders);
+        return CollectionModel.of(orders);
     }
 }

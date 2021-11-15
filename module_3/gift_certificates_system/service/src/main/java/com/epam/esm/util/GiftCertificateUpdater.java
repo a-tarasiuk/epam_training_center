@@ -1,7 +1,5 @@
 package com.epam.esm.util;
 
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.GiftCertificateUpdateDto;
 import com.epam.esm.entity.GiftCertificate;
 import org.springframework.util.ObjectUtils;
 

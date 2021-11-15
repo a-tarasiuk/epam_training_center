@@ -12,5 +12,6 @@ public final class DtoRegexValidator {
     public static final String GIFT_CERTIFICATE_NAME = "^\\p{Lu}\\p{L}{1,50}$";
     public static final String GIFT_CERTIFICATE_DESCRIPTION = "^\\p{Lu}[\\p{L}\\p{Zs}]{1,200}[^\\p{Z}]$";
 
-    private DtoRegexValidator() {}
+    private DtoRegexValidator() {
+    }
 }

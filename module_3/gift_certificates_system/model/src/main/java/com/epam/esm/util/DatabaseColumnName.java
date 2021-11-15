@@ -9,5 +9,6 @@ public final class DatabaseColumnName {
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";
 
-    private DatabaseColumnName() {}
+    private DatabaseColumnName() {
+    }
 }

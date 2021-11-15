@@ -2,12 +2,9 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.OrderCreateDto;
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
@@ -21,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,15 +56,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto create(OrderCreateDto orderCreateDto) {
+    public OrderDto create(long userId, long giftCertificateId) {
         // Find requested User in the database
-        long userId = orderCreateDto.getUserId();
         User user = getUserOrElseThrow(userId);
         UserDto userDto = modelMapper.map(user, UserDto.class);
 
         // Find requested Gift certificate in the database
-        long gcId = orderCreateDto.getGiftCertificateId();
-        GiftCertificate gc = getGiftCertificateOrElseThrow(gcId);
+        GiftCertificate gc = getGiftCertificateOrElseThrow(giftCertificateId);
         GiftCertificateDto gcDto = modelMapper.map(gc, GiftCertificateDto.class);
 
         // Create OrderDto
