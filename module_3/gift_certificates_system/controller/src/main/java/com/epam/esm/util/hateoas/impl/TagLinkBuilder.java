@@ -1,4 +1,4 @@
-package com.epam.esm.util.hateoas;
+package com.epam.esm.util.hateoas.impl;
 
 import com.epam.esm.controller.TagController;
 import com.epam.esm.dto.TagDto;

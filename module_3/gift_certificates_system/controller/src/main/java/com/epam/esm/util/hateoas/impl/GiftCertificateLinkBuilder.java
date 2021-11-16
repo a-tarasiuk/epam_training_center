@@ -1,4 +1,4 @@
-package com.epam.esm.util.hateoas;
+package com.epam.esm.util.hateoas.impl;
 
 import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.dto.GiftCertificateDto;

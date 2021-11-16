@@ -146,7 +146,10 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
 
             GiftCertificate updated = GiftCertificateUpdater.update(foundGc, updatedGc);
             GiftCertificate created = gcDao.update(updated);
-            updateRelations(created, gcUpdateDto);
+
+            if (ObjectUtils.isNotEmpty(gcUpdateDto.getTags())) {
+                updateRelations(created, gcUpdateDto);
+            }
 
             return buildGiftCertificateDtoWithTags(created);
         } else {

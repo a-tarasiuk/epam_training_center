@@ -1,6 +1,7 @@
-package com.epam.esm.util.hateoas;
+package com.epam.esm.util.hateoas.impl;
 
 import com.epam.esm.dto.AbstractDto;
+import com.epam.esm.util.hateoas.LinkBuilder;
 import org.springframework.hateoas.Link;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;

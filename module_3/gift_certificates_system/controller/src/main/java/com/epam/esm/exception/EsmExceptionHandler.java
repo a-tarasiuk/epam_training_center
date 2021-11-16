@@ -51,6 +51,21 @@ public class EsmExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
+
+    /**
+     * Thrown to indicate that a method has been passed an illegal or inappropriate argument.
+     *
+     * @param e      UnsupportedOperationException.
+     * @param locale request locale from http header.
+     * @return response entity.
+     * @see ResponseEntity
+     */
+    @ExceptionHandler(UnsupportedOperationException.class)
+    private ResponseEntity<?> handleUnsupportedOperationException(UnsupportedOperationException e, Locale locale) {
+        EsmHttpErrorCode esmHttpErrorCode = EsmHttpErrorCode.INVALID_ARGUMENT_METHOD;
+        return createResponseEntity(e, HttpStatus.CONFLICT, esmHttpErrorCode, locale);
+    }
+
     /**
      * Thrown to indicate that a method has been passed an illegal or inappropriate argument.
      *

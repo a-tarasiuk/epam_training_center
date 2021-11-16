@@ -1,7 +1,6 @@
-package com.epam.esm.util.hateoas;
+package com.epam.esm.util.hateoas.impl;
 
 import com.epam.esm.controller.UserController;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.util.EsmPagination;
 import org.springframework.http.HttpMethod;

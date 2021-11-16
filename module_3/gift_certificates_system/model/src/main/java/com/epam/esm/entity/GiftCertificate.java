@@ -50,7 +50,7 @@ public class GiftCertificate implements Serializable {
 
     @Column(nullable = false)
     private LocalDateTime lastUpdateDate;
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
