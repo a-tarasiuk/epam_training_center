@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.epam.esm.util.MessagePropertyKey.*;
+
 /**
  * User service implementation.
  */
@@ -55,18 +57,18 @@ public class UserServiceImpl implements AbstractService<UserDto> {
     public UserDto findById(long id) {
         return userDao.findById(id)
                 .map(user -> modelMapper.map(user, UserDto.class))
-                .orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND, id));
+                .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_USER_ID_NOT_FOUND, id));
     }
 
     @Override
     public void delete(long id) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(EXCEPTION_UNSUPPORTED_OPERATION);
     }
 
     private void checkIfUserExistsOrElseThrow(User user) {
         String login = user.getLogin();
         userDao.findBy(login).ifPresent(t -> {
-            throw new EntityExistingException(MessagePropertyKey.EXCEPTION_USER_LOGIN_EXISTS, login);
+            throw new EntityExistingException(EXCEPTION_USER_LOGIN_EXISTS, login);
         });
     }
 }

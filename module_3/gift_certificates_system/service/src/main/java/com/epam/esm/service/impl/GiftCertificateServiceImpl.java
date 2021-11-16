@@ -118,16 +118,21 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     }
 
     @Override
-    public GiftCertificateDto findByTagNames(Set<String> names) {
+    public Set<GiftCertificateDto> findByTagNames(Set<String> names) {
         Set<Tag> tags = names.stream()
                 .map(name -> tagDao.findByName(name)
                         .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_TAG_NAME_NOT_FOUND, name)))
                 .collect(Collectors.toSet());
 
-        GiftCertificate gc = gcDao.findBy(tags)
-                .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_TAG_NAMES_NOT_FOUND, String.join(", ", names)));
+        Set<GiftCertificate> giftCertificates = gcDao.findBy(tags);
 
-        return buildGiftCertificateDtoWithTags(gc);
+        if (ObjectUtils.isNotEmpty(giftCertificates)) {
+            return giftCertificates.stream()
+                    .map(this::buildGiftCertificateDtoWithTags)
+                    .collect(Collectors.toSet());
+        } else {
+            throw new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_TAG_NAMES_NOT_FOUND, String.join(", ", names));
+        }
     }
 
     @Override

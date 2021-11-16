@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -13,13 +14,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class TagLinkBuilder extends AbstractLinkBuilder<TagDto> {
     @Override
-    public void build(TagDto dto) {
+    public TagDto build(TagDto dto) {
         buildSelf(TagController.class, dto);
-        dto.add(linkTo(methodOn(TagController.class).delete(dto.getId())).withRel("delete").withType(HttpMethod.GET.name()));
+        return dto.add(linkTo(methodOn(TagController.class).delete(dto.getId()))
+                .withRel(MethodName.DELETE.name()).withType(HttpMethod.DELETE.name()));
     }
 
     @Override
-    public void build(Set<TagDto> dtos) {
-        dtos.forEach(this::build);
+    public Set<TagDto> build(Set<TagDto> dtos) {
+         return dtos.stream()
+                 .map(this::build)
+                 .collect(Collectors.toSet());
     }
 }

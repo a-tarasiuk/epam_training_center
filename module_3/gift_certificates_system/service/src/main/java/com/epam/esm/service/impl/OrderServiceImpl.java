@@ -13,13 +13,17 @@ import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.MessagePropertyKey;
+import org.apache.commons.lang3.ObjectUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.epam.esm.util.MessagePropertyKey.*;
 
 /**
  * Order service implementation.
@@ -52,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto create(OrderDto entity) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(EXCEPTION_UNSUPPORTED_OPERATION);
     }
 
     @Override
@@ -96,21 +100,37 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public OrderDto findOrderForUser(long orderId, long userId) {
+        User user = getUserOrElseThrow(userId);
+        Order order = getOrderOrElseThrow(orderId);
+
+        if (Objects.equals(user, order.getUser())) {
+            return build(order);
+        } else {
+            throw new EntityNonExistentException(EXCEPTION_ORDER_FOR_USER_NOT_FOUND, userId);
+        }
+    }
+
+    @Override
     public OrderDto findById(long id) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(EXCEPTION_UNSUPPORTED_OPERATION);
     }
 
     @Override
     public void delete(long id) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(EXCEPTION_UNSUPPORTED_OPERATION);
     }
 
     private User getUserOrElseThrow(long userId) {
-        return userDao.findById(userId).orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND, userId));
+        return userDao.findById(userId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_USER_ID_NOT_FOUND, userId));
+    }
+
+    private Order getOrderOrElseThrow(long orderId) {
+        return orderDao.findById(orderId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_ORDER_ID_NOT_FOUND, orderId));
     }
 
     private GiftCertificate getGiftCertificateOrElseThrow(long gcId) {
-        return gcDao.findById(gcId).orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, gcId));
+        return gcDao.findById(gcId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, gcId));
     }
 
     private OrderDto build(Order order) {

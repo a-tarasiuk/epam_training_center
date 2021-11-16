@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -14,14 +15,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class UserLinkBuilder extends AbstractLinkBuilder<UserDto> {
     @Override
-    public void build(UserDto dto) {
+    public UserDto build(UserDto dto) {
         buildSelf(UserController.class, dto);
-        dto.add(linkTo(methodOn(UserController.class).findAllOrdersByUserId(dto.getId(), new EsmPagination()))
-                .withRel("findAllOrdersByUserId").withType(HttpMethod.GET.name()));
+        return dto.add(linkTo(methodOn(UserController.class).findAllOrdersByUserId(dto.getId(), new EsmPagination()))
+                .withRel(MethodName.FIND_ALL_ORDERS_BY_USER_ID.name()).withType(HttpMethod.GET.name()));
     }
 
     @Override
-    public void build(Set<UserDto> dtos) {
-        dtos.forEach(this::build);
+    public Set<UserDto> build(Set<UserDto> dtos) {
+        return dtos.stream()
+                .map(this::build)
+                .collect(Collectors.toSet());
     }
 }

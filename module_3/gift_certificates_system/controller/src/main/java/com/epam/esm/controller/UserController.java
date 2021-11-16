@@ -1,19 +1,22 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.impl.OrderServiceImpl;
 import com.epam.esm.service.impl.UserServiceImpl;
 import com.epam.esm.util.EsmPagination;
-import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.UrlMapping;
 import com.epam.esm.util.hateoas.LinkBuilder;
+import com.epam.esm.view.View;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +30,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
+import static com.epam.esm.util.MessagePropertyKey.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -36,13 +40,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UserController {
     private final UserServiceImpl userService;
     private final OrderServiceImpl orderService;
-    private final LinkBuilder<UserDto> linkBuilder;
+    private final LinkBuilder<UserDto> linkBuilderUser;
+    private final LinkBuilder<OrderDto> linkBuilderOrder;
 
     @Autowired
-    public UserController(UserServiceImpl userService, OrderServiceImpl orderService, LinkBuilder<UserDto> linkBuilder) {
+    public UserController(UserServiceImpl userService, OrderServiceImpl orderService, LinkBuilder<UserDto> linkBuilderUser, LinkBuilder<OrderDto> linkBuilderOrder) {
         this.userService = userService;
         this.orderService = orderService;
-        this.linkBuilder = linkBuilder;
+        this.linkBuilderUser = linkBuilderUser;
+        this.linkBuilderOrder = linkBuilderOrder;
     }
 
     /**
@@ -54,7 +60,7 @@ public class UserController {
     @PostMapping
     public EntityModel<UserDto> create(@Valid @RequestBody UserDto userDto) {
         UserDto user = userService.create(userDto);
-        linkBuilder.build(user);
+        linkBuilderUser.build(user);
         return EntityModel.of(user);
     }
 
@@ -65,10 +71,10 @@ public class UserController {
      * @return User DTO.
      */
     @GetMapping(UrlMapping.ID)
-    public EntityModel<UserDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
+    public EntityModel<UserDto> findById(@Min(value = 1, message = VALIDATION_ID)
                                          @PathVariable long id) {
         UserDto user = userService.findById(id);
-        linkBuilder.build(user);
+        linkBuilderUser.build(user);
         return EntityModel.of(user);
     }
 
@@ -81,7 +87,7 @@ public class UserController {
     @GetMapping
     public CollectionModel<UserDto> findAll(@Valid EsmPagination esmPagination) {
         Set<UserDto> users = userService.findAll(esmPagination);
-        linkBuilder.build(users);
+        linkBuilderUser.build(users);
         return CollectionModel.of(users);
     }
 
@@ -93,11 +99,11 @@ public class UserController {
      * @param giftCertificateId gift certificate ID.
      * @return Created order DTO.
      */
-    @PostMapping(UrlMapping.ORDER_USER)
-    public EntityModel<OrderDto> createOrderForUser(@Min(value = 1, message = MessagePropertyKey.VALIDATION_USER_ID)
+    @PostMapping(UrlMapping.ORDERS_USER)
+    public EntityModel<OrderDto> createOrderForUser(@Min(value = 1, message = VALIDATION_USER_ID)
                                                     @PathVariable long userId,
-                                                    @NotNull(message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL)
-                                                    @Min(value = 1, message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_ID)
+                                                    @NotNull(message = VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL)
+                                                    @Min(value = 1, message = VALIDATION_GIFT_CERTIFICATE_ID)
                                                     @RequestBody Long giftCertificateId) {
         OrderDto order = orderService.create(userId, giftCertificateId);
 
@@ -118,8 +124,8 @@ public class UserController {
      * @param esmPagination Pagination parameters.
      * @return Set of found order DTO.
      */
-    @GetMapping(UrlMapping.ORDER_USER)
-    public CollectionModel<OrderDto> findAllOrdersByUserId(@Min(value = 1, message = MessagePropertyKey.VALIDATION_USER_ID)
+    @GetMapping(UrlMapping.ORDERS_USER)
+    public CollectionModel<OrderDto> findAllOrdersByUserId(@Min(value = 1, message = VALIDATION_USER_ID)
                                                            @PathVariable long userId,
                                                            @Valid EsmPagination esmPagination) {
         Set<OrderDto> orders = orderService.findAllByUserId(userId, esmPagination);
@@ -137,5 +143,22 @@ public class UserController {
                 linkTo(methodOn(OrderController.class).findAll(new EsmPagination()))
                         .withRel("findAllOrders").withType(HttpMethod.GET.name())
         );
+    }
+
+    /**
+     * Find order by ID for User by ID.
+     *
+     * @param userId user ID.
+     * @param orderId order ID.
+     * @return Entity model of found order.
+     */
+    @GetMapping(UrlMapping.ORDER_USER)
+    @JsonView(View.FindOrderForUser.class)
+    public EntityModel<OrderDto> findOrderForUser(@Min(value = 1, message = VALIDATION_USER_ID)
+                                                  @PathVariable long userId,
+                                                @Min(value = 1, message = VALIDATION_ORDER_ID)
+                                                  @PathVariable long orderId) {
+        OrderDto orderDto = orderService.findOrderForUser(orderId, userId);
+        return EntityModel.of(linkBuilderOrder.build(orderDto));
     }
 }

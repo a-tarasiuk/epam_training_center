@@ -32,9 +32,9 @@ public interface GitCertificateService extends AbstractService<GiftCertificateDt
      * Finding list of gift certificates by tag name.
      *
      * @param names Tag names.
-     * @return Found gift certificate.
+     * @return Set of found gift certificates.
      */
-    GiftCertificateDto findByTagNames(Set<String> names);
+    Set<GiftCertificateDto> findByTagNames(Set<String> names);
 
     /**
      * Finding list of gift certificates by keyword.

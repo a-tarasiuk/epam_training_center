@@ -5,6 +5,6 @@ import com.epam.esm.dto.AbstractDto;
 import java.util.Set;
 
 public interface LinkBuilder<T extends AbstractDto<T>> {
-    void build(T dto);
-    void build(Set<T> dtos);
+    T build(T dto);
+    Set<T> build(Set<T> dtos);
 }

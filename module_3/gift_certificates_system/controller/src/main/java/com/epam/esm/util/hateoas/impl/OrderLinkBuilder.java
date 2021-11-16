@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -21,14 +22,16 @@ public class OrderLinkBuilder extends AbstractLinkBuilder<OrderDto> {
     }
 
     @Override
-    public void build(OrderDto dto) {
+    public OrderDto build(OrderDto dto) {
         userLinkBuilder.build(dto.getUser());
         gcLinkBuilder.build(dto.getGiftCertificate());
-        buildSelf(OrderController.class, dto);
+        return buildSelf(OrderController.class, dto);
     }
 
     @Override
-    public void build(Set<OrderDto> dtos) {
-        dtos.forEach(this::build);
+    public Set<OrderDto> build(Set<OrderDto> dtos) {
+        return dtos.stream()
+                .map(this::build)
+                .collect(Collectors.toSet());
     }
 }

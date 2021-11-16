@@ -29,7 +29,8 @@ public final class UrlMapping {
     /**
      * URL for User with Order
      */
-    public static final String ORDER_USER = "/{userId}/orders";
+    public static final String ORDERS_USER = "/{userId}/orders";
+    public static final String ORDER_USER = "/{userId}/orders/{orderId}";
 
     /**
      * URL for Order

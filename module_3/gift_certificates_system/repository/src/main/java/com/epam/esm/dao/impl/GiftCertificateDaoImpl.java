@@ -116,23 +116,16 @@ public class GiftCertificateDaoImpl extends GiftCertificateDao {
      * SELECT gc FROM GiftCertificate gc JOIN GiftCertificateToTagRelation relation on gc = relation.giftCertificate WHERE relation.tag IN (:tags) GROUP BY gc HAVING COUNT(gc) = :countTags
      */
     @Override
-    public Optional<GiftCertificate> findBy(Set<Tag> tags) {
-        Optional<GiftCertificate> optional;
+    public Set<GiftCertificate> findBy(Set<Tag> tags) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<GiftCertificate> cq = cb.createQuery(GiftCertificate.class);
+        Root<GiftCertificateToTagRelation> from = cq.from(GiftCertificateToTagRelation.class);
+        Path<GiftCertificate> choose = from.get(ParameterName.GIFT_CERTIFICATE);
+        cq.select(choose).where(from.get(ParameterName.TAG).in(tags)).groupBy(choose).having(cb.count(choose).in(tags.size()));
 
-        try {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<GiftCertificate> cq = cb.createQuery(GiftCertificate.class);
-            Root<GiftCertificateToTagRelation> from = cq.from(GiftCertificateToTagRelation.class);
-            Path<GiftCertificate> choose = from.get(ParameterName.GIFT_CERTIFICATE);
-            cq.select(choose).where(from.get(ParameterName.TAG).in(tags)).groupBy(choose).having(cb.count(choose).in(tags.size()));
-
-            GiftCertificate gc = em.createQuery(cq).getSingleResult();
-            optional = Optional.of(gc);
-        } catch (NoResultException e) {
-            optional = Optional.empty();
-        }
-
-        return optional;
+        return em.createQuery(cq)
+                .getResultStream()
+                .collect(Collectors.toSet());
     }
 
     /**

@@ -4,6 +4,7 @@ import com.epam.esm.dao.UserDao;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.entity.UserPrice;
+import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.ParameterName;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.epam.esm.util.MessagePropertyKey.*;
+
 /**
  * User DAO implementation.
  */
@@ -33,7 +36,7 @@ public class UserDaoImpl extends UserDao {
 
     @Override
     public void delete(User entity) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(EXCEPTION_UNSUPPORTED_OPERATION);
     }
 
     @Override
@@ -65,7 +68,7 @@ public class UserDaoImpl extends UserDao {
 
     @Override
     public Optional<User> findByName(String name) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(EXCEPTION_UNSUPPORTED_OPERATION);
     }
 
 

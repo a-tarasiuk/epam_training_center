@@ -3,6 +3,8 @@ package com.epam.esm.entity;
 import com.epam.esm.listener.OrderListener;
 import com.epam.esm.util.DatabaseColumnName;
 import com.epam.esm.util.DatabaseTableName;
+import com.epam.esm.view.View;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

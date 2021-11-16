@@ -26,4 +26,13 @@ public interface OrderService extends AbstractService<OrderDto> {
      * @return Set of found users.
      */
     Set<OrderDto> findAllByUserId(long userId, EsmPagination esmPagination);
+
+    /**
+     * Find order by ID for user with ID/
+     *
+     * @param userId user ID.
+     * @param orderId order ID.
+     * @return Order DTO.
+     */
+    OrderDto findOrderForUser(long orderId, long userId);
 }

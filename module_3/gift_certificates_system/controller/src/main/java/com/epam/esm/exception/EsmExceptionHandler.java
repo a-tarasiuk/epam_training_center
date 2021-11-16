@@ -63,7 +63,7 @@ public class EsmExceptionHandler {
     @ExceptionHandler(UnsupportedOperationException.class)
     private ResponseEntity<?> handleUnsupportedOperationException(UnsupportedOperationException e, Locale locale) {
         EsmHttpErrorCode esmHttpErrorCode = EsmHttpErrorCode.INVALID_ARGUMENT_METHOD;
-        return createResponseEntity(e, HttpStatus.CONFLICT, esmHttpErrorCode, locale);
+        return createResponseEntity(e, HttpStatus.NOT_ACCEPTABLE, esmHttpErrorCode, locale);
     }
 
     /**

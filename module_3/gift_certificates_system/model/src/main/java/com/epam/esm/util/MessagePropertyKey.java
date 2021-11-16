@@ -21,6 +21,9 @@ public final class MessagePropertyKey {
     public static final String VALIDATION_TAG_NAME = "validation.tag.name";
     public static final String VALIDATION_TAG_NAME_NOT_EMPTY = "validation.tag.name.not-empty";
 
+    // Validation - Order
+    public static final String VALIDATION_ORDER_ID = "validation.order.id";
+
     // Validation - Gift certificate
     public static final String VALIDATION_GIFT_CERTIFICATE_ID = "validation.gift-certificate.id";
     public static final String VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL = "validation.gift-certificate.id.not-null";
@@ -39,6 +42,10 @@ public final class MessagePropertyKey {
     // Exceptions - User
     public static final String EXCEPTION_USER_LOGIN_EXISTS = "exception.user.login.exists";
     public static final String EXCEPTION_USER_ID_NOT_FOUND = "exception.user.id.not-found";
+
+    // Exceptions - Order
+    public static final String EXCEPTION_ORDER_ID_NOT_FOUND = "exception.order.id.not-found";
+    public static final String EXCEPTION_ORDER_FOR_USER_NOT_FOUND = "exception.order.user.not-found";
 
     // Exceptions - Tag
     public static final String EXCEPTION_TAG_NAME_EXISTS = "exception.tag.name.exists";
@@ -59,6 +66,9 @@ public final class MessagePropertyKey {
     public static final String EXCEPTION_ESM_PAGINATION_PAGE_INCORRECT_VALUE = "exception.esm-pagination.page.incorrect-value";
     public static final String EXCEPTION_ESM_PAGINATION_SIZE_INCORRECT_VALUE = "exception.esm-pagination.size.incorrect-value";
     public static final String EXCEPTION_ESM_PAGINATION_PAGE_OUT_OF_RANGE = "exception.esm-pagination.page.out-of-range";
+
+    // Exceptions - Unsupported operation
+    public static final String EXCEPTION_UNSUPPORTED_OPERATION = "exception.unsupported-operation";
 
     private MessagePropertyKey() {
     }

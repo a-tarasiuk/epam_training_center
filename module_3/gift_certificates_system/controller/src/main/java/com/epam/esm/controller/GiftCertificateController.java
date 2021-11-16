@@ -114,11 +114,10 @@ public class GiftCertificateController {
      * @return List of gift certificates.
      */
     @GetMapping(params = ParameterName.TAG_NAME)
-    public EntityModel<GiftCertificateDto> findByTagNames(@RequestParam(name = ParameterName.TAG_NAME)
+    public CollectionModel<GiftCertificateDto> findByTagNames(@RequestParam(name = ParameterName.TAG_NAME)
                                                                   Set<@NotBlank(message = MessagePropertyKey.VALIDATION_TAG_NAME_NOT_EMPTY) String> tagNames) {
-        GiftCertificateDto gc = service.findByTagNames(tagNames);
-        linkBuilder.build(gc);
-        return EntityModel.of(gc);
+        Set<GiftCertificateDto> gcs = service.findByTagNames(tagNames);
+        return CollectionModel.of(linkBuilder.build(gcs));
     }
 
     /**
