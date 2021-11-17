@@ -163,7 +163,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         String name = giftCertificateDto.getName();
         Optional<GiftCertificate> optionalGiftCertificate = gcDao.findByName(name);
 
-        if(optionalGiftCertificate.isPresent()) {
+        if (optionalGiftCertificate.isPresent()) {
             throw new EntityExistingException(EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS, name);
         }
     }
@@ -183,11 +183,13 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
             boolean isExistRelation = relationDao.isExist(gc, foundTag);
 
             if (!isExistRelation) {
-                relationDao.create(gc, foundTag);
+                GiftCertificateToTagRelation relation = new GiftCertificateToTagRelation(gc, foundTag);
+                relationDao.create(relation);
             }
         } else {
             Tag createdTag = tagDao.create(tag);
-            relationDao.create(gc, createdTag);
+            GiftCertificateToTagRelation relation = new GiftCertificateToTagRelation(gc, createdTag);
+            relationDao.create(relation);
         }
     }
 
@@ -234,6 +236,8 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         Set<Tag> tagsFromDatabase = findTagsBy(gc);
         Set<Tag> tagForRemove = new HashSet<>(tagsFromDatabase);
         tagForRemove.removeAll(tagsFromRequest);
-        tagForRemove.forEach(tag -> relationDao.delete(gc, tag));
+        tagForRemove.stream()
+                .map(tag -> new GiftCertificateToTagRelation(gc, tag))
+                .forEach(relationDao::delete);
     }
 }

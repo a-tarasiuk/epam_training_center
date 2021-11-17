@@ -64,7 +64,6 @@ public class UserDaoImpl extends UserDao {
         throw new UnsupportedOperationException(EXCEPTION_UNSUPPORTED_OPERATION);
     }
 
-
     /**
      * JPA query:<br>
      * SELECT o.user FROM Order o GROUP BY o.user ORDER BY SUM(o.price) DESC LIMIT 1

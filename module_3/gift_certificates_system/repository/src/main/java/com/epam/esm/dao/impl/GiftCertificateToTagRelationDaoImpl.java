@@ -34,20 +34,8 @@ public class GiftCertificateToTagRelationDaoImpl implements GiftCertificateToTag
     }
 
     @Override
-    public GiftCertificateToTagRelation create(GiftCertificate gc, Tag tag) {
-        GiftCertificateToTagRelation relation = createRelation(gc, tag);
-        return create(relation);
-    }
-
-    @Override
     public void delete(GiftCertificateToTagRelation relation) {
         entityManager.remove(entityManager.contains(relation) ? relation : entityManager.merge(relation));
-    }
-
-    @Override
-    public void delete(GiftCertificate gc, Tag tag) {
-        GiftCertificateToTagRelation relation = createRelation(gc, tag);
-        delete(relation);
     }
 
     /**
@@ -86,12 +74,6 @@ public class GiftCertificateToTagRelationDaoImpl implements GiftCertificateToTag
     public Optional<GiftCertificateToTagRelation> findBy(GiftCertificateToTagRelation relation) {
         GiftCertificateToTagRelation foundRelation = entityManager.find(GiftCertificateToTagRelation.class, relation);
         return Optional.ofNullable(foundRelation);
-    }
-
-    @Override
-    public Optional<GiftCertificateToTagRelation> findBy(GiftCertificate gc, Tag tag) {
-        GiftCertificateToTagRelation relation = createRelation(gc, tag);
-        return findBy(relation);
     }
 
     @Override
