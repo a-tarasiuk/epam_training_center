@@ -1,5 +1,6 @@
-package com.epam.esm.entity;
+package com.epam.esm.pojo;
 
+import com.epam.esm.entity.Tag;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import java.util.Set;
  * Contain most widely used tag for user with the highest cost of all orders.<br>
  * Also contain set of tag and the number of times these tags have been used by the user.
  *
- * @see com.epam.esm.entity.UserPrice
+ * @see UserPrice
  */
 @NoArgsConstructor
 @AllArgsConstructor

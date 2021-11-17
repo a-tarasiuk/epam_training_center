@@ -1,5 +1,6 @@
-package com.epam.esm.entity;
+package com.epam.esm.pojo;
 
+import com.epam.esm.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import java.math.BigDecimal;
 /**
  * Contain user with the highest cost of all orders and sum of all orders for this user.
  *
- * @see com.epam.esm.entity.MostWidelyUsedTag
+ * @see com.epam.esm.pojo.MostWidelyUsedTag
  */
 @AllArgsConstructor
 @Getter

@@ -12,8 +12,6 @@ import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.EsmPagination;
-import com.epam.esm.util.MessagePropertyKey;
-import org.apache.commons.lang3.ObjectUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +21,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.util.MessagePropertyKey.*;
+import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
+import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_ORDER_FOR_USER_NOT_FOUND;
+import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_ORDER_ID_NOT_FOUND;
+import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
+import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
 
 /**
  * Order service implementation.
@@ -52,11 +54,6 @@ public class OrderServiceImpl implements OrderService {
         this.orderDao = orderDao;
         this.userDao = userDao;
         this.gcDao = gcDao;
-    }
-
-    @Override
-    public OrderDto create(OrderDto entity) {
-        throw new UnsupportedOperationException(EXCEPTION_UNSUPPORTED_OPERATION);
     }
 
     @Override
@@ -113,7 +110,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto findById(long id) {
-        throw new UnsupportedOperationException(EXCEPTION_UNSUPPORTED_OPERATION);
+        Order order = getOrderOrElseThrow(id);
+        return this.build(order);
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * Gift certificate SERVICE layer.
  */
-public interface GitCertificateService extends AbstractService<GiftCertificateDto> {
+public interface GitCertificateService extends CreateService<GiftCertificateDto> {
     /**
      * Update gift certificate by it is ID and gift certificate entity.
      *

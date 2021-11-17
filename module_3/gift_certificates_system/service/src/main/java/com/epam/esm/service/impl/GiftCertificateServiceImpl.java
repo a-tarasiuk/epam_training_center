@@ -13,6 +13,7 @@ import com.epam.esm.exception.EntityExistingException;
 import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.service.GitCertificateService;
 import com.epam.esm.util.EsmPagination;
+import com.epam.esm.util.GiftCertificateFieldChecker;
 import com.epam.esm.util.GiftCertificateUpdater;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
@@ -21,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -62,38 +62,28 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
 
     @Override
     public GiftCertificateDto create(GiftCertificateDto gcCreateDto) {
-        // check if exists or else throw
-        String name = gcCreateDto.getName();
-        Optional<GiftCertificate> optionalGiftCertificate = gcDao.findByName(name);
+        checkIfNonExistsOrElseThrow(gcCreateDto);
 
-        if (optionalGiftCertificate.isPresent()) {
-            throw new EntityExistingException(EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS, name);
-        } else {
-            // create gift certificate in database
-            GiftCertificate gc = modelMapper.map(gcCreateDto, GiftCertificate.class);
-            GiftCertificate createdGc = gcDao.create(gc);
+        GiftCertificate gc = modelMapper.map(gcCreateDto, GiftCertificate.class);
+        GiftCertificate createdGc = gcDao.create(gc);
 
-            // 1. Convert tags from DTO to Entity
-            // 2. Create tags into database if non exists and get
-            // 3. Create relations between tags and gift certificates
-            gcCreateDto.getTags().stream()
-                    .map(tagDto -> modelMapper.map(tagDto, Tag.class))
-                    .map(tag -> tagDao.findByName(tag.getName()).orElseGet(() -> tagDao.create(tag)))
-                    .map(tag -> new GiftCertificateToTagRelation(createdGc, tag))
-                    .forEach(relation -> {
-                        if (!relationDao.findBy(relation).isPresent()) {
-                            relationDao.create(relation);
-                        }
-                    });
+        gcCreateDto.getTags().stream()
+                .map(tagDto -> modelMapper.map(tagDto, Tag.class))
+                .map(tag -> tagDao.findByName(tag.getName()).orElseGet(() -> tagDao.create(tag)))
+                .map(tag -> new GiftCertificateToTagRelation(createdGc, tag))
+                .forEach(relation -> {
+                    if (!relationDao.findBy(relation).isPresent()) {
+                        relationDao.create(relation);
+                    }
+                });
 
-            GiftCertificateDto gcDto = modelMapper.map(createdGc, GiftCertificateDto.class);
-            Set<TagDto> tagsDto = tagDao.findAllBy(createdGc).stream()
-                    .map(tag -> modelMapper.map(tag, TagDto.class))
-                    .collect(Collectors.toSet());
-            gcDto.setTags(tagsDto);
+        GiftCertificateDto gcDto = modelMapper.map(createdGc, GiftCertificateDto.class);
+        Set<TagDto> tagsDto = tagDao.findAllBy(createdGc).stream()
+                .map(tag -> modelMapper.map(tag, TagDto.class))
+                .collect(Collectors.toSet());
+        gcDto.setTags(tagsDto);
 
-            return gcDto;
-        }
+        return gcDto;
     }
 
     @Override
@@ -146,7 +136,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         GiftCertificate foundGc = gcDao.findById(id)
                 .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
 
-        if (isFilledOneField(gcUpdateDto)) {
+        if (GiftCertificateFieldChecker.isFilledOneField(gcUpdateDto)) {
             GiftCertificate updatedGc = modelMapper.map(gcUpdateDto, GiftCertificate.class);
 
             GiftCertificate updated = GiftCertificateUpdater.update(foundGc, updatedGc);
@@ -167,6 +157,15 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         Optional<GiftCertificate> optionalGc = gcDao.findById(id);
         GiftCertificate gc = optionalGc.orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
         delete(gc);
+    }
+
+    private void checkIfNonExistsOrElseThrow(GiftCertificateDto giftCertificateDto) {
+        String name = giftCertificateDto.getName();
+        Optional<GiftCertificate> optionalGiftCertificate = gcDao.findByName(name);
+
+        if(optionalGiftCertificate.isPresent()) {
+            throw new EntityExistingException(EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS, name);
+        }
     }
 
     private void updateRelations(GiftCertificate gc, GiftCertificateUpdateDto updateDto) {
@@ -229,18 +228,6 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     private void deleteRelations(GiftCertificate gc) {
         relationDao.findAllBy(gc)
                 .forEach(relationDao::delete);
-    }
-
-    private boolean isFilledOneField(GiftCertificateUpdateDto gc) {
-        String name = gc.getName();
-        String description = gc.getDescription();
-        BigDecimal price = gc.getPrice();
-        Integer duration = gc.getDuration();
-
-        return ObjectUtils.isNotEmpty(name)
-                || ObjectUtils.isNotEmpty(description)
-                || ObjectUtils.isNotEmpty(price)
-                || ObjectUtils.isNotEmpty(duration);
     }
 
     private void deleteIrrelevantRelations(GiftCertificate gc, Set<Tag> tagsFromRequest) {

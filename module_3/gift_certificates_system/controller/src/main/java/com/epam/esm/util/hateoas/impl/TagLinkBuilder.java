@@ -22,8 +22,8 @@ public class TagLinkBuilder extends AbstractLinkBuilder<TagDto> {
 
     @Override
     public Set<TagDto> build(Set<TagDto> dtos) {
-         return dtos.stream()
-                 .map(this::build)
-                 .collect(Collectors.toSet());
+        return dtos.stream()
+                .map(this::build)
+                .collect(Collectors.toSet());
     }
 }

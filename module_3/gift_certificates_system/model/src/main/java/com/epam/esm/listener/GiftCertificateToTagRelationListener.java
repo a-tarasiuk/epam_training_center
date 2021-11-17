@@ -8,8 +8,6 @@ import javax.persistence.PreRemove;
 import java.time.LocalDateTime;
 
 public final class GiftCertificateToTagRelationListener {
-    private static LocalDateTime currentDateTime;
-
     @PrePersist
     public void beforeCreate(GiftCertificateToTagRelation relation) {
         setGiftCertificateLastUpdateTime(relation);
@@ -21,8 +19,7 @@ public final class GiftCertificateToTagRelationListener {
     }
 
     private void setGiftCertificateLastUpdateTime(GiftCertificateToTagRelation relation) {
-        currentDateTime = LocalDateTime.now();
         GiftCertificate giftCertificate = relation.getGiftCertificate();
-        giftCertificate.setLastUpdateDate(currentDateTime);
+        giftCertificate.setLastUpdateDate(LocalDateTime.now());
     }
 }

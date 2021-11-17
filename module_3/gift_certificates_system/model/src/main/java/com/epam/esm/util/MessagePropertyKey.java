@@ -1,8 +1,5 @@
 package com.epam.esm.util;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public final class MessagePropertyKey {
     // Validation - General
     public static final String VALIDATION_ID = "validation.id";
@@ -10,6 +7,7 @@ public final class MessagePropertyKey {
 
     // Validation - User
     public static final String VALIDATION_USER_ID = "validation.user.id";
+    public static final String VALIDATION_USER_ID_NOT_EMPTY = "validation.user.id.not-empty";
     public static final String VALIDATION_USER_LOGIN = "validation.user.login";
     public static final String VALIDATION_USER_LOGIN_NOT_EMPTY = "validation.user.login.not-empty";
     public static final String VALIDATION_USER_FIRST_NAME = "validation.user.first-name";

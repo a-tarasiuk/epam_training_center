@@ -28,12 +28,6 @@ public class TagDaoImpl extends TagDao {
         this.relationDao = relationDao;
     }
 
-    @Override
-    public Tag create(Tag tag) {
-        em.persist(tag);
-        return tag;
-    }
-
     /**
      * Full query:<br>
      * SELECT tag FROM Tag AS tag JOIN GiftCertificateToTagRelation AS relation ON relation.tag = tag WHERE relation.giftCertificate = :giftCertificate

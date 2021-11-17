@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 @Component
 public class OrderLinkBuilder extends AbstractLinkBuilder<OrderDto> {
     private final UserLinkBuilder userLinkBuilder;

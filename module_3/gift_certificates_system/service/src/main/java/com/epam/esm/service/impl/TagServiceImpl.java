@@ -6,10 +6,10 @@ import com.epam.esm.dao.UserDao;
 import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.MostWidelyUsedTag;
+import com.epam.esm.pojo.MostWidelyUsedTag;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
-import com.epam.esm.entity.UserPrice;
+import com.epam.esm.pojo.UserPrice;
 import com.epam.esm.exception.EntityExistingException;
 import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.service.TagService;
@@ -19,7 +19,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import java.util.stream.Stream;
  * Tag service implementation.
  */
 @Service
-@Transactional
 public class TagServiceImpl implements TagService<TagDto> {
     private final ModelMapper modelMapper;
     private final TagDao tagDao;
@@ -129,7 +127,10 @@ public class TagServiceImpl implements TagService<TagDto> {
         Long count = findMaxCountOfRepetitions(map);
         Set<Tag> tags = findMostWidelyUsedTags(map, count);
 
-        return new MostWidelyUsedTag().setTags(tags).setNumberOfUsesTags(count).setUserPrice(up);
+        return new MostWidelyUsedTag()
+                .setTags(tags)
+                .setNumberOfUsesTags(count)
+                .setUserPrice(up);
     }
 
     private void delete(Tag tag) {

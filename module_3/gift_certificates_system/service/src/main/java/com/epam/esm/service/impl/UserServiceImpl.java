@@ -5,25 +5,24 @@ import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityExistingException;
 import com.epam.esm.exception.EntityNonExistentException;
-import com.epam.esm.service.AbstractService;
+import com.epam.esm.service.CreateService;
 import com.epam.esm.util.EsmPagination;
-import com.epam.esm.util.MessagePropertyKey;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.util.MessagePropertyKey.*;
+import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
+import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
+import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_USER_LOGIN_EXISTS;
 
 /**
  * User service implementation.
  */
 @Service
-@Transactional
-public class UserServiceImpl implements AbstractService<UserDto> {
+public class UserServiceImpl implements CreateService<UserDto> {
     private final ModelMapper modelMapper;
     private final UserDao userDao;
 

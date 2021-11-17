@@ -2,7 +2,6 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateUpdateDto;
-import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.GitCertificateService;
 import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.MessagePropertyKey;
@@ -12,8 +11,7 @@ import com.epam.esm.util.hateoas.LinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,15 +22,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.Set;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * Gift certificate controller.
@@ -59,6 +55,7 @@ public class GiftCertificateController {
      * Used in RestTemplate as well as in @Controller methods.
      */
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<GiftCertificateDto> create(@Valid @RequestBody GiftCertificateDto gcDto) {
         GiftCertificateDto gc = service.create(gcDto);
         linkBuilder.build(gc);

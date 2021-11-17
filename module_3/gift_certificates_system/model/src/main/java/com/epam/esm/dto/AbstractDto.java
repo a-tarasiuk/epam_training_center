@@ -7,5 +7,5 @@ import org.springframework.hateoas.RepresentationModel;
 @Getter
 @Setter
 public abstract class AbstractDto<T extends RepresentationModel<? extends T>> extends RepresentationModel<T> {
-    Long id;
+    protected Long id;
 }

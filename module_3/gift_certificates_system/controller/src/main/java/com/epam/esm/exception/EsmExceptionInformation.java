@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 @Getter
-public class EsmException {
+public class EsmExceptionInformation {
     private static final String HTTP_STATUS_PROPERTY = "HTTP Status";
     private static final String RESPONSE_BODY_PROPERTY = "Response body";
 

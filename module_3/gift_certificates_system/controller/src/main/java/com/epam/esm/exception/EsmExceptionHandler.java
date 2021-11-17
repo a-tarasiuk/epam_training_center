@@ -1,6 +1,5 @@
 package com.epam.esm.exception;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.convert.ConversionFailedException;
@@ -8,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 /**
  * ESM exception handler.
  */
-@ControllerAdvice
+@RestControllerAdvice
 public class EsmExceptionHandler {
     private final ResourceBundleMessageSource messageSource;
 
@@ -47,8 +46,9 @@ public class EsmExceptionHandler {
      * @see ResponseEntity
      */
     @ExceptionHandler(ConversionFailedException.class)
-    private ResponseEntity<?> handleEntityNotFoundException(RuntimeException e, Locale locale) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    private ResponseEntity<?> handleConversionFailedException(RuntimeException e, Locale locale) {
+        EsmHttpErrorCode esmHttpErrorCode = EsmHttpErrorCode.ENUM_CONVERSION_FAILED;
+        return createResponseEntity(e, HttpStatus.NOT_ACCEPTABLE, esmHttpErrorCode, locale);
     }
 
 
@@ -91,7 +91,7 @@ public class EsmExceptionHandler {
      */
     @ExceptionHandler(IncorrectArgumentException.class)
     private ResponseEntity<?> handleIncorrectArgumentException(IncorrectArgumentException e, Locale locale) {
-        return getResponseEntity(locale, e.getArgument(), e.getMessage());
+        return createResponseEntity(locale, e.getArgument(), e.getMessage());
     }
 
     /**
@@ -105,7 +105,7 @@ public class EsmExceptionHandler {
      */
     @ExceptionHandler(EntityNonExistentException.class)
     private ResponseEntity<?> handleEntityNonExistentException(EntityNonExistentException e, Locale locale) {
-        return getResponseEntity(locale, e.getArgument(), e.getMessage());
+        return createResponseEntity(locale, e.getArgument(), e.getMessage());
     }
 
     /**
@@ -119,7 +119,7 @@ public class EsmExceptionHandler {
      */
     @ExceptionHandler(EntityExistingException.class)
     private ResponseEntity<?> handleEntityExistingException(EntityExistingException e, Locale locale) {
-        return getResponseEntity(locale, e.getArgument(), e.getMessage());
+        return createResponseEntity(locale, e.getArgument(), e.getMessage());
     }
 
     /**
@@ -174,8 +174,8 @@ public class EsmExceptionHandler {
                 .collect(Collectors.toSet());
 
         EsmHttpErrorCode esmHttpErrorCode = EsmHttpErrorCode.INVALID_ARGUMENT_METHOD;
-        EsmException esmException = createEsmException(validationMessages, HttpStatus.BAD_REQUEST, esmHttpErrorCode);
-        return new ResponseEntity<>(esmException, esmException.getHttpStatus());
+        EsmExceptionInformation esmExceptionInformation = createEsmException(validationMessages, HttpStatus.BAD_REQUEST, esmHttpErrorCode);
+        return new ResponseEntity<>(esmExceptionInformation, esmExceptionInformation.getHttpStatus());
     }
 
     /**
@@ -202,13 +202,12 @@ public class EsmExceptionHandler {
      * @return response entity.
      * @see ResponseEntity
      */
-    @NotNull
-    private ResponseEntity<?> getResponseEntity(Locale locale, String argument, String message) {
+    private ResponseEntity<?> createResponseEntity(Locale locale, String argument, String message) {
         String validationMessage = String.format(messageSource.getMessage(message, null, locale), argument);
         EsmHttpErrorCode httpErrorCode = EsmHttpErrorCode.INVALID_ARGUMENT_METHOD;
         HttpStatus httpStatus = HttpStatus.CONFLICT;
-        EsmException esmException = createEsmException(Collections.singleton(validationMessage), httpStatus, httpErrorCode);
-        return new ResponseEntity<>(esmException, httpStatus);
+        EsmExceptionInformation esmExceptionInformation = createEsmException(Collections.singleton(validationMessage), httpStatus, httpErrorCode);
+        return new ResponseEntity<>(esmExceptionInformation, httpStatus);
     }
 
     private ResponseEntity<Object> createResponseEntity(Exception exception,
@@ -225,14 +224,14 @@ public class EsmExceptionHandler {
             validationMessages = Collections.singleton(validationMessage);
         }
 
-        EsmException esmException = createEsmException(validationMessages, httpStatus, esmHttpErrorCode);
-        return new ResponseEntity<>(esmException, httpStatus);
+        EsmExceptionInformation esmExceptionInformation = createEsmException(validationMessages, httpStatus, esmHttpErrorCode);
+        return new ResponseEntity<>(esmExceptionInformation, httpStatus);
     }
 
-    private EsmException createEsmException(Set<String> validationErrors, HttpStatus httpStatus, EsmHttpErrorCode esmHttpErrorCode) {
+    private EsmExceptionInformation createEsmException(Set<String> validationErrors, HttpStatus httpStatus, EsmHttpErrorCode esmHttpErrorCode) {
         int customErrorCode = generateEsmHttpErrorCode(httpStatus, esmHttpErrorCode);
         EsmExceptionBody esmExceptionBody = new EsmExceptionBody(validationErrors, customErrorCode);
-        return new EsmException(httpStatus, esmExceptionBody);
+        return new EsmExceptionInformation(httpStatus, esmExceptionBody);
     }
 
     private int generateEsmHttpErrorCode(HttpStatus httpStatus, EsmHttpErrorCode esmHttpErrorCode) {

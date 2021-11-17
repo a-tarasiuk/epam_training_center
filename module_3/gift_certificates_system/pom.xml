@@ -44,12 +44,9 @@
         <lombok.version>1.18.22</lombok.version>
         <jetbrains.annotation.version>22.0.0</jetbrains.annotation.version>
         <log4j2.version>2.14.1</log4j2.version>
-        <h2database.version>1.4.200</h2database.version>
         <jackson.version>2.13.0</jackson.version>
         <hibernate.validator.version>7.0.1.Final</hibernate.validator.version>
         <javax.servlet.version>4.0.1</javax.servlet.version>
-        <mysql.connectior.version>8.0.26</mysql.connectior.version>
-        <hikaricp.version>4.0.3</hikaricp.version>
         <springframework.boot.version>2.5.6</springframework.boot.version>
     </properties>
 
@@ -96,18 +93,6 @@
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
                 <version>${jetbrains.annotation.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2database.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.connectior.version}</version>
             </dependency>
 
             <dependency>

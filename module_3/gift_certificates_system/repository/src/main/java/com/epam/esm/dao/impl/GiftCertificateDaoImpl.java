@@ -40,12 +40,6 @@ public class GiftCertificateDaoImpl extends GiftCertificateDao {
     }
 
     @Override
-    public GiftCertificate create(GiftCertificate giftCertificate) {
-        em.persist(giftCertificate);
-        return giftCertificate;
-    }
-
-    @Override
     public GiftCertificate update(GiftCertificate giftCertificate) {
         return em.merge(giftCertificate);
     }

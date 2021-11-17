@@ -26,7 +26,10 @@ public abstract class AbstractDao<T> extends FindAllDao<T> {
      * @param entity - Entity being created.
      * @return - Created entity.
      */
-    public abstract T create(T entity);
+    public T create(T entity) {
+        em.persist(entity);
+        return entity;
+    }
 
     /**
      * Delete an entity in the database.

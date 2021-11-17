@@ -12,14 +12,6 @@ import java.util.Set;
  */
 public interface AbstractService<T> {
     /**
-     * Entity creation.
-     *
-     * @param entity - Entity.
-     * @return - Created entity from the database.
-     */
-    T create(T entity);
-
-    /**
      * Search for all entities.
      *
      * @return - Set of found entities.

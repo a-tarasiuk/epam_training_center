@@ -1,7 +1,7 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.User;
-import com.epam.esm.entity.UserPrice;
+import com.epam.esm.pojo.UserPrice;
 
 import java.util.Optional;
 import java.util.Set;

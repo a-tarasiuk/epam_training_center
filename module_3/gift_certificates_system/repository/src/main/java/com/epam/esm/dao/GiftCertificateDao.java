@@ -6,7 +6,6 @@ import com.epam.esm.entity.User;
 import com.epam.esm.util.EsmPagination;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
