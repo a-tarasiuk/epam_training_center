@@ -36,12 +36,12 @@ import static com.epam.esm.util.MessagePropertyKey.VALIDATION_USER_ID_NOT_EMPTY;
 @RequestMapping(value = UrlMapping.ORDERS)
 @Validated
 public class OrderController {
-    private final OrderServiceImpl orderService;
+    private final OrderServiceImpl service;
     private final LinkBuilder<OrderDto> linkBuilder;
 
     @Autowired
-    public OrderController(OrderServiceImpl orderService, LinkBuilder<OrderDto> linkBuilder) {
-        this.orderService = orderService;
+    public OrderController(OrderServiceImpl service, LinkBuilder<OrderDto> linkBuilder) {
+        this.service = service;
         this.linkBuilder = linkBuilder;
     }
 
@@ -60,7 +60,7 @@ public class OrderController {
                                                     @NotNull(message = VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL)
                                                     @Min(value = 1, message = VALIDATION_GIFT_CERTIFICATE_ID)
                                                     @RequestBody Long giftCertificateId) {
-        OrderDto order = orderService.create(userId, giftCertificateId);
+        OrderDto order = service.create(userId, giftCertificateId);
         return EntityModel.of(linkBuilder.build(order));
     }
 
@@ -74,7 +74,7 @@ public class OrderController {
     @GetMapping(UrlMapping.ID)
     public EntityModel<OrderDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
                                           @PathVariable long id) {
-        OrderDto order = orderService.findById(id);
+        OrderDto order = service.findById(id);
         linkBuilder.build(order);
         return EntityModel.of(order);
     }
@@ -82,12 +82,12 @@ public class OrderController {
     /**
      * Find all orders.
      *
-     * @param esmPagination Pagination parameters.
+     * @param pagination Pagination parameters.
      * @return Set of found orders DTO.
      */
     @GetMapping
-    public CollectionModel<OrderDto> findAll(@Valid EsmPagination esmPagination) {
-        Set<OrderDto> orders = orderService.findAll(esmPagination);
+    public CollectionModel<OrderDto> findAll(@Valid EsmPagination pagination) {
+        Set<OrderDto> orders = service.findAll(pagination);
         linkBuilder.build(orders);
         return CollectionModel.of(orders);
     }
@@ -96,14 +96,14 @@ public class OrderController {
      * Find all orders by user ID.
      *
      * @param userId        User ID.
-     * @param esmPagination Pagination parameters.
+     * @param pagination Pagination parameters.
      * @return Set of found order DTO.
      */
     @GetMapping(UrlMapping.FIND_ALL_ORDERS_BY_USER_ID)
     public CollectionModel<OrderDto> findAllOrdersByUserId(@Min(value = 1, message = VALIDATION_USER_ID)
                                                            @PathVariable long userId,
-                                                           @Valid EsmPagination esmPagination) {
-        Set<OrderDto> orders = orderService.findAllByUserId(userId, esmPagination);
+                                                           @Valid EsmPagination pagination) {
+        Set<OrderDto> orders = service.findAllByUserId(userId, pagination);
         return CollectionModel.of(linkBuilder.build(orders));
     }
 
@@ -120,7 +120,7 @@ public class OrderController {
                                      @PathVariable long userId,
                                      @Min(value = 1, message = VALIDATION_ORDER_ID)
                                      @PathVariable long orderId) {
-        OrderDto orderDto = orderService.findOrderForUser(orderId, userId);
-        return linkBuilder.build(orderDto);
+        OrderDto order = service.findOrderForUser(orderId, userId);
+        return linkBuilder.build(order);
     }
 }

@@ -16,7 +16,7 @@ public interface AbstractService<T> {
      *
      * @return - Set of found entities.
      */
-    Set<T> findAll(EsmPagination esmPagination);
+    Set<T> findAll(EsmPagination pagination);
 
     /**
      * Finding entity by it is ID.

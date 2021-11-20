@@ -12,7 +12,7 @@ import java.util.Set;
  * Contain most widely used tag for user with the highest cost of all orders.<br>
  * Also contain set of tag and the number of times these tags have been used by the user.
  *
- * @see UserPrice
+ * @see UserInformation
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +21,7 @@ import java.util.Set;
 public class MostWidelyUsedTag {
     private Long numberOfUses;
     private Set<Tag> tags;
-    private UserPrice userPrice;
+    private UserInformation userInformation;
 
     /**
      * Set number of times these tags have been used by the user.
@@ -46,13 +46,13 @@ public class MostWidelyUsedTag {
     }
 
     /**
-     * Set UserPrice.
+     * Set UserInformation.
      *
-     * @param userPrice user price.
+     * @param userInformation user price.
      * @return this object.
      */
-    public MostWidelyUsedTag setUserPrice(UserPrice userPrice) {
-        this.userPrice = userPrice;
+    public MostWidelyUsedTag setUserInformation(UserInformation userInformation) {
+        this.userInformation = userInformation;
         return this;
     }
 }

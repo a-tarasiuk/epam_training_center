@@ -14,21 +14,21 @@ public class OrderLinkBuilder extends AbstractLinkBuilder<OrderDto> {
     private final GiftCertificateLinkBuilder gcLinkBuilder;
 
     @Autowired
-    public OrderLinkBuilder(UserLinkBuilder userLinkBuilder, GiftCertificateLinkBuilder gcLinkBuilder) {
+    public OrderLinkBuilder(UserLinkBuilder userLinkBuilder, GiftCertificateLinkBuilder certificateLinkBuilder) {
         this.userLinkBuilder = userLinkBuilder;
-        this.gcLinkBuilder = gcLinkBuilder;
+        this.gcLinkBuilder = certificateLinkBuilder;
     }
 
     @Override
-    public OrderDto build(OrderDto dto) {
-        userLinkBuilder.build(dto.getUser());
-        gcLinkBuilder.build(dto.getGiftCertificate());
-        return buildSelf(OrderController.class, dto);
+    public OrderDto build(OrderDto order) {
+        userLinkBuilder.build(order.getUser());
+        gcLinkBuilder.build(order.getGiftCertificate());
+        return buildSelf(OrderController.class, order);
     }
 
     @Override
-    public Set<OrderDto> build(Set<OrderDto> dtos) {
-        return dtos.stream()
+    public Set<OrderDto> build(Set<OrderDto> orders) {
+        return orders.stream()
                 .map(this::build)
                 .collect(Collectors.toSet());
     }

@@ -63,27 +63,27 @@ public class OrderServiceImpl implements OrderService {
         UserDto userDto = modelMapper.map(user, UserDto.class);
 
         // Find requested Gift certificate in the database
-        GiftCertificate gc = getGiftCertificateOrElseThrow(giftCertificateId);
-        GiftCertificateDto gcDto = modelMapper.map(gc, GiftCertificateDto.class);
+        GiftCertificate certificate = getGiftCertificateOrElseThrow(giftCertificateId);
+        GiftCertificateDto certificateDto = modelMapper.map(certificate, GiftCertificateDto.class);
 
         // Create OrderDto
         OrderDto orderDto = new OrderDto();
         orderDto.setUser(userDto);
-        orderDto.setGiftCertificate(gcDto);
+        orderDto.setGiftCertificate(certificateDto);
 
         // Create Order entity with User and Gift certificate
         Order order = modelMapper.map(orderDto, Order.class);
-        BigDecimal gcPrice = gc.getPrice();
+        BigDecimal gcPrice = certificate.getPrice();
         order.setPrice(gcPrice);
         order.setUser(user);
-        order.setGiftCertificate(gc);
+        order.setGiftCertificate(certificate);
 
         return this.build(orderDao.create(order));
     }
 
     @Override
-    public Set<OrderDto> findAll(EsmPagination esmPagination) {
-        return orderDao.findAll(esmPagination, Order.class).stream()
+    public Set<OrderDto> findAll(EsmPagination pagination) {
+        return orderDao.findAll(pagination, Order.class).stream()
                 .map(this::build)
                 .collect(Collectors.toSet());
     }
@@ -132,10 +132,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderDto build(Order order) {
-        GiftCertificate gc = order.getGiftCertificate();
-        GiftCertificateDto gcDto = gcService.findById(gc.getId());
+        GiftCertificate certificate = order.getGiftCertificate();
+        GiftCertificateDto certificateDto = gcService.findById(certificate.getId());
         OrderDto orderDto = modelMapper.map(order, OrderDto.class);
-        orderDto.setGiftCertificate(gcDto);
+        orderDto.setGiftCertificate(certificateDto);
         return orderDto;
     }
 }

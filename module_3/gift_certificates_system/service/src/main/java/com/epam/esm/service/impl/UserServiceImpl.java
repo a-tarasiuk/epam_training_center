@@ -46,8 +46,8 @@ public class UserServiceImpl implements CreateService<UserDto> {
     }
 
     @Override
-    public Set<UserDto> findAll(EsmPagination esmPagination) {
-        return userDao.findAll(esmPagination, User.class).stream()
+    public Set<UserDto> findAll(EsmPagination pagination) {
+        return userDao.findAll(pagination, User.class).stream()
                 .map(user -> modelMapper.map(user, UserDto.class))
                 .collect(Collectors.toSet());
     }

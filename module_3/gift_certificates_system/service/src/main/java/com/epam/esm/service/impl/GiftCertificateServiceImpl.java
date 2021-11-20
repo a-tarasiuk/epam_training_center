@@ -11,6 +11,7 @@ import com.epam.esm.entity.GiftCertificateToTagRelation;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityExistingException;
 import com.epam.esm.exception.EntityNonExistentException;
+import com.epam.esm.pojo.GiftCertificateSearchParameter;
 import com.epam.esm.service.GitCertificateService;
 import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.GiftCertificateFieldChecker;
@@ -21,6 +22,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
@@ -29,9 +31,8 @@ import java.util.stream.Collectors;
 
 import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
 import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_TAG_NAMES_NOT_FOUND;
 import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_UPDATE_FIELDS_EMPTY;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_TAG_NAME_NOT_FOUND;
+import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_WITH_SEARCH_PARAMETERS;
 
 /**
  * Gift certificate service implementation.
@@ -61,43 +62,29 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     }
 
     @Override
-    public GiftCertificateDto create(GiftCertificateDto gcCreateDto) {
-        checkIfNonExistsOrElseThrow(gcCreateDto);
+    public GiftCertificateDto create(GiftCertificateDto certificateDto) {
+        checkIfNonExistsOrElseThrow(certificateDto);
 
-        GiftCertificate gc = modelMapper.map(gcCreateDto, GiftCertificate.class);
-        GiftCertificate createdGc = gcDao.create(gc);
+        GiftCertificate certificate = modelMapper.map(certificateDto, GiftCertificate.class);
+        GiftCertificate createdCertificate = gcDao.create(certificate);
 
-        gcCreateDto.getTags().stream()
+        certificateDto.getTags().stream()
                 .map(tagDto -> modelMapper.map(tagDto, Tag.class))
                 .map(tag -> tagDao.findByName(tag.getName()).orElseGet(() -> tagDao.create(tag)))
-                .map(tag -> new GiftCertificateToTagRelation(createdGc, tag))
+                .map(tag -> new GiftCertificateToTagRelation(createdCertificate, tag))
                 .forEach(relation -> {
                     if (!relationDao.findBy(relation).isPresent()) {
                         relationDao.create(relation);
                     }
                 });
 
-        GiftCertificateDto gcDto = modelMapper.map(createdGc, GiftCertificateDto.class);
-        Set<TagDto> tagsDto = tagDao.findAllBy(createdGc).stream()
+        GiftCertificateDto gcDto = modelMapper.map(createdCertificate, GiftCertificateDto.class);
+        Set<TagDto> tagsDto = tagDao.findAllBy(createdCertificate).stream()
                 .map(tag -> modelMapper.map(tag, TagDto.class))
                 .collect(Collectors.toSet());
         gcDto.setTags(tagsDto);
 
         return gcDto;
-    }
-
-    @Override
-    public Set<GiftCertificateDto> findAll(EsmPagination esmPagination) {
-        return gcDao.findAll(esmPagination, GiftCertificate.class).stream()
-                .map(this::buildGiftCertificateDtoWithTags)
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<GiftCertificateDto> findAll(EsmPagination esmPagination, Set<String> sortBy) {
-        return gcDao.findAll(esmPagination, sortBy).stream()
-                .map(this::buildGiftCertificateDtoWithTags)
-                .collect(Collectors.toSet());
     }
 
     @Override
@@ -108,42 +95,38 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     }
 
     @Override
-    public Set<GiftCertificateDto> findByTagNames(Set<String> names) {
-        Set<Tag> tags = names.stream()
-                .map(name -> tagDao.findByName(name)
-                        .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_TAG_NAME_NOT_FOUND, name)))
+    public Set<GiftCertificateDto> findAll(EsmPagination pagination) {
+        return gcDao.findAll(pagination, GiftCertificate.class).stream()
+                .map(this::buildGiftCertificateDtoWithTags)
                 .collect(Collectors.toSet());
+    }
 
-        Set<GiftCertificate> giftCertificates = gcDao.findBy(tags);
+    @Override
+    public Set<GiftCertificateDto> findAll(EsmPagination pagination, GiftCertificateSearchParameter searchParameter) {
+        Set<GiftCertificate> certificates = gcDao.findAll(pagination, searchParameter);
 
-        if (ObjectUtils.isNotEmpty(giftCertificates)) {
-            return giftCertificates.stream()
-                    .map(this::buildGiftCertificateDtoWithTags)
+        if (ObjectUtils.isNotEmpty(certificates)) {
+            return certificates.stream()
+                    .map(certificate -> modelMapper.map(certificate, GiftCertificateDto.class))
                     .collect(Collectors.toSet());
         } else {
-            throw new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_TAG_NAMES_NOT_FOUND, String.join(", ", names));
+            throw new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_WITH_SEARCH_PARAMETERS);
         }
     }
 
     @Override
-    public Set<GiftCertificateDto> findByKeyword(String keyword) {
-        Set<GiftCertificate> gcs = gcDao.findBy(keyword);
-        return buildGiftCertificatesDtoWithTags(gcs);
-    }
-
-    @Override
-    public GiftCertificateDto update(long id, GiftCertificateUpdateDto gcUpdateDto) {
+    public GiftCertificateDto update(long id, GiftCertificateUpdateDto certificate) {
         GiftCertificate foundGc = gcDao.findById(id)
                 .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
 
-        if (GiftCertificateFieldChecker.isFilledOneField(gcUpdateDto)) {
-            GiftCertificate updatedGc = modelMapper.map(gcUpdateDto, GiftCertificate.class);
+        if (GiftCertificateFieldChecker.isFilledOneField(certificate)) {
+            GiftCertificate updatedGc = modelMapper.map(certificate, GiftCertificate.class);
 
             GiftCertificate updated = GiftCertificateUpdater.update(foundGc, updatedGc);
             GiftCertificate created = gcDao.update(updated);
 
-            if (ObjectUtils.isNotEmpty(gcUpdateDto.getTags())) {
-                updateRelations(created, gcUpdateDto);
+            if (ObjectUtils.isNotEmpty(certificate.getTags())) {
+                updateRelations(created, certificate);
             }
 
             return buildGiftCertificateDtoWithTags(created);
@@ -154,13 +137,13 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
 
     @Override
     public void delete(long id) {
-        Optional<GiftCertificate> optionalGc = gcDao.findById(id);
-        GiftCertificate gc = optionalGc.orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
+        Optional<GiftCertificate> optionalCertificate = gcDao.findById(id);
+        GiftCertificate gc = optionalCertificate.orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
         delete(gc);
     }
 
-    private void checkIfNonExistsOrElseThrow(GiftCertificateDto giftCertificateDto) {
-        String name = giftCertificateDto.getName();
+    private void checkIfNonExistsOrElseThrow(GiftCertificateDto certificate) {
+        String name = certificate.getName();
         Optional<GiftCertificate> optionalGiftCertificate = gcDao.findByName(name);
 
         if (optionalGiftCertificate.isPresent()) {
@@ -168,76 +151,76 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         }
     }
 
-    private void updateRelations(GiftCertificate gc, GiftCertificateUpdateDto updateDto) {
-        Set<Tag> tagsFromRequest = findTagsBy(updateDto);
-        tagsFromRequest.forEach(tag -> createRelationIfNonExist(gc, tag));
-        deleteIrrelevantRelations(gc, tagsFromRequest);
+    private void updateRelations(GiftCertificate certificate, GiftCertificateUpdateDto updatedCertificate) {
+        Set<Tag> tagsFromRequest = findTagsBy(updatedCertificate);
+        tagsFromRequest.forEach(tag -> createRelationIfNonExist(certificate, tag));
+        deleteIrrelevantRelations(certificate, tagsFromRequest);
     }
 
-    private void createRelationIfNonExist(GiftCertificate gc, Tag tag) {
+    private void createRelationIfNonExist(GiftCertificate certificate, Tag tag) {
         String tagName = tag.getName();
         Optional<Tag> optionalTag = tagDao.findByName(tagName);
 
         if (optionalTag.isPresent()) {
             Tag foundTag = optionalTag.get();
-            boolean isExistRelation = relationDao.isExist(gc, foundTag);
+            boolean isExistRelation = relationDao.isExist(certificate, foundTag);
 
             if (!isExistRelation) {
-                GiftCertificateToTagRelation relation = new GiftCertificateToTagRelation(gc, foundTag);
+                GiftCertificateToTagRelation relation = new GiftCertificateToTagRelation(certificate, foundTag);
                 relationDao.create(relation);
             }
         } else {
             Tag createdTag = tagDao.create(tag);
-            GiftCertificateToTagRelation relation = new GiftCertificateToTagRelation(gc, createdTag);
+            GiftCertificateToTagRelation relation = new GiftCertificateToTagRelation(certificate, createdTag);
             relationDao.create(relation);
         }
     }
 
-    private Set<Tag> findTagsBy(GiftCertificate gc) {
-        return tagDao.findAllBy(gc);
+    private Set<Tag> findTagsBy(GiftCertificate certificate) {
+        return tagDao.findAllBy(certificate);
     }
 
-    private Set<TagDto> findTagsDtoBy(GiftCertificate gc) {
-        return findTagsBy(gc).stream()
+    private Set<TagDto> findTagsDtoBy(GiftCertificate certificate) {
+        return findTagsBy(certificate).stream()
                 .map(tag -> modelMapper.map(tag, TagDto.class))
                 .collect(Collectors.toSet());
     }
 
-    private Set<Tag> findTagsBy(GiftCertificateUpdateDto gc) {
-        return gc.getTags().stream()
+    private Set<Tag> findTagsBy(GiftCertificateUpdateDto certificate) {
+        return certificate.getTags().stream()
                 .map(tagDto -> modelMapper.map(tagDto, Tag.class))
                 .collect(Collectors.toSet());
     }
 
-    private GiftCertificateDto buildGiftCertificateDtoWithTags(GiftCertificate gc) {
-        Set<TagDto> tagsDto = findTagsDtoBy(gc);
-        GiftCertificateDto gcDto = modelMapper.map(gc, GiftCertificateDto.class);
+    private GiftCertificateDto buildGiftCertificateDtoWithTags(GiftCertificate certificate) {
+        Set<TagDto> tagsDto = findTagsDtoBy(certificate);
+        GiftCertificateDto gcDto = modelMapper.map(certificate, GiftCertificateDto.class);
         gcDto.setTags(tagsDto);
         return gcDto;
     }
 
-    private Set<GiftCertificateDto> buildGiftCertificatesDtoWithTags(Set<GiftCertificate> gcs) {
-        return gcs.stream()
+    private Set<GiftCertificateDto> buildGiftCertificatesDtoWithTags(Set<GiftCertificate> certificates) {
+        return certificates.stream()
                 .map(this::buildGiftCertificateDtoWithTags)
                 .collect(Collectors.toSet());
     }
 
-    private void delete(GiftCertificate gc) {
-        deleteRelations(gc);
-        gcDao.delete(gc);
+    private void delete(GiftCertificate certificate) {
+        deleteRelations(certificate);
+        gcDao.delete(certificate);
     }
 
-    private void deleteRelations(GiftCertificate gc) {
-        relationDao.findAllBy(gc)
+    private void deleteRelations(GiftCertificate certificate) {
+        relationDao.findAllBy(certificate)
                 .forEach(relationDao::delete);
     }
 
-    private void deleteIrrelevantRelations(GiftCertificate gc, Set<Tag> tagsFromRequest) {
-        Set<Tag> tagsFromDatabase = findTagsBy(gc);
+    private void deleteIrrelevantRelations(GiftCertificate certificate, Set<Tag> tagsFromRequest) {
+        Set<Tag> tagsFromDatabase = findTagsBy(certificate);
         Set<Tag> tagForRemove = new HashSet<>(tagsFromDatabase);
         tagForRemove.removeAll(tagsFromRequest);
         tagForRemove.stream()
-                .map(tag -> new GiftCertificateToTagRelation(gc, tag))
+                .map(tag -> new GiftCertificateToTagRelation(certificate, tag))
                 .forEach(relationDao::delete);
     }
 }

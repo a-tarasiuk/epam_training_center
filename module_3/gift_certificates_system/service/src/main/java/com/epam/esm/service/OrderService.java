@@ -22,10 +22,10 @@ public interface OrderService extends AbstractService<OrderDto> {
      * Find all orders DTO by user ID.
      *
      * @param userId        User ID.
-     * @param esmPagination Pagination entity.
+     * @param pagination Pagination entity.
      * @return Set of found users.
      */
-    Set<OrderDto> findAllByUserId(long userId, EsmPagination esmPagination);
+    Set<OrderDto> findAllByUserId(long userId, EsmPagination pagination);
 
     /**
      * Find order by ID for user with ID/

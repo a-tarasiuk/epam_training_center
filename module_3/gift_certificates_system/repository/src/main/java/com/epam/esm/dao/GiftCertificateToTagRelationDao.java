@@ -55,8 +55,8 @@ public interface GiftCertificateToTagRelationDao<T> {
     /**
      * Find all gift certificate to tag relation by gift certificate entity.
      *
-     * @param giftCertificate Gift certificate entity.
+     * @param certificate Gift certificate entity.
      * @return List of gift certificate to tag relation.
      */
-    List<GiftCertificateToTagRelation> findAllBy(GiftCertificate giftCertificate);
+    List<GiftCertificateToTagRelation> findAllBy(GiftCertificate certificate);
 }

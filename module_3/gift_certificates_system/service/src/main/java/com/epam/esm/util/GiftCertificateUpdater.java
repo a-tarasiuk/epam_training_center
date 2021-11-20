@@ -12,33 +12,33 @@ public class GiftCertificateUpdater {
     private GiftCertificateUpdater() {
     }
 
-    public static GiftCertificate update(GiftCertificate found, GiftCertificate updated) {
-        String foundName = found.getName();
-        String foundDescription = found.getDescription();
-        BigDecimal foundPrice = found.getPrice();
-        Integer foundDuration = found.getDuration();
+    public static GiftCertificate update(GiftCertificate foundCertificate, GiftCertificate updatedCertificate) {
+        String foundName = foundCertificate.getName();
+        String foundDescription = foundCertificate.getDescription();
+        BigDecimal foundPrice = foundCertificate.getPrice();
+        Integer foundDuration = foundCertificate.getDuration();
 
-        String updatedName = updated.getName();
-        String updatedDescription = updated.getDescription();
-        BigDecimal updatedPrice = updated.getPrice();
-        Integer updatedDuration = updated.getDuration();
+        String updatedName = updatedCertificate.getName();
+        String updatedDescription = updatedCertificate.getDescription();
+        BigDecimal updatedPrice = updatedCertificate.getPrice();
+        Integer updatedDuration = updatedCertificate.getDuration();
 
         if (!ObjectUtils.isEmpty(updatedName) && !updatedName.equals(foundName)) {
-            found.setName(updatedName);
+            foundCertificate.setName(updatedName);
         }
 
         if (!ObjectUtils.isEmpty(updatedDescription) && !updatedDescription.equals(foundDescription)) {
-            found.setDescription(updatedDescription);
+            foundCertificate.setDescription(updatedDescription);
         }
 
         if (!ObjectUtils.isEmpty(updatedPrice) && !updatedPrice.equals(foundPrice)) {
-            found.setPrice(updatedPrice);
+            foundCertificate.setPrice(updatedPrice);
         }
 
         if (!ObjectUtils.isEmpty(updatedDuration) && !updatedDuration.equals(foundDuration)) {
-            found.setDuration(updatedDuration);
+            foundCertificate.setDuration(updatedDuration);
         }
 
-        return found;
+        return foundCertificate;
     }
 }

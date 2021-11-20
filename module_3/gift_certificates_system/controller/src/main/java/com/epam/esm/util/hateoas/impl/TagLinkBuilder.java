@@ -14,15 +14,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class TagLinkBuilder extends AbstractLinkBuilder<TagDto> {
     @Override
-    public TagDto build(TagDto dto) {
-        buildSelf(TagController.class, dto);
-        return dto.add(linkTo(methodOn(TagController.class).delete(dto.getId()))
+    public TagDto build(TagDto tag) {
+        buildSelf(TagController.class, tag);
+        return tag.add(linkTo(methodOn(TagController.class).delete(tag.getId()))
                 .withRel(MethodName.DELETE.name()).withType(HttpMethod.DELETE.name()));
     }
 
     @Override
-    public Set<TagDto> build(Set<TagDto> dtos) {
-        return dtos.stream()
+    public Set<TagDto> build(Set<TagDto> tags) {
+        return tags.stream()
                 .map(this::build)
                 .collect(Collectors.toSet());
     }

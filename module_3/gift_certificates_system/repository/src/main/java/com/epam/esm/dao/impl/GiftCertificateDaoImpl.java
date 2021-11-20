@@ -6,19 +6,16 @@ import com.epam.esm.entity.GiftCertificateToTagRelation;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
+import com.epam.esm.pojo.GiftCertificateSearchParameter;
 import com.epam.esm.util.CriteriaQueryGenerator;
-import com.epam.esm.util.DatabaseColumnName;
 import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.ParameterName;
-import com.epam.esm.util.SqlGenerator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
@@ -40,17 +37,17 @@ public class GiftCertificateDaoImpl extends GiftCertificateDao {
     }
 
     @Override
-    public GiftCertificate update(GiftCertificate giftCertificate) {
-        return em.merge(giftCertificate);
+    public GiftCertificate update(GiftCertificate certificate) {
+        return em.merge(certificate);
     }
 
     @Override
-    public Set<GiftCertificate> findAll(EsmPagination pagination, Set<String> sortBy) {
-        CriteriaQueryGenerator<GiftCertificate> cqg = new CriteriaQueryGenerator<>(em, GiftCertificate.class);
-        CriteriaQuery<GiftCertificate> cq = cqg.generate(sortBy);
-        validatePaginationOrElseThrow(pagination, GiftCertificate.class);
+    public Set<GiftCertificate> findAll(EsmPagination pagination, GiftCertificateSearchParameter parameter) {
+        CriteriaQueryGenerator<GiftCertificate> criteriaQueryGenerator = new CriteriaQueryGenerator<>(em, GiftCertificate.class);
+        CriteriaQuery<GiftCertificate> cq = criteriaQueryGenerator.generate(parameter);
         return executeQuery(cq, pagination);
     }
+
 
     @Override
     public Optional<GiftCertificate> findById(long id) {
@@ -80,45 +77,9 @@ public class GiftCertificateDaoImpl extends GiftCertificateDao {
     }
 
     @Override
-    public Set<GiftCertificate> findBy(String keyword) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<GiftCertificate> cq = cb.createQuery(GiftCertificate.class);
-
-        Root<GiftCertificate> root = cq.from(GiftCertificate.class);
-        Path<String> namePath = root.get(DatabaseColumnName.NAME);
-        Path<String> descriptionPath = root.get(DatabaseColumnName.DESCRIPTION);
-
-        String keywordLike = SqlGenerator.like(keyword);
-
-        Predicate nameLike = cb.like(namePath, keywordLike);
-        Predicate descriptionLike = cb.like(descriptionPath, keywordLike);
-        Predicate or = cb.or(nameLike, descriptionLike);
-
-        cq.where(or);
-        return executeCriteriaQuery(cq);
-    }
-
-    @Override
     public Set<GiftCertificate> findBy(Tag tag) {
         return relationDao.findAllBy(tag).stream()
                 .map(GiftCertificateToTagRelation::getGiftCertificate)
-                .collect(Collectors.toSet());
-    }
-
-    /**
-     * Full JPA query:<br>
-     * SELECT gc FROM GiftCertificate gc JOIN GiftCertificateToTagRelation relation on gc = relation.giftCertificate WHERE relation.tag IN (:tags) GROUP BY gc HAVING COUNT(gc) = :countTags
-     */
-    @Override
-    public Set<GiftCertificate> findBy(Set<Tag> tags) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<GiftCertificate> cq = cb.createQuery(GiftCertificate.class);
-        Root<GiftCertificateToTagRelation> from = cq.from(GiftCertificateToTagRelation.class);
-        Path<GiftCertificate> choose = from.get(ParameterName.GIFT_CERTIFICATE);
-        cq.select(choose).where(from.get(ParameterName.TAG).in(tags)).groupBy(choose).having(cb.count(choose).in(tags.size()));
-
-        return em.createQuery(cq)
-                .getResultStream()
                 .collect(Collectors.toSet());
     }
 

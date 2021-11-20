@@ -36,12 +36,12 @@ import java.util.Set;
 @RequestMapping(value = UrlMapping.TAGS)
 @Validated
 public class TagController {
-    private final TagServiceImpl tagService;
+    private final TagServiceImpl service;
     private final LinkBuilder<TagDto> linkBuilder;
 
     @Autowired
-    public TagController(TagServiceImpl tagService, LinkBuilder<TagDto> linkBuilder) {
-        this.tagService = tagService;
+    public TagController(TagServiceImpl service, LinkBuilder<TagDto> linkBuilder) {
+        this.service = service;
         this.linkBuilder = linkBuilder;
     }
 
@@ -54,7 +54,7 @@ public class TagController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<TagDto> create(@Valid @RequestBody TagDto tagDto) {
-        TagDto tag = tagService.create(tagDto);
+        TagDto tag = service.create(tagDto);
         linkBuilder.build(tag);
         return EntityModel.of(tag);
     }
@@ -68,7 +68,7 @@ public class TagController {
     @GetMapping(UrlMapping.ID)
     public EntityModel<TagDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
                                         @PathVariable long id) {
-        TagDto tag = tagService.findById(id);
+        TagDto tag = service.findById(id);
         linkBuilder.build(tag);
         return EntityModel.of(tag);
     }
@@ -81,7 +81,7 @@ public class TagController {
      */
     @GetMapping
     public CollectionModel<TagDto> findAll(@Valid EsmPagination pagination) {
-        Set<TagDto> tags = tagService.findAll(pagination);
+        Set<TagDto> tags = service.findAll(pagination);
         linkBuilder.build(tags);
         return CollectionModel.of(tags);
     }
@@ -94,7 +94,7 @@ public class TagController {
     @DeleteMapping(UrlMapping.ID)
     public ResponseEntity<Void> delete(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
                                        @PathVariable long id) {
-        tagService.delete(id);
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -105,7 +105,7 @@ public class TagController {
      */
     @GetMapping(UrlMapping.MOST_WIDELY_USED_TAG_OF_USER_WITH_HIGHEST_COST_OF_ALL_ORDERS)
     public CollectionModel<MostWidelyUsedTag> findMostWidelyUsedTag() {
-        Set<MostWidelyUsedTag> tags = tagService.findMostWidelyUsedTags();
+        Set<MostWidelyUsedTag> tags = service.findMostWidelyUsedTags();
         return CollectionModel.of(tags);
     }
 }

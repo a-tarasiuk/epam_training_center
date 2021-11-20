@@ -1,12 +1,17 @@
 package com.epam.esm.util;
 
+import com.epam.esm.entity.GiftCertificateToTagRelation;
+import com.epam.esm.entity.Tag;
+import com.epam.esm.pojo.GiftCertificateSearchParameter;
 import org.apache.commons.lang3.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,23 +29,66 @@ public final class CriteriaQueryGenerator<T> implements Serializable {
     private static final int COUNT_PARTS_IN_PARAMETER = 2;
     private static final String ONE_DELIMITER_REGEX = "^[\\w]*\\.[\\w]*$";
 
-    private CriteriaBuilder cb;
-    private CriteriaQuery<T> cq;
-    private Root<T> from;
+    private CriteriaBuilder builder;
+    private CriteriaQuery<T> criteriaQuery;
+    private Root<GiftCertificateToTagRelation> root;
+    private Path<T> certificate;
 
     private CriteriaQueryGenerator() {
     }
 
     public CriteriaQueryGenerator(EntityManager em, Class<T> entity) {
-        cb = em.getCriteriaBuilder();
-        cq = cb.createQuery(entity);
-        from = cq.from(entity);
+        builder = em.getCriteriaBuilder();
+        criteriaQuery = builder.createQuery(entity);
+        root = criteriaQuery.from(GiftCertificateToTagRelation.class);
+        certificate = root.get(ParameterName.GIFT_CERTIFICATE);
     }
 
-    public CriteriaQuery<T> generate(Set<String> sortBy) {
+    private static boolean isParameterContainDelimiter(String parameter) {
+        return Pattern.matches(ONE_DELIMITER_REGEX, parameter);
+    }
+
+    public CriteriaQuery<T> generate(GiftCertificateSearchParameter searchParameter) {
+        String keyword = searchParameter.getKeyword();
+        if (ObjectUtils.isNotEmpty(keyword)) {
+            generateForKeyword(keyword);
+        }
+
+        Set<String> tagNames = searchParameter.getTagNames();
+        if (ObjectUtils.isNotEmpty(tagNames)) {
+            generateForTagNames(tagNames);
+        }
+
+        List<Order> orders = generateForFields(searchParameter.getSortBy());
+        return criteriaQuery.select(root.get(ParameterName.GIFT_CERTIFICATE))
+                .orderBy(orders);
+    }
+
+    private void generateForKeyword(String keyword) {
+        String keywordLike = SqlGenerator.like(keyword);
+        Predicate nameLike = builder.like(certificate.get(DatabaseColumnName.NAME), keywordLike);
+        Predicate descriptionLike = builder.like(certificate.get(DatabaseColumnName.DESCRIPTION), keywordLike);
+        Predicate result = builder.or(nameLike, descriptionLike);
+
+        criteriaQuery.where(result);
+    }
+
+    /**
+     * JPA query:<br>
+     * SELECT gc FROM GiftCertificate gc JOIN GiftCertificateToTagRelation relation on gc = relation.giftCertificate WHERE relation.tag IN (:tags) GROUP BY gc HAVING COUNT(gc) = :countTags
+     */
+    private void generateForTagNames(Set<String> tagNames) {
+        Join<GiftCertificateToTagRelation, Tag> rel = root.join(ParameterName.TAG);
+        Predicate condition = rel.get(ParameterName.NAME).in(tagNames);
+
+        criteriaQuery.where(condition)
+                .groupBy(certificate)
+                .having(builder.count(certificate).in(tagNames.size()));
+    }
+
+    private List<Order> generateForFields(Set<String> sortBy) {
         Set<String> sort = ObjectUtils.isEmpty(sortBy) ? Collections.singleton(DEFAULT_SORT) : sortBy;
-        List<Order> orders = findOrders(sort);
-        return cq.orderBy(orders);
+        return findOrders(sort);
     }
 
     private List<Order> findOrders(Set<String> sort) {
@@ -48,6 +96,7 @@ public final class CriteriaQueryGenerator<T> implements Serializable {
 
         for (String value : sort) {
             Order order;
+
             if (isParameterContainDelimiter(value)) {
                 String[] parse = value.split(DELIMITER, COUNT_PARTS_IN_PARAMETER);
                 String parseColumnName = parse[0];
@@ -68,20 +117,16 @@ public final class CriteriaQueryGenerator<T> implements Serializable {
         return orders;
     }
 
-    private static boolean isParameterContainDelimiter(String parameter) {
-        return Pattern.matches(ONE_DELIMITER_REGEX, parameter);
-    }
-
     private Order defineOrder(ColumnName columnName) {
         String name = columnName.name().toLowerCase();
-        Path<String> path = from.get(name);
-        return cb.asc(path);
+        Path<String> path = certificate.get(name);
+        return builder.asc(path);
     }
 
     private Order defineOrder(ColumnName columnName, Direction direction) {
         String name = columnName.name().toLowerCase();
-        Path<String> path = from.get(name);
-        return direction == Direction.DESC ? cb.desc(path) : cb.asc(path);
+        Path<String> path = certificate.get(name);
+        return direction == Direction.DESC ? builder.desc(path) : builder.asc(path);
     }
 
     private enum Direction {

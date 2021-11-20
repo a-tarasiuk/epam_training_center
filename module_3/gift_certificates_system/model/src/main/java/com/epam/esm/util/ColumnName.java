@@ -2,9 +2,10 @@ package com.epam.esm.util;
 
 import java.util.Locale;
 
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_COLUMN_NAME_NOT_FOUND;
+import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_COLUMN_NAME_INCORRECT_VALUE;
 
 public enum ColumnName {
+    ID,
     NAME,
     DESCRIPTION,
     PRICE,
@@ -16,7 +17,7 @@ public enum ColumnName {
         try {
             return valueOf(value.toUpperCase(Locale.US));
         } catch (Exception e) {
-            throw new IllegalArgumentException(EXCEPTION_GIFT_CERTIFICATE_COLUMN_NAME_NOT_FOUND);
+            throw new IllegalArgumentException(EXCEPTION_GIFT_CERTIFICATE_COLUMN_NAME_INCORRECT_VALUE);
         }
     }
 }

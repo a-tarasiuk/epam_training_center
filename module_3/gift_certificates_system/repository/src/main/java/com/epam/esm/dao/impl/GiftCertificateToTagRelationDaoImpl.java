@@ -43,11 +43,11 @@ public class GiftCertificateToTagRelationDaoImpl implements GiftCertificateToTag
      * SELECT relation FROM GiftCertificateToTagRelation AS relation WHERE relation.giftCertificate = :giftCertificate
      */
     @Override
-    public List<GiftCertificateToTagRelation> findAllBy(GiftCertificate gc) {
+    public List<GiftCertificateToTagRelation> findAllBy(GiftCertificate certificate) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<GiftCertificateToTagRelation> cq = cb.createQuery(GiftCertificateToTagRelation.class);
         Root<GiftCertificateToTagRelation> from = cq.from(GiftCertificateToTagRelation.class);
-        Predicate condition = cb.equal(from.get(ParameterName.GIFT_CERTIFICATE), gc);
+        Predicate condition = cb.equal(from.get(ParameterName.GIFT_CERTIFICATE), certificate);
         cq.select(from).where(condition);
 
         return entityManager.createQuery(cq)

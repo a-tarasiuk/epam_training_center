@@ -2,12 +2,13 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateUpdateDto;
+import com.epam.esm.pojo.GiftCertificateSearchParameter;
 import com.epam.esm.service.GitCertificateService;
 import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.MessagePropertyKey;
-import com.epam.esm.util.ParameterName;
 import com.epam.esm.util.UrlMapping;
 import com.epam.esm.util.hateoas.LinkBuilder;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -21,13 +22,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 /**
@@ -57,37 +56,9 @@ public class GiftCertificateController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<GiftCertificateDto> create(@Valid @RequestBody GiftCertificateDto gcDto) {
-        GiftCertificateDto gc = service.create(gcDto);
-        linkBuilder.build(gc);
-        return EntityModel.of(gc);
-    }
-
-    /**
-     * Find all gift certificates DTO.
-     *
-     * @param esmPagination Pagination parameters.
-     * @return Set of found gift certificates DTO.
-     */
-    @GetMapping
-    public CollectionModel<GiftCertificateDto> findAll(@Valid EsmPagination esmPagination) {
-        Set<GiftCertificateDto> gcs = service.findAll(esmPagination);
-        linkBuilder.build(gcs);
-        return CollectionModel.of(gcs);
-    }
-
-    /**
-     * Find all gift certificates DTO with sort parameters and pagination.
-     *
-     * @param sortBy        Set of gift certificate field names.
-     * @param esmPagination Pagination parameters.
-     * @return Set of found gift certificates DTO.
-     */
-    @GetMapping(params = ParameterName.SORT_BY)
-    public CollectionModel<GiftCertificateDto> findAllSortByOrderBy(@RequestParam(value = ParameterName.SORT_BY) Set<String> sortBy,
-                                                                    @Valid EsmPagination esmPagination) {
-        Set<GiftCertificateDto> gcs = service.findAll(esmPagination, sortBy);
-        linkBuilder.build(gcs);
-        return CollectionModel.of(gcs);
+        GiftCertificateDto certificate = service.create(gcDto);
+        linkBuilder.build(certificate);
+        return EntityModel.of(certificate);
     }
 
     /**
@@ -99,37 +70,26 @@ public class GiftCertificateController {
     @GetMapping(path = UrlMapping.ID)
     public EntityModel<GiftCertificateDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
                                                     @PathVariable long id) {
-        GiftCertificateDto gc = service.findById(id);
-        linkBuilder.build(gc);
-        return EntityModel.of(gc);
+        GiftCertificateDto certificate = service.findById(id);
+        linkBuilder.build(certificate);
+        return EntityModel.of(certificate);
     }
 
     /**
-     * Finding gift certificate by tag name(s).
+     * Find all gift certificates DTO.
      *
-     * @param tagNames Tag name(s).
-     * @return List of gift certificates.
+     * @param pagination Pagination parameters.
+     * @return Set of found gift certificates DTO.
      */
-    @GetMapping(params = ParameterName.TAG_NAME)
-    public CollectionModel<GiftCertificateDto> findByTagNames(@RequestParam(name = ParameterName.TAG_NAME)
-                                                                  Set<@NotBlank(message = MessagePropertyKey.VALIDATION_TAG_NAME_NOT_EMPTY) String> tagNames) {
-        Set<GiftCertificateDto> gcs = service.findByTagNames(tagNames);
-        return CollectionModel.of(linkBuilder.build(gcs));
-    }
+    @GetMapping
+    public CollectionModel<GiftCertificateDto> findAll(@Valid EsmPagination pagination,
+                                                       @Valid GiftCertificateSearchParameter searchParameter) {
+        Set<GiftCertificateDto> certificates = ObjectUtils.isEmpty(searchParameter)
+                ? service.findAll(pagination)
+                : service.findAll(pagination, searchParameter);
 
-    /**
-     * Finding gift certificate by keyword.
-     *
-     * @param keyword Keyword.
-     * @return List of gift certificates.
-     */
-    @GetMapping(params = ParameterName.KEYWORD)
-    public CollectionModel<GiftCertificateDto> findByKeyword(@RequestParam(name = ParameterName.KEYWORD)
-                                                             @NotBlank(message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_KEYWORD_NOT_BLANK)
-                                                                     String keyword) {
-        Set<GiftCertificateDto> gcs = service.findByKeyword(keyword);
-        linkBuilder.build(gcs);
-        return CollectionModel.of(gcs);
+        linkBuilder.build(certificates);
+        return CollectionModel.of(certificates);
     }
 
     /**
@@ -141,9 +101,9 @@ public class GiftCertificateController {
     @PatchMapping(path = UrlMapping.ID)
     public EntityModel<GiftCertificateDto> update(@PathVariable long id,
                                                   @Valid @RequestBody GiftCertificateUpdateDto gcUpdateDto) {
-        GiftCertificateDto gc = service.update(id, gcUpdateDto);
-        linkBuilder.build(gc);
-        return EntityModel.of(gc);
+        GiftCertificateDto certificate = service.update(id, gcUpdateDto);
+        linkBuilder.build(certificate);
+        return EntityModel.of(certificate);
     }
 
     /**

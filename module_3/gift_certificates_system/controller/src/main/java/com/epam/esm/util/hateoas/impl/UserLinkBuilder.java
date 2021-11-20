@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 @Component
 public class UserLinkBuilder extends AbstractLinkBuilder<UserDto> {
     @Override
-    public UserDto build(UserDto dto) {
-        return buildSelf(UserController.class, dto);
+    public UserDto build(UserDto user) {
+        return buildSelf(UserController.class, user);
     }
 
     @Override
-    public Set<UserDto> build(Set<UserDto> dtos) {
-        return dtos.stream()
+    public Set<UserDto> build(Set<UserDto> users) {
+        return users.stream()
                 .map(this::build)
                 .collect(Collectors.toSet());
     }

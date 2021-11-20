@@ -2,6 +2,7 @@ package com.epam.esm.dto;
 
 import com.epam.esm.util.DtoRegexValidator;
 import com.epam.esm.util.MessagePropertyKey;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,6 +26,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GiftCertificateDto extends AbstractDto<GiftCertificateDto> {
     @NotBlank(message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_NAME_NOT_EMPTY)
     @Pattern(regexp = DtoRegexValidator.GIFT_CERTIFICATE_NAME,

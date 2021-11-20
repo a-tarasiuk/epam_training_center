@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class UserPrice {
+public class UserInformation {
     private User user;
     private BigDecimal sumOfAllOrders;
 }

@@ -16,8 +16,8 @@ public abstract class OrderDao extends AbstractDao<Order> {
      * Find all orders by user entity (with pagination).
      *
      * @param user          User entity.
-     * @param esmPagination Pagination entity.
+     * @param pagination Pagination entity.
      * @return Set of user.
      */
-    public abstract Set<Order> findAllBy(User user, EsmPagination esmPagination);
+    public abstract Set<Order> findAllBy(User user, EsmPagination pagination);
 }

@@ -3,7 +3,7 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
-import com.epam.esm.pojo.UserPrice;
+import com.epam.esm.pojo.UserInformation;
 import com.epam.esm.util.ParameterName;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Repository;
@@ -69,8 +69,8 @@ public class UserDaoImpl extends UserDao {
      * SELECT o.user FROM Order o GROUP BY o.user ORDER BY SUM(o.price) DESC LIMIT 1
      */
     @Override
-    public Set<UserPrice> findUsersWithHighestCostOfAllOrders() {
-        CriteriaQuery<UserPrice> cq = cb.createQuery(UserPrice.class);
+    public Set<UserInformation> findUsersWithHighestCostOfAllOrders() {
+        CriteriaQuery<UserInformation> cq = cb.createQuery(UserInformation.class);
         Root<Order> from = cq.from(Order.class);
 
         Path<User> user = from.get(ParameterName.USER);

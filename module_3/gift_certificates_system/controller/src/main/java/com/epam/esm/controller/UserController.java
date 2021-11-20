@@ -28,12 +28,12 @@ import static com.epam.esm.util.MessagePropertyKey.VALIDATION_ID;
 @RequestMapping(value = UrlMapping.USERS)
 @Validated
 public class UserController {
-    private final UserServiceImpl userService;
+    private final UserServiceImpl service;
     private final LinkBuilder<UserDto> linkBuilderUser;
 
     @Autowired
-    public UserController(UserServiceImpl userService, LinkBuilder<UserDto> linkBuilderUser) {
-        this.userService = userService;
+    public UserController(UserServiceImpl service, LinkBuilder<UserDto> linkBuilderUser) {
+        this.service = service;
         this.linkBuilderUser = linkBuilderUser;
     }
 
@@ -46,7 +46,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<UserDto> create(@Valid @RequestBody UserDto userDto) {
-        UserDto user = userService.create(userDto);
+        UserDto user = service.create(userDto);
         linkBuilderUser.build(user);
         return EntityModel.of(user);
     }
@@ -60,7 +60,7 @@ public class UserController {
     @GetMapping(UrlMapping.ID)
     public EntityModel<UserDto> findById(@Min(value = 1, message = VALIDATION_ID)
                                          @PathVariable long id) {
-        UserDto user = userService.findById(id);
+        UserDto user = service.findById(id);
         linkBuilderUser.build(user);
         return EntityModel.of(user);
     }
@@ -68,12 +68,12 @@ public class UserController {
     /**
      * Find all users.
      *
-     * @param esmPagination Pagination parameters.
+     * @param pagination Pagination parameters.
      * @return Set of found user DTO.
      */
     @GetMapping
-    public CollectionModel<UserDto> findAll(@Valid EsmPagination esmPagination) {
-        Set<UserDto> users = userService.findAll(esmPagination);
+    public CollectionModel<UserDto> findAll(@Valid EsmPagination pagination) {
+        Set<UserDto> users = service.findAll(pagination);
         linkBuilderUser.build(users);
         return CollectionModel.of(users);
     }

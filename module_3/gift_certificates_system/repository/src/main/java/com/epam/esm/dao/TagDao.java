@@ -13,8 +13,8 @@ public abstract class TagDao extends AbstractDao<Tag> {
     /**
      * Find all tags by gift certificate.
      *
-     * @param gc Gift certificate entity.
+     * @param certificate Gift certificate entity.
      * @return Set of found tags.
      */
-    public abstract Set<Tag> findAllBy(GiftCertificate gc);
+    public abstract Set<Tag> findAllBy(GiftCertificate certificate);
 }

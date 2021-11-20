@@ -33,8 +33,8 @@ public class TagDaoImpl extends TagDao {
      * SELECT tag FROM Tag AS tag JOIN GiftCertificateToTagRelation AS relation ON relation.tag = tag WHERE relation.giftCertificate = :giftCertificate
      */
     @Override
-    public Set<Tag> findAllBy(GiftCertificate gc) {
-        return relationDao.findAllBy(gc).stream()
+    public Set<Tag> findAllBy(GiftCertificate certificate) {
+        return relationDao.findAllBy(certificate).stream()
                 .map(GiftCertificateToTagRelation::getTag)
                 .collect(Collectors.toSet());
     }

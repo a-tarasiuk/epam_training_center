@@ -1,7 +1,7 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.User;
-import com.epam.esm.pojo.UserPrice;
+import com.epam.esm.pojo.UserInformation;
 
 import java.util.Optional;
 import java.util.Set;
@@ -24,5 +24,5 @@ public abstract class UserDao extends AbstractDao<User> {
      *
      * @return Set of users.
      */
-    public abstract Set<UserPrice> findUsersWithHighestCostOfAllOrders();
+    public abstract Set<UserInformation> findUsersWithHighestCostOfAllOrders();
 }

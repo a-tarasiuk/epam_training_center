@@ -11,7 +11,7 @@ import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityExistingException;
 import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.pojo.MostWidelyUsedTag;
-import com.epam.esm.pojo.UserPrice;
+import com.epam.esm.pojo.UserInformation;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.MessagePropertyKey;
@@ -19,6 +19,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import java.util.stream.Stream;
  * Tag service implementation.
  */
 @Service
+@Transactional
 public class TagServiceImpl implements TagService<TagDto> {
     private final ModelMapper modelMapper;
     private final TagDao tagDao;
@@ -61,8 +63,8 @@ public class TagServiceImpl implements TagService<TagDto> {
     }
 
     @Override
-    public Set<TagDto> findAll(EsmPagination esmPagination) {
-        return tagDao.findAll(esmPagination, Tag.class).stream()
+    public Set<TagDto> findAll(EsmPagination pagination) {
+        return tagDao.findAll(pagination, Tag.class).stream()
                 .map(tag -> modelMapper.map(tag, TagDto.class))
                 .collect(Collectors.toSet());
     }
@@ -85,7 +87,7 @@ public class TagServiceImpl implements TagService<TagDto> {
     public Set<MostWidelyUsedTag> findMostWidelyUsedTags() {
         return userDao.findUsersWithHighestCostOfAllOrders().stream()
                 .flatMap(up -> Stream.of(up)
-                        .map(UserPrice::getUser)
+                        .map(UserInformation::getUser)
                         .map(this::findAllGiftCertificatesByUser)
                         .map(this::findAllTagsFromGiftCertificates)
                         .map(this::findCountOfRepetitionsOfEachTag)
@@ -97,8 +99,8 @@ public class TagServiceImpl implements TagService<TagDto> {
         return gcDao.findBy(user);
     }
 
-    private List<Tag> findAllTagsFromGiftCertificates(List<GiftCertificate> gcs) {
-        return gcs.stream()
+    private List<Tag> findAllTagsFromGiftCertificates(List<GiftCertificate> certificates) {
+        return certificates.stream()
                 .map(tagDao::findAllBy)
                 .flatMap(Set::stream)
                 .collect(Collectors.toList());
@@ -123,14 +125,14 @@ public class TagServiceImpl implements TagService<TagDto> {
                 .collect(Collectors.toSet());
     }
 
-    private MostWidelyUsedTag buildMostWidelyUsedTag(UserPrice up, Map<Tag, Long> map) {
+    private MostWidelyUsedTag buildMostWidelyUsedTag(UserInformation up, Map<Tag, Long> map) {
         Long count = findMaxCountOfRepetitions(map);
         Set<Tag> tags = findMostWidelyUsedTags(map, count);
 
         return new MostWidelyUsedTag()
                 .setTags(tags)
                 .setNumberOfUsesTags(count)
-                .setUserPrice(up);
+                .setUserInformation(up);
     }
 
     private void delete(Tag tag) {
