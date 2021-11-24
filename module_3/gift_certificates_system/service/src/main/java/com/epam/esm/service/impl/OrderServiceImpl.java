@@ -34,10 +34,9 @@ import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
 @Transactional
 public class OrderServiceImpl implements OrderService {
     private final ModelMapper modelMapper;
-    private final GiftCertificateServiceImpl gcService;
     private final OrderDao orderDao;
     private final UserDao userDao;
-    private final GiftCertificateDao gcDao;
+    private final GiftCertificateDao certificateDao;
 
     /**
      * Instantiates a new tag service.
@@ -45,15 +44,14 @@ public class OrderServiceImpl implements OrderService {
      * @param modelMapper Model mapper.
      * @param orderDao    Tag DAO layer.
      * @param userDao     User DAO layer.
-     * @param gcDao       Gift certificate DAO layer.
+     * @param certificateDao       Gift certificate DAO layer.
      * @param gcService   Gift certificate service layer.
      */
-    public OrderServiceImpl(ModelMapper modelMapper, GiftCertificateServiceImpl gcService, OrderDao orderDao, UserDao userDao, GiftCertificateDao gcDao) {
+    public OrderServiceImpl(ModelMapper modelMapper, OrderDao orderDao, UserDao userDao, GiftCertificateDao certificateDao) {
         this.modelMapper = modelMapper;
-        this.gcService = gcService;
         this.orderDao = orderDao;
         this.userDao = userDao;
-        this.gcDao = gcDao;
+        this.certificateDao = certificateDao;
     }
 
     @Override
@@ -77,14 +75,13 @@ public class OrderServiceImpl implements OrderService {
         order.setPrice(gcPrice);
         order.setUser(user);
         order.setGiftCertificate(certificate);
-
-        return this.build(orderDao.create(order));
+        return modelMapper.map(orderDao.create(order), OrderDto.class);
     }
 
     @Override
     public Set<OrderDto> findAll(EsmPagination pagination) {
         return orderDao.findAll(pagination, Order.class).stream()
-                .map(this::build)
+                .map(order -> modelMapper.map(order, OrderDto.class))
                 .collect(Collectors.toSet());
     }
 
@@ -92,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
     public Set<OrderDto> findAllByUserId(long userId, EsmPagination pagination) {
         User user = getUserOrElseThrow(userId);
         return orderDao.findAllBy(user, pagination).stream()
-                .map(this::build)
+                .map(order -> modelMapper.map(order, OrderDto.class))
                 .collect(Collectors.toSet());
     }
 
@@ -102,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = getOrderOrElseThrow(orderId);
 
         if (Objects.equals(user, order.getUser())) {
-            return build(order);
+            return modelMapper.map(order, OrderDto.class);
         } else {
             throw new EntityNonExistentException(EXCEPTION_ORDER_FOR_USER_NOT_FOUND, userId);
         }
@@ -111,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto findById(long id) {
         Order order = getOrderOrElseThrow(id);
-        return this.build(order);
+        return modelMapper.map(order, OrderDto.class);
     }
 
     @Override
@@ -128,14 +125,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private GiftCertificate getGiftCertificateOrElseThrow(long gcId) {
-        return gcDao.findById(gcId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, gcId));
-    }
-
-    private OrderDto build(Order order) {
-        GiftCertificate certificate = order.getGiftCertificate();
-        GiftCertificateDto certificateDto = gcService.findById(certificate.getId());
-        OrderDto orderDto = modelMapper.map(order, OrderDto.class);
-        orderDto.setGiftCertificate(certificateDto);
-        return orderDto;
+        return certificateDao.findById(gcId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, gcId));
     }
 }
