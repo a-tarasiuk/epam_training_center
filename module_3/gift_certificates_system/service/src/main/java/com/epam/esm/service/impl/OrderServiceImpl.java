@@ -45,7 +45,6 @@ public class OrderServiceImpl implements OrderService {
      * @param orderDao    Tag DAO layer.
      * @param userDao     User DAO layer.
      * @param certificateDao       Gift certificate DAO layer.
-     * @param gcService   Gift certificate service layer.
      */
     public OrderServiceImpl(ModelMapper modelMapper, OrderDao orderDao, UserDao userDao, GiftCertificateDao certificateDao) {
         this.modelMapper = modelMapper;
