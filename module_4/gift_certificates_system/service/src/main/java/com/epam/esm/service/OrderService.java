@@ -2,8 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.util.EsmPagination;
-
-import java.util.Set;
+import org.springframework.data.domain.Page;
 
 /**
  * Order service layer.
@@ -25,7 +24,7 @@ public interface OrderService extends AbstractService<OrderDto> {
      * @param pagination Pagination entity.
      * @return Set of found users.
      */
-    Set<OrderDto> findAllByUserId(long userId, EsmPagination pagination);
+    Page<OrderDto> findAllByUserId(long userId, EsmPagination pagination);
 
     /**
      * Find order by ID for user with ID/

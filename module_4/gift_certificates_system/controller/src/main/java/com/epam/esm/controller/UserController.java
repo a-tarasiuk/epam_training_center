@@ -6,7 +6,7 @@ import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.UrlMapping;
 import com.epam.esm.util.hateoas.LinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Set;
 
 import static com.epam.esm.util.MessagePropertyKey.VALIDATION_ID;
 
@@ -72,9 +71,7 @@ public class UserController {
      * @return Set of found user DTO.
      */
     @GetMapping
-    public CollectionModel<UserDto> findAll(@Valid EsmPagination pagination) {
-        Set<UserDto> users = service.findAll(pagination);
-        linkBuilderUser.build(users);
-        return CollectionModel.of(users);
+    public Page<UserDto> findAll(@Valid EsmPagination pagination) {
+        return service.findAll(pagination);
     }
 }

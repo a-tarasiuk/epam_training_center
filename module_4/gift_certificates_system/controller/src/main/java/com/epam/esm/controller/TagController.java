@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.pojo.MostWidelyUsedTag;
 import com.epam.esm.service.impl.TagServiceImpl;
 import com.epam.esm.util.EsmPagination;
@@ -8,8 +9,11 @@ import com.epam.esm.util.MessagePropertyKey;
 import com.epam.esm.util.UrlMapping;
 import com.epam.esm.util.hateoas.LinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -80,10 +84,9 @@ public class TagController {
      * @return Set of tags DTO with HATEOAS.
      */
     @GetMapping
-    public CollectionModel<TagDto> findAll(@Valid EsmPagination pagination) {
-        Set<TagDto> tags = service.findAll(pagination);
-        linkBuilder.build(tags);
-        return CollectionModel.of(tags);
+    public PagedModel<EntityModel<TagDto>> findAll(@Valid EsmPagination pagination, PagedResourcesAssembler<TagDto> assembler) {
+        Page<TagDto> page = service.findAll(pagination);
+        return assembler.toModel(page);
     }
 
     /**

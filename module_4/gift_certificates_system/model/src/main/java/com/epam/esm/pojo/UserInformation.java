@@ -2,6 +2,7 @@ package com.epam.esm.pojo;
 
 import com.epam.esm.entity.User;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,11 +15,8 @@ import java.math.BigDecimal;
  *
  * @see com.epam.esm.pojo.MostWidelyUsedTag
  */
+@Data
 @AllArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
 public class UserInformation {
     private User user;
     private BigDecimal sumOfAllOrders;

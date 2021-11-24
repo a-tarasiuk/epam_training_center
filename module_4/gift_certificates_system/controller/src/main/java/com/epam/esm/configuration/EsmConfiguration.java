@@ -3,11 +3,16 @@ package com.epam.esm.configuration;
 import com.epam.esm.converter.StringToColumnNameConverter;
 import com.epam.esm.converter.StringToRequestParameterConverter;
 import com.epam.esm.converter.StringToSqlSortOperatorConverter;
+import com.epam.esm.util.EsmPagination;
+import com.epam.esm.util.PageMapper;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -53,6 +58,11 @@ public class EsmConfiguration implements WebMvcConfigurer {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    public PageMapper pageMapper() {
+        return new PageMapper();
     }
 
     /**

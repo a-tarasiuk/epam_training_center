@@ -1,8 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.util.EsmPagination;
-
-import java.util.Set;
+import org.springframework.data.domain.Page;
 
 /**
  * Abstract for SERVICE layer.
@@ -14,9 +13,9 @@ public interface AbstractService<T> {
     /**
      * Search for all entities.
      *
-     * @return - Set of found entities.
+     * @return - Page of found entities.
      */
-    Set<T> findAll(EsmPagination pagination);
+    Page<T> findAll(EsmPagination pagination);
 
     /**
      * Finding entity by it is ID.

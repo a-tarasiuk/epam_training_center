@@ -1,18 +1,19 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityExistingException;
 import com.epam.esm.exception.EntityNonExistentException;
+import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.CreateService;
 import com.epam.esm.util.EsmPagination;
+import com.epam.esm.util.PageMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
 import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
@@ -24,37 +25,40 @@ import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_USER_LOGIN_EXISTS;
 @Service
 public class UserServiceImpl implements CreateService<UserDto> {
     private final ModelMapper modelMapper;
-    private final UserDao userDao;
+    private final UserRepository userRepository;
+    private final PageMapper pageMapper;
 
     /**
      * Instantiates a new tag service.
      *
-     * @param userDao - Tag DAO layer.
+     * @param userRepository - Tag DAO layer.
+     * @param pageMapper
      */
     @Autowired
-    public UserServiceImpl(ModelMapper modelMapper, UserDao userDao) {
+    public UserServiceImpl(ModelMapper modelMapper, UserRepository userRepository, PageMapper pageMapper) {
         this.modelMapper = modelMapper;
-        this.userDao = userDao;
+        this.userRepository = userRepository;
+        this.pageMapper = pageMapper;
     }
 
     @Override
     public UserDto create(UserDto userDto) {
         User user = modelMapper.map(userDto, User.class);
         checkIfUserExistsOrElseThrow(user);
-        User createdUser = userDao.create(user);
+        User createdUser = userRepository.save(user);
         return modelMapper.map(createdUser, UserDto.class);
     }
 
     @Override
-    public Set<UserDto> findAll(EsmPagination pagination) {
-        return userDao.findAll(pagination, User.class).stream()
-                .map(user -> modelMapper.map(user, UserDto.class))
-                .collect(Collectors.toSet());
+    public Page<UserDto> findAll(EsmPagination pagination) {
+        Pageable pageable = pageMapper.map(pagination);
+        Page<User> users = userRepository.findAll(pageable);
+        return pageMapper.map(users, UserDto.class);
     }
 
     @Override
     public UserDto findById(long id) {
-        return userDao.findById(id)
+        return userRepository.findById(id)
                 .map(user -> modelMapper.map(user, UserDto.class))
                 .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_USER_ID_NOT_FOUND, id));
     }
@@ -66,7 +70,7 @@ public class UserServiceImpl implements CreateService<UserDto> {
 
     private void checkIfUserExistsOrElseThrow(User user) {
         String login = user.getLogin();
-        userDao.findBy(login).ifPresent(t -> {
+        userRepository.findByLogin(login).ifPresent(t -> {
             throw new EntityExistingException(EXCEPTION_USER_LOGIN_EXISTS, login);
         });
     }

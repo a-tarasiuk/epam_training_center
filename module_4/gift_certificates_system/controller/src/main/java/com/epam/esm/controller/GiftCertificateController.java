@@ -10,7 +10,7 @@ import com.epam.esm.util.UrlMapping;
 import com.epam.esm.util.hateoas.LinkBuilder;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Set;
 
 /**
  * Gift certificate controller.
@@ -82,14 +81,11 @@ public class GiftCertificateController {
      * @return Set of found gift certificates DTO.
      */
     @GetMapping
-    public CollectionModel<GiftCertificateDto> findAll(@Valid EsmPagination pagination,
-                                                       @Valid GiftCertificateSearchParameter searchParameter) {
-        Set<GiftCertificateDto> certificates = ObjectUtils.isEmpty(searchParameter)
+    public Page<GiftCertificateDto> findAll(@Valid EsmPagination pagination,
+                                            @Valid GiftCertificateSearchParameter searchParameter) {
+        return ObjectUtils.isEmpty(searchParameter)
                 ? service.findAll(pagination)
                 : service.findAll(pagination, searchParameter);
-
-        linkBuilder.build(certificates);
-        return CollectionModel.of(certificates);
     }
 
     /**

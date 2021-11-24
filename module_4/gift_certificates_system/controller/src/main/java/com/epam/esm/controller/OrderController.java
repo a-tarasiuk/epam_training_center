@@ -9,7 +9,7 @@ import com.epam.esm.util.hateoas.LinkBuilder;
 import com.epam.esm.view.View;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 import static com.epam.esm.util.MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_ID;
 import static com.epam.esm.util.MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL;
@@ -86,25 +85,22 @@ public class OrderController {
      * @return Set of found orders DTO.
      */
     @GetMapping
-    public CollectionModel<OrderDto> findAll(@Valid EsmPagination pagination) {
-        Set<OrderDto> orders = service.findAll(pagination);
-        linkBuilder.build(orders);
-        return CollectionModel.of(orders);
+    public Page<OrderDto> findAll(@Valid EsmPagination pagination) {
+        return service.findAll(pagination);
     }
 
     /**
      * Find all orders by user ID.
      *
-     * @param userId        User ID.
+     * @param userId     User ID.
      * @param pagination Pagination parameters.
      * @return Set of found order DTO.
      */
     @GetMapping(UrlMapping.FIND_ALL_ORDERS_BY_USER_ID)
-    public CollectionModel<OrderDto> findAllOrdersByUserId(@Min(value = 1, message = VALIDATION_USER_ID)
-                                                           @PathVariable long userId,
-                                                           @Valid EsmPagination pagination) {
-        Set<OrderDto> orders = service.findAllByUserId(userId, pagination);
-        return CollectionModel.of(linkBuilder.build(orders));
+    public Page<OrderDto> findAllOrdersByUserId(@Min(value = 1, message = VALIDATION_USER_ID)
+                                                @PathVariable long userId,
+                                                @Valid EsmPagination pagination) {
+        return service.findAllByUserId(userId, pagination);
     }
 
     /**

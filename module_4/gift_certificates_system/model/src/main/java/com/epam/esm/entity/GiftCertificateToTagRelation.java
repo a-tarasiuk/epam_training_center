@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
@@ -20,9 +21,10 @@ import java.util.Objects;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Getter
+@Entity
 @EntityListeners(GiftCertificateToTagRelationListener.class)
+@IdClass(RelationId.class)
 public class GiftCertificateToTagRelation implements Serializable {
     @Id
     @ManyToOne

@@ -1,8 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.UserDao;
 import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
@@ -12,12 +10,17 @@ import com.epam.esm.exception.EntityExistingException;
 import com.epam.esm.exception.EntityNonExistentException;
 import com.epam.esm.pojo.MostWidelyUsedTag;
 import com.epam.esm.pojo.UserInformation;
+import com.epam.esm.repository.TagRepository;
+import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.EsmPagination;
 import com.epam.esm.util.MessagePropertyKey;
+import com.epam.esm.util.PageMapper;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,64 +37,62 @@ import java.util.stream.Stream;
 @Service
 @Transactional
 public class TagServiceImpl implements TagService<TagDto> {
-    private final ModelMapper modelMapper;
-    private final TagDao tagDao;
-    private final UserDao userDao;
+    private final TagRepository tagRepository;
+    private final UserRepository userRepository;
     private final GiftCertificateDao gcDao;
     private final GiftCertificateToTagRelationDaoImpl relationDao;
+    private final ModelMapper modelMapper;
+    private final PageMapper pageMapper;
 
-    /**
-     * Instantiates a new tag service.
-     *
-     * @param tagDao - Tag DAO layer.
-     */
     @Autowired
-    public TagServiceImpl(ModelMapper modelMapper, TagDao tagDao, UserDao userDao, GiftCertificateDao gcDao, GiftCertificateToTagRelationDaoImpl relationDao) {
+    public TagServiceImpl(ModelMapper modelMapper, TagRepository tagRepository, UserRepository userRepository,
+                          GiftCertificateDao gcDao, GiftCertificateToTagRelationDaoImpl relationDao, PageMapper pageMapper) {
         this.modelMapper = modelMapper;
-        this.tagDao = tagDao;
-        this.userDao = userDao;
+        this.tagRepository = tagRepository;
+        this.userRepository = userRepository;
         this.gcDao = gcDao;
         this.relationDao = relationDao;
+        this.pageMapper = pageMapper;
     }
 
     @Override
     public TagDto create(TagDto tagDto) {
         Tag tag = modelMapper.map(tagDto, Tag.class);
         checkIfTagExistsOrElseThrow(tag);
-        Tag createdTag = tagDao.create(tag);
+        Tag createdTag = tagRepository.save(tag);
         return modelMapper.map(createdTag, TagDto.class);
     }
 
     @Override
-    public Set<TagDto> findAll(EsmPagination pagination) {
-        return tagDao.findAll(pagination, Tag.class).stream()
-                .map(tag -> modelMapper.map(tag, TagDto.class))
-                .collect(Collectors.toSet());
+    public Page<TagDto> findAll(EsmPagination pagination) {
+        Pageable pageable = pageMapper.map(pagination);
+        Page<Tag> tags = tagRepository.findAll(pageable);
+        return pageMapper.map(tags, TagDto.class);
     }
 
     @Override
     public TagDto findById(long id) {
-        return tagDao.findById(id)
+        return tagRepository.findById(id)
                 .map(tag -> modelMapper.map(tag, TagDto.class))
                 .orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND, id));
     }
 
     @Override
     public void delete(long id) {
-        Tag tag = tagDao.findById(id)
+        Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND, id));
         delete(tag);
     }
 
     @Override
     public Set<MostWidelyUsedTag> findMostWidelyUsedTags() {
-        return userDao.findUsersWithHighestCostOfAllOrders().stream()
-                .flatMap(up -> Stream.of(up)
+        return userRepository.findUsersWithHighestCostOfAllOrders().stream()
+                .flatMap(userInformation -> Stream.of(userInformation)
                         .map(UserInformation::getUser)
                         .map(this::findAllGiftCertificatesByUser)
                         .map(this::findAllTagsFromGiftCertificates)
                         .map(this::findCountOfRepetitionsOfEachTag)
-                        .map(map -> buildMostWidelyUsedTag(up, map)))
+                        .map(map -> buildMostWidelyUsedTag(userInformation, map)))
                 .collect(Collectors.toSet());
     }
 
@@ -101,7 +102,7 @@ public class TagServiceImpl implements TagService<TagDto> {
 
     private List<Tag> findAllTagsFromGiftCertificates(List<GiftCertificate> certificates) {
         return certificates.stream()
-                .map(tagDao::findAllBy)
+                .map(tagRepository::findAllByGiftCertificate)
                 .flatMap(Set::stream)
                 .collect(Collectors.toList());
     }
@@ -125,19 +126,19 @@ public class TagServiceImpl implements TagService<TagDto> {
                 .collect(Collectors.toSet());
     }
 
-    private MostWidelyUsedTag buildMostWidelyUsedTag(UserInformation up, Map<Tag, Long> map) {
+    private MostWidelyUsedTag buildMostWidelyUsedTag(UserInformation userInformation, Map<Tag, Long> map) {
         Long count = findMaxCountOfRepetitions(map);
         Set<Tag> tags = findMostWidelyUsedTags(map, count);
 
         return new MostWidelyUsedTag()
                 .setTags(tags)
                 .setNumberOfUsesTags(count)
-                .setUserInformation(up);
+                .setUserInformation(userInformation);
     }
 
     private void delete(Tag tag) {
         deleteAllRelations(tag);
-        tagDao.delete(tag);
+        tagRepository.delete(tag);
     }
 
     private void deleteAllRelations(Tag tag) {
@@ -146,7 +147,7 @@ public class TagServiceImpl implements TagService<TagDto> {
 
     private void checkIfTagExistsOrElseThrow(Tag tag) {
         String name = tag.getName();
-        tagDao.findByName(name).ifPresent(t -> {
+        tagRepository.findByName(name).ifPresent(t -> {
             throw new EntityExistingException(MessagePropertyKey.EXCEPTION_TAG_NAME_EXISTS, name);
         });
     }
