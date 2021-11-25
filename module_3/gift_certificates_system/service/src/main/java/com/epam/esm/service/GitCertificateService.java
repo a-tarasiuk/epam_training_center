@@ -1,9 +1,9 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.GiftCertificateUpdateDto;
-import com.epam.esm.pojo.GiftCertificateSearchParameter;
-import com.epam.esm.util.EsmPagination;
+import com.epam.esm.model.dto.GiftCertificateDto;
+import com.epam.esm.model.dto.GiftCertificateUpdateDto;
+import com.epam.esm.model.pojo.GiftCertificateSearchParameter;
+import com.epam.esm.repository.util.EsmPagination;
 
 import java.util.Set;
 

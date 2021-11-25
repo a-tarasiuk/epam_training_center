@@ -1,12 +1,12 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.UserDao;
-import com.epam.esm.dto.UserDto;
-import com.epam.esm.entity.User;
-import com.epam.esm.exception.EntityExistingException;
-import com.epam.esm.exception.EntityNonExistentException;
+import com.epam.esm.repository.dao.UserDao;
+import com.epam.esm.model.dto.UserDto;
+import com.epam.esm.model.entity.User;
+import com.epam.esm.service.exception.EntityExistingException;
+import com.epam.esm.service.exception.EntityNonExistentException;
 import com.epam.esm.service.CreateService;
-import com.epam.esm.util.EsmPagination;
+import com.epam.esm.repository.util.EsmPagination;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_USER_LOGIN_EXISTS;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_USER_LOGIN_EXISTS;
 
 /**
  * User service implementation.

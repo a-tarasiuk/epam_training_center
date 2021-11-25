@@ -1,12 +1,12 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.TagDto;
-import com.epam.esm.pojo.MostWidelyUsedTag;
+import com.epam.esm.model.dto.TagDto;
+import com.epam.esm.model.pojo.MostWidelyUsedTag;
 import com.epam.esm.service.impl.TagServiceImpl;
-import com.epam.esm.util.EsmPagination;
-import com.epam.esm.util.MessagePropertyKey;
-import com.epam.esm.util.UrlMapping;
-import com.epam.esm.util.hateoas.LinkBuilder;
+import com.epam.esm.repository.util.EsmPagination;
+import com.epam.esm.model.util.MessagePropertyKey;
+import com.epam.esm.model.util.UrlMapping;
+import com.epam.esm.controller.util.hateoas.LinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;

@@ -1,17 +1,17 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.OrderDao;
-import com.epam.esm.dao.UserDao;
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.UserDto;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Order;
-import com.epam.esm.entity.User;
-import com.epam.esm.exception.EntityNonExistentException;
+import com.epam.esm.repository.dao.GiftCertificateDao;
+import com.epam.esm.repository.dao.OrderDao;
+import com.epam.esm.repository.dao.UserDao;
+import com.epam.esm.model.dto.GiftCertificateDto;
+import com.epam.esm.model.dto.OrderDto;
+import com.epam.esm.model.dto.UserDto;
+import com.epam.esm.model.entity.GiftCertificate;
+import com.epam.esm.model.entity.Order;
+import com.epam.esm.model.entity.User;
+import com.epam.esm.service.exception.EntityNonExistentException;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.util.EsmPagination;
+import com.epam.esm.repository.util.EsmPagination;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +21,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_ORDER_FOR_USER_NOT_FOUND;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_ORDER_ID_NOT_FOUND;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_ORDER_FOR_USER_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_ORDER_ID_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
 
 /**
  * Order service implementation.

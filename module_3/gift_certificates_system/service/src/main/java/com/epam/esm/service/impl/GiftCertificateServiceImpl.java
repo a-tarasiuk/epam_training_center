@@ -1,21 +1,21 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.GiftCertificateUpdateDto;
-import com.epam.esm.dto.TagDto;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.GiftCertificateToTagRelation;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.EntityExistingException;
-import com.epam.esm.exception.EntityNonExistentException;
-import com.epam.esm.pojo.GiftCertificateSearchParameter;
+import com.epam.esm.repository.dao.GiftCertificateDao;
+import com.epam.esm.repository.dao.TagDao;
+import com.epam.esm.repository.dao.impl.GiftCertificateToTagRelationDaoImpl;
+import com.epam.esm.model.dto.GiftCertificateDto;
+import com.epam.esm.model.dto.GiftCertificateUpdateDto;
+import com.epam.esm.model.dto.TagDto;
+import com.epam.esm.model.entity.GiftCertificate;
+import com.epam.esm.model.entity.GiftCertificateToTagRelation;
+import com.epam.esm.model.entity.Tag;
+import com.epam.esm.service.exception.EntityExistingException;
+import com.epam.esm.service.exception.EntityNonExistentException;
+import com.epam.esm.model.pojo.GiftCertificateSearchParameter;
 import com.epam.esm.service.GitCertificateService;
-import com.epam.esm.util.EsmPagination;
-import com.epam.esm.util.GiftCertificateFieldChecker;
-import com.epam.esm.util.GiftCertificateUpdater;
+import com.epam.esm.repository.util.EsmPagination;
+import com.epam.esm.service.util.GiftCertificateFieldChecker;
+import com.epam.esm.service.util.GiftCertificateUpdater;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.modelmapper.ModelMapper;
@@ -29,10 +29,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_UPDATE_FIELDS_EMPTY;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_WITH_SEARCH_PARAMETERS;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_UPDATE_FIELDS_EMPTY;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_WITH_SEARCH_PARAMETERS;
 
 /**
  * Gift certificate service implementation.

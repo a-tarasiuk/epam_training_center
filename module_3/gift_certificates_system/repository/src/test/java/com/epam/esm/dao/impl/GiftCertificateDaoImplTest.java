@@ -1,9 +1,9 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.configuration.EsmConfigurationTest;
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.util.EsmPagination;
+import com.epam.esm.repository.dao.GiftCertificateDao;
+import com.epam.esm.model.entity.GiftCertificate;
+import com.epam.esm.repository.util.EsmPagination;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

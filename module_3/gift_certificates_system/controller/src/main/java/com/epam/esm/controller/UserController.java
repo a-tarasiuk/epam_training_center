@@ -1,10 +1,10 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.model.dto.UserDto;
 import com.epam.esm.service.impl.UserServiceImpl;
-import com.epam.esm.util.EsmPagination;
-import com.epam.esm.util.UrlMapping;
-import com.epam.esm.util.hateoas.LinkBuilder;
+import com.epam.esm.repository.util.EsmPagination;
+import com.epam.esm.model.util.UrlMapping;
+import com.epam.esm.controller.util.hateoas.LinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -22,7 +22,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.Set;
 
-import static com.epam.esm.util.MessagePropertyKey.VALIDATION_ID;
+import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_ID;
 
 @RestController
 @RequestMapping(value = UrlMapping.USERS)

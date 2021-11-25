@@ -1,12 +1,12 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.OrderDto;
+import com.epam.esm.model.dto.OrderDto;
 import com.epam.esm.service.impl.OrderServiceImpl;
-import com.epam.esm.util.EsmPagination;
-import com.epam.esm.util.MessagePropertyKey;
-import com.epam.esm.util.UrlMapping;
-import com.epam.esm.util.hateoas.LinkBuilder;
-import com.epam.esm.view.View;
+import com.epam.esm.repository.util.EsmPagination;
+import com.epam.esm.model.util.MessagePropertyKey;
+import com.epam.esm.model.util.UrlMapping;
+import com.epam.esm.controller.util.hateoas.LinkBuilder;
+import com.epam.esm.model.view.View;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -26,11 +26,11 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-import static com.epam.esm.util.MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_ID;
-import static com.epam.esm.util.MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL;
-import static com.epam.esm.util.MessagePropertyKey.VALIDATION_ORDER_ID;
-import static com.epam.esm.util.MessagePropertyKey.VALIDATION_USER_ID;
-import static com.epam.esm.util.MessagePropertyKey.VALIDATION_USER_ID_NOT_EMPTY;
+import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_ID;
+import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL;
+import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_ORDER_ID;
+import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_USER_ID;
+import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_USER_ID_NOT_EMPTY;
 
 @RestController
 @RequestMapping(value = UrlMapping.ORDERS)

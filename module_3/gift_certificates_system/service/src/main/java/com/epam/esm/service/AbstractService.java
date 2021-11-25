@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.util.EsmPagination;
+import com.epam.esm.repository.util.EsmPagination;
 
 import java.util.Set;
 

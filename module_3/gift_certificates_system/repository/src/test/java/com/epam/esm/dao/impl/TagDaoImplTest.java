@@ -1,7 +1,8 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.configuration.EsmConfigurationTest;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.model.entity.Tag;
+import com.epam.esm.repository.dao.impl.TagDaoImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
