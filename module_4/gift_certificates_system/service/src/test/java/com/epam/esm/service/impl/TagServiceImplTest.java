@@ -1,9 +1,9 @@
 //package com.epam.esm.service.impl;
 //
-//import com.epam.esm.dao.impl.TagDaoImpl;
-//import com.epam.esm.entity.Tag;
-//import com.epam.esm.exception.EntityExistsException;
-//import com.epam.esm.exception.EntityNotFoundException;
+//import com.epam.esm.repository.dao.impl.TagDaoImpl;
+//import com.epam.esm.model.entity.Tag;
+//import com.epam.esm.repository.exception.EntityExistsException;
+//import com.epam.esm.repository.exception.EntityNotFoundException;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.mockito.Mock;

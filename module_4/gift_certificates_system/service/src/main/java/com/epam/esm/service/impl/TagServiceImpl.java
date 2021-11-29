@@ -1,21 +1,21 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
-import com.epam.esm.dto.TagDto;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.User;
-import com.epam.esm.exception.EntityExistingException;
-import com.epam.esm.exception.EntityNonExistentException;
-import com.epam.esm.pojo.MostWidelyUsedTag;
-import com.epam.esm.pojo.UserInformation;
+import com.epam.esm.model.dto.TagDto;
+import com.epam.esm.model.entity.GiftCertificate;
+import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.entity.User;
+import com.epam.esm.model.pojo.MostWidelyUsedTag;
+import com.epam.esm.model.pojo.UserInformation;
+import com.epam.esm.model.util.MessagePropertyKey;
+import com.epam.esm.repository.GiftCertificateRepository;
+import com.epam.esm.repository.GiftCertificateToTagRelationRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.UserRepository;
+import com.epam.esm.repository.util.EsmPagination;
 import com.epam.esm.service.TagService;
-import com.epam.esm.util.EsmPagination;
-import com.epam.esm.util.MessagePropertyKey;
-import com.epam.esm.util.PageMapper;
+import com.epam.esm.service.exception.EntityExistingException;
+import com.epam.esm.service.exception.EntityNonExistentException;
+import com.epam.esm.service.util.PageMapper;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,19 +39,20 @@ import java.util.stream.Stream;
 public class TagServiceImpl implements TagService<TagDto> {
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
-    private final GiftCertificateDao gcDao;
-    private final GiftCertificateToTagRelationDaoImpl relationDao;
+    private final GiftCertificateRepository certificateRepository;
+    private final GiftCertificateToTagRelationRepository relationRepository;
     private final ModelMapper modelMapper;
     private final PageMapper pageMapper;
 
     @Autowired
-    public TagServiceImpl(ModelMapper modelMapper, TagRepository tagRepository, UserRepository userRepository,
-                          GiftCertificateDao gcDao, GiftCertificateToTagRelationDaoImpl relationDao, PageMapper pageMapper) {
-        this.modelMapper = modelMapper;
+    public TagServiceImpl(TagRepository tagRepository, UserRepository userRepository,
+                          GiftCertificateRepository certificateRepository, GiftCertificateToTagRelationRepository relationRepository,
+                          ModelMapper modelMapper, PageMapper pageMapper) {
         this.tagRepository = tagRepository;
         this.userRepository = userRepository;
-        this.gcDao = gcDao;
-        this.relationDao = relationDao;
+        this.certificateRepository = certificateRepository;
+        this.relationRepository = relationRepository;
+        this.modelMapper = modelMapper;
         this.pageMapper = pageMapper;
     }
 
@@ -97,7 +98,7 @@ public class TagServiceImpl implements TagService<TagDto> {
     }
 
     private List<GiftCertificate> findAllGiftCertificatesByUser(User user) {
-        return gcDao.findBy(user);
+        return certificateRepository.findAllByUser(user);
     }
 
     private List<Tag> findAllTagsFromGiftCertificates(List<GiftCertificate> certificates) {
@@ -142,7 +143,7 @@ public class TagServiceImpl implements TagService<TagDto> {
     }
 
     private void deleteAllRelations(Tag tag) {
-        relationDao.findAllBy(tag).forEach(relationDao::delete);
+        relationRepository.deleteAll(relationRepository.findAllByTag(tag));
     }
 
     private void checkIfTagExistsOrElseThrow(Tag tag) {

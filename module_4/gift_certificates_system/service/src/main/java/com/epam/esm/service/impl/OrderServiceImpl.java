@@ -1,19 +1,20 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.UserDao;
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.UserDto;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Order;
-import com.epam.esm.entity.User;
-import com.epam.esm.exception.EntityNonExistentException;
+import com.epam.esm.model.dto.GiftCertificateDto;
+import com.epam.esm.model.dto.OrderDto;
+import com.epam.esm.model.dto.UserDto;
+import com.epam.esm.model.entity.GiftCertificate;
+import com.epam.esm.model.entity.Order;
+import com.epam.esm.model.entity.User;
+import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.OrderRepository;
+import com.epam.esm.repository.UserRepository;
+import com.epam.esm.repository.util.EsmPagination;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.util.EsmPagination;
-import com.epam.esm.util.PageMapper;
+import com.epam.esm.service.exception.EntityNonExistentException;
+import com.epam.esm.service.util.PageMapper;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_ORDER_FOR_USER_NOT_FOUND;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_ORDER_ID_NOT_FOUND;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_ORDER_FOR_USER_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_ORDER_ID_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
 
 /**
  * Order service implementation.
@@ -34,18 +35,19 @@ import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
 @Service
 @Transactional
 public class OrderServiceImpl implements OrderService {
-    private final ModelMapper modelMapper;
     private final OrderRepository orderRepository;
-    private final UserDao userDao;
-    private final GiftCertificateDao certificateDao;
+    private final UserRepository userRepository;
+    private final GiftCertificateRepository certificateRepository;
+    private final ModelMapper modelMapper;
     private final PageMapper pageMapper;
 
-    public OrderServiceImpl(ModelMapper modelMapper, OrderRepository orderRepository, UserDao userDao,
-                            GiftCertificateDao certificateDao, PageMapper pageMapper) {
-        this.modelMapper = modelMapper;
+    @Autowired
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, GiftCertificateRepository certificateRepository,
+                            ModelMapper modelMapper, PageMapper pageMapper) {
         this.orderRepository = orderRepository;
-        this.userDao = userDao;
-        this.certificateDao = certificateDao;
+        this.userRepository = userRepository;
+        this.certificateRepository = certificateRepository;
+        this.modelMapper = modelMapper;
         this.pageMapper = pageMapper;
     }
 
@@ -113,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private User getUserOrElseThrow(long userId) {
-        return userDao.findById(userId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_USER_ID_NOT_FOUND, userId));
+        return userRepository.findById(userId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_USER_ID_NOT_FOUND, userId));
     }
 
     private Order getOrderOrElseThrow(long orderId) {
@@ -121,6 +123,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private GiftCertificate getGiftCertificateOrElseThrow(long gcId) {
-        return certificateDao.findById(gcId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, gcId));
+        return certificateRepository.findById(gcId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, gcId));
     }
 }

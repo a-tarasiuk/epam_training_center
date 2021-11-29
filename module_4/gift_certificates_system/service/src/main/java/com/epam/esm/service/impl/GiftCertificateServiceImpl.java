@@ -1,40 +1,44 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.GiftCertificateUpdateDto;
-import com.epam.esm.dto.TagDto;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.GiftCertificateToTagRelation;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.EntityExistingException;
-import com.epam.esm.exception.EntityNonExistentException;
-import com.epam.esm.pojo.GiftCertificateSearchParameter;
+import com.epam.esm.model.dto.GiftCertificateDto;
+import com.epam.esm.model.dto.GiftCertificateUpdateDto;
+import com.epam.esm.model.dto.TagDto;
+import com.epam.esm.model.entity.GiftCertificate;
+import com.epam.esm.model.entity.GiftCertificateToTagRelation;
+import com.epam.esm.model.entity.Tag;
+import com.epam.esm.model.pojo.GiftCertificateSearchParameter;
 import com.epam.esm.repository.GiftCertificateRepository;
+import com.epam.esm.repository.GiftCertificateToTagRelationRepository;
+import com.epam.esm.repository.TagRepository;
+import com.epam.esm.repository.util.EsmPagination;
+import com.epam.esm.repository.util.SpecificationGenerator;
 import com.epam.esm.service.GitCertificateService;
-import com.epam.esm.util.EsmPagination;
-import com.epam.esm.util.GiftCertificateFieldChecker;
-import com.epam.esm.util.GiftCertificateUpdater;
-import com.epam.esm.util.PageMapper;
+import com.epam.esm.service.exception.EntityExistingException;
+import com.epam.esm.service.exception.EntityNonExistentException;
+import com.epam.esm.service.util.GiftCertificateFieldChecker;
+import com.epam.esm.service.util.GiftCertificateUpdater;
+import com.epam.esm.service.util.PageMapper;
+import com.epam.esm.service.util.PageValidator;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS;
-import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_UPDATE_FIELDS_EMPTY;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_UPDATE_FIELDS_EMPTY;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_WITH_SEARCH_PARAMETERS;
 
 /**
  * Gift certificate service implementation.
@@ -43,17 +47,19 @@ import static com.epam.esm.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_UP
 @Service
 @Transactional
 public class GiftCertificateServiceImpl implements GitCertificateService {
-    private final TagDao tagDao;
     private final GiftCertificateRepository certificateRepository;
-    private final GiftCertificateToTagRelationDaoImpl relationDao;
+    private final TagRepository tagRepository;
+    private final GiftCertificateToTagRelationRepository relationRepository;
     private final ModelMapper modelMapper;
     private final PageMapper pageMapper;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateRepository certificateRepository, TagDao tagDao, GiftCertificateToTagRelationDaoImpl relationDao, ModelMapper modelMapper, PageMapper pageMapper) {
+    public GiftCertificateServiceImpl(GiftCertificateRepository certificateRepository, TagRepository tagRepository,
+                                      GiftCertificateToTagRelationRepository relationRepository,
+                                      ModelMapper modelMapper, PageMapper pageMapper) {
         this.certificateRepository = certificateRepository;
-        this.tagDao = tagDao;
-        this.relationDao = relationDao;
+        this.tagRepository = tagRepository;
+        this.relationRepository = relationRepository;
         this.modelMapper = modelMapper;
         this.pageMapper = pageMapper;
     }
@@ -67,16 +73,15 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
 
         certificateDto.getTags().stream()
                 .map(tagDto -> modelMapper.map(tagDto, Tag.class))
-                .map(tag -> tagDao.findByName(tag.getName()).orElseGet(() -> tagDao.create(tag)))
-                .map(tag -> new GiftCertificateToTagRelation(createdCertificate, tag))
-                .forEach(relation -> {
-                    if (!relationDao.findBy(relation).isPresent()) {
-                        relationDao.create(relation);
+                .map(tag -> tagRepository.findByName(tag.getName()).orElseGet(() -> tagRepository.save(tag)))
+                .forEach(tag -> {
+                    if (!relationRepository.findByGiftCertificateAndTag(createdCertificate, tag).isPresent()) {
+                        relationRepository.save(new GiftCertificateToTagRelation(createdCertificate, tag));
                     }
                 });
 
         GiftCertificateDto gcDto = modelMapper.map(createdCertificate, GiftCertificateDto.class);
-        Set<TagDto> tagsDto = tagDao.findAllBy(createdCertificate).stream()
+        Set<TagDto> tagsDto = tagRepository.findAllByGiftCertificate(createdCertificate).stream()
                 .map(tag -> modelMapper.map(tag, TagDto.class))
                 .collect(Collectors.toSet());
         gcDto.setTags(tagsDto);
@@ -96,30 +101,16 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         Pageable pageable = pageMapper.map(pagination);
         Page<GiftCertificate> certificates = certificateRepository.findAll(pageable);
         return pageMapper.map(certificates, GiftCertificateDto.class);
-
-        // fixme remove
-//        Set<GiftCertificateDto> certificates = certificateRepository.findAll(pageable).stream()
-//                .map(this::buildGiftCertificateDtoWithTags)
-//                .collect(Collectors.toSet());
-//
-//        return PageMapper.map(certificates);
     }
 
-    // todo
     @Override
     public Page<GiftCertificateDto> findAll(EsmPagination pagination, GiftCertificateSearchParameter searchParameter) {
         Pageable pageable = pageMapper.map(pagination);
-        Page<GiftCertificate> certificates = certificateRepository.findAll(searchParameter, pageable);
-        return pageMapper.map(certificates, GiftCertificateDto.class);
+        Specification<GiftCertificate> specification = SpecificationGenerator.build(searchParameter);
+        Page<GiftCertificate> certificates = certificateRepository.findAll(specification, pageable);
 
-        // fixme remove
-//        if (ObjectUtils.isNotEmpty(certificates)) {
-//            return certificates.stream()
-//                    .map(certificate -> modelMapper.map(certificate, GiftCertificateDto.class))
-//                    .collect(Collectors.toSet());
-//        } else {
-//            throw new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_WITH_SEARCH_PARAMETERS);
-//        }
+        PageValidator.validate(pagination, certificates);
+        return pageMapper.map(certificates, GiftCertificateDto.class);
     }
 
     @Override
@@ -167,25 +158,24 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
 
     private void createRelationIfNonExist(GiftCertificate certificate, Tag tag) {
         String tagName = tag.getName();
-        Optional<Tag> optionalTag = tagDao.findByName(tagName);
+        Optional<Tag> optionalTag = tagRepository.findByName(tagName);
 
         if (optionalTag.isPresent()) {
             Tag foundTag = optionalTag.get();
-            boolean isExistRelation = relationDao.isExist(certificate, foundTag);
 
-            if (!isExistRelation) {
+            if (!relationRepository.findByGiftCertificateAndTag(certificate, tag).isPresent()) {
                 GiftCertificateToTagRelation relation = new GiftCertificateToTagRelation(certificate, foundTag);
-                relationDao.create(relation);
+                relationRepository.save(relation);
             }
         } else {
-            Tag createdTag = tagDao.create(tag);
+            Tag createdTag = tagRepository.save(tag);
             GiftCertificateToTagRelation relation = new GiftCertificateToTagRelation(certificate, createdTag);
-            relationDao.create(relation);
+            relationRepository.save(relation);
         }
     }
 
     private Set<Tag> findTagsBy(GiftCertificate certificate) {
-        return tagDao.findAllBy(certificate);
+        return tagRepository.findAllByGiftCertificate(certificate);
     }
 
     private Set<TagDto> findTagsDtoBy(GiftCertificate certificate) {
@@ -207,20 +197,13 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         return gcDto;
     }
 
-    private Set<GiftCertificateDto> buildGiftCertificatesDtoWithTags(Set<GiftCertificate> certificates) {
-        return certificates.stream()
-                .map(this::buildGiftCertificateDtoWithTags)
-                .collect(Collectors.toSet());
-    }
-
     private void delete(GiftCertificate certificate) {
         deleteRelations(certificate);
         certificateRepository.delete(certificate);
     }
 
     private void deleteRelations(GiftCertificate certificate) {
-        relationDao.findAllBy(certificate)
-                .forEach(relationDao::delete);
+        relationRepository.deleteAll(relationRepository.findAllByGiftCertificate(certificate));
     }
 
     private void deleteIrrelevantRelations(GiftCertificate certificate, Set<Tag> tagsFromRequest) {
@@ -229,6 +212,6 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         tagForRemove.removeAll(tagsFromRequest);
         tagForRemove.stream()
                 .map(tag -> new GiftCertificateToTagRelation(certificate, tag))
-                .forEach(relationDao::delete);
+                .forEach(relationRepository::delete);
     }
 }

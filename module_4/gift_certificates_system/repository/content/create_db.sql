@@ -1,19 +1,22 @@
-DROP DATABASE IF EXISTS gift_certificates_system_db;
+DROP
+DATABASE IF EXISTS gift_certificates_system_db;
 
-CREATE DATABASE gift_certificates_system_db;
+CREATE
+DATABASE gift_certificates_system_db;
 
-USE gift_certificates_system_db;
+USE
+gift_certificates_system_db;
 
 /* Entities */
 CREATE TABLE gift_certificate
 (
     id               bigint unsigned auto_increment not null,
-    name             varchar(50)                    not null,
-    description      varchar(200)                   not null,
-    price            decimal(10, 2)                 not null,
-    duration         smallint unsigned              not null,
-    create_date      datetime(3)                    not null,
-    last_update_date datetime(3)                    not null,
+    name             varchar(50)    not null,
+    description      varchar(200)   not null,
+    price            decimal(10, 2) not null,
+    duration         smallint unsigned not null,
+    create_date      datetime(3) not null,
+    last_update_date datetime(3) not null,
     UNIQUE (name, description),
     PRIMARY KEY (id)
 );
@@ -21,7 +24,7 @@ CREATE TABLE gift_certificate
 CREATE TABLE tag
 (
     id   bigint unsigned auto_increment not null,
-    name varchar(50)                    not null,
+    name varchar(50) not null,
     UNIQUE (name),
     PRIMARY KEY (id)
 );
@@ -30,9 +33,9 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE user
 (
     id         bigint unsigned auto_increment not null,
-    login      varchar(50)                    not null,
-    first_name varchar(50)                    not null,
-    last_name  varchar(50)                    not null,
+    login      varchar(50) not null,
+    first_name varchar(50) not null,
+    last_name  varchar(50) not null,
     UNIQUE (login),
     PRIMARY KEY (id)
 );
@@ -41,10 +44,10 @@ DROP TABLE IF EXISTS `order`;
 CREATE TABLE `order`
 (
     id                  bigint unsigned auto_increment not null,
-    user_id             bigint unsigned                not null,
-    gift_certificate_id bigint unsigned                not null,
-    price               decimal(10, 2)                 not null,
-    purchase_date       datetime(3)                    not null,
+    user_id             bigint unsigned not null,
+    gift_certificate_id bigint unsigned not null,
+    price               decimal(10, 2) not null,
+    purchase_date       datetime(3) not null,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES user (id),
     FOREIGN KEY (gift_certificate_id) REFERENCES gift_certificate (id)

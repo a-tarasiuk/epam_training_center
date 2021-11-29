@@ -1,13 +1,13 @@
 //package com.epam.esm.service.impl;
 //
-//import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
-//import com.epam.esm.dao.impl.GiftCertificateToTagRelationDaoImpl;
-//import com.epam.esm.dao.impl.TagDaoImpl;
-//import com.epam.esm.entity.GiftCertificate;
-//import com.epam.esm.entity.Tag;
-//import com.epam.esm.exception.EntityNotFoundException;
-//import com.epam.esm.util.ColumnName;
-//import com.epam.esm.util.SqlSortOperator;
+//import com.epam.esm.repository.dao.impl.GiftCertificateDaoImpl;
+//import com.epam.esm.repository.dao.impl.GiftCertificateToTagRelationDaoImpl;
+//import com.epam.esm.repository.dao.impl.TagDaoImpl;
+//import com.epam.esm.model.entity.GiftCertificate;
+//import com.epam.esm.model.entity.Tag;
+//import com.epam.esm.repository.exception.EntityNotFoundException;
+//import com.epam.esm.model.util.ColumnName;
+//import com.epam.esm.repository.util.SqlSortOperator;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.mockito.Mock;

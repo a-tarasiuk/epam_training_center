@@ -1,9 +1,9 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.GiftCertificateUpdateDto;
-import com.epam.esm.pojo.GiftCertificateSearchParameter;
-import com.epam.esm.util.EsmPagination;
+import com.epam.esm.model.dto.GiftCertificateDto;
+import com.epam.esm.model.dto.GiftCertificateUpdateDto;
+import com.epam.esm.model.pojo.GiftCertificateSearchParameter;
+import com.epam.esm.repository.util.EsmPagination;
 import org.springframework.data.domain.Page;
 
 /**
@@ -13,7 +13,7 @@ public interface GitCertificateService extends CreateService<GiftCertificateDto>
     /**
      * Update gift certificate by it is ID and gift certificate entity.
      *
-     * @param id          - Gift certificate ID.
+     * @param id                       - Gift certificate ID.
      * @param giftCertificateUpdateDto - Gift certificate DTO.
      * @return - Updated gift certificate
      */
@@ -22,7 +22,7 @@ public interface GitCertificateService extends CreateService<GiftCertificateDto>
     /**
      * Find all gift certificates with tags by parameters.
      *
-     * @param pagination pagination.
+     * @param pagination      pagination.
      * @param searchParameter search parameters for gift certificate(s).
      * @return Set of found gift certificates.
      */
