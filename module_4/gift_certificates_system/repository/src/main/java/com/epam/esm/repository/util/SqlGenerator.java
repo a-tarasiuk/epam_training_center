@@ -1,14 +1,15 @@
 package com.epam.esm.repository.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SqlGenerator {
     private static final char PERCENT_SIGN = '%';
     private static final char DELIMITER = ' ';
-
-    private SqlGenerator() {
-    }
 
     public static String like(String sqlQueryValue) {
         return new StringBuilder()

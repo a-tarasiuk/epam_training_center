@@ -2,11 +2,7 @@ package com.epam.esm.model.dto;
 
 import com.epam.esm.model.util.DtoRegexValidator;
 import com.epam.esm.model.util.MessagePropertyKey;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.Valid;

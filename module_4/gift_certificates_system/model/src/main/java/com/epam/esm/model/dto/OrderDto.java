@@ -2,11 +2,7 @@ package com.epam.esm.model.dto;
 
 import com.epam.esm.model.view.View;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;

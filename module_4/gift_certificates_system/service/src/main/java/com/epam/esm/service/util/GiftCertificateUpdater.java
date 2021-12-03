@@ -1,6 +1,8 @@
 package com.epam.esm.service.util;
 
 import com.epam.esm.model.entity.GiftCertificate;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
@@ -8,9 +10,8 @@ import java.math.BigDecimal;
 /**
  * Gift certificate updater.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GiftCertificateUpdater {
-    private GiftCertificateUpdater() {
-    }
 
     public static GiftCertificate update(GiftCertificate foundCertificate, GiftCertificate updatedCertificate) {
         String foundName = foundCertificate.getName();

@@ -8,18 +8,9 @@ import com.epam.esm.model.pojo.GiftCertificateSearchParameter;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_ESM_SORT_DIRECTION_INCORRECT_VALUE;
@@ -39,18 +30,18 @@ public final class SpecificationGenerator implements Serializable {
      * <code>
      * select *<br>
      * from gift_certificate gc<br>
-     *          cross join gift_certificate_to_tag_relation relation<br>
-     *          inner join tag t on relation.tag_id = t.id and (gc.id = relation.gift_certificate_id)<br>
+     * cross join gift_certificate_to_tag_relation relation<br>
+     * inner join tag t on relation.tag_id = t.id and (gc.id = relation.gift_certificate_id)<br>
      * where t.name in ('Epam', 'Junior')<br>
      * group by gc.id<br>
      * having count(gc.id) in (2)<br>
      * order by gc.id asc<br>
      * limit ?;<br>
      * </code>
-     *
+     * <p>
      * JPA query for search by tag names:<br>
      * <code>
-     *     SELECT gc FROM GiftCertificate gc JOIN GiftCertificateToTagRelation relation on gc = relation.giftCertificate WHERE relation.tag IN (:tags) GROUP BY gc HAVING COUNT(gc) = :countTags
+     * SELECT gc FROM GiftCertificate gc JOIN GiftCertificateToTagRelation relation on gc = relation.giftCertificate WHERE relation.tag IN (:tags) GROUP BY gc HAVING COUNT(gc) = :countTags
      * </code>
      */
     public static Specification<GiftCertificate> build(final GiftCertificateSearchParameter searchParameter) {

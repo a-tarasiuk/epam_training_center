@@ -2,7 +2,6 @@ package com.epam.esm.repository;
 
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Tag;
-import com.epam.esm.model.util.MessagePropertyKey;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.epam.esm.model.util.MessagePropertyKey.*;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_TAG_NOT_NULL;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
     Optional<Tag> findById(long id);

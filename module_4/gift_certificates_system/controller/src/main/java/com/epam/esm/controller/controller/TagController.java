@@ -16,14 +16,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -69,6 +62,7 @@ public class TagController {
      * @return Tag DTO with HATEOAS.
      */
     @GetMapping(UrlMapping.ID)
+    @ResponseStatus(HttpStatus.FOUND)
     public EntityModel<TagDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
                                         @PathVariable long id) {
         TagDto tag = service.findById(id);
@@ -83,6 +77,7 @@ public class TagController {
      * @return Set of tags DTO with HATEOAS.
      */
     @GetMapping
+    @ResponseStatus(HttpStatus.FOUND)
     public PagedModel<EntityModel<TagDto>> findAll(@Valid EsmPagination pagination, PagedResourcesAssembler<TagDto> assembler) {
         Page<TagDto> page = service.findAll(pagination);
         return assembler.toModel(page);
@@ -105,7 +100,8 @@ public class TagController {
      *
      * @return Set of MostWidelyUsedTag.
      */
-    @GetMapping(UrlMapping.MOST_WIDELY_USED_TAG_OF_USER_WITH_HIGHEST_COST_OF_ALL_ORDERS)
+    @GetMapping(UrlMapping.MOST_WIDELY_USED_TAG_OF_TOP_USER)
+    @ResponseStatus(HttpStatus.FOUND)
     public CollectionModel<MostWidelyUsedTag> findMostWidelyUsedTag() {
         Set<MostWidelyUsedTag> tags = service.findMostWidelyUsedTags();
         return CollectionModel.of(tags);

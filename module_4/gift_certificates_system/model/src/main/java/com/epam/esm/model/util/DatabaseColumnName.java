@@ -1,5 +1,9 @@
 package com.epam.esm.model.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DatabaseColumnName {
     public static final String ID = "id";
     public static final String TAG_ID = "tag_id";
@@ -8,7 +12,4 @@ public final class DatabaseColumnName {
 
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";
-
-    private DatabaseColumnName() {
-    }
 }

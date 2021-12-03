@@ -11,13 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -44,6 +38,7 @@ public class UserController {
      * @return User DTO.
      */
     @GetMapping(UrlMapping.ID)
+    @ResponseStatus(HttpStatus.FOUND)
     public EntityModel<UserDto> findById(@Min(value = 1, message = VALIDATION_ID)
                                          @PathVariable long id) {
         UserDto user = service.findById(id);
@@ -58,6 +53,7 @@ public class UserController {
      * @return Set of found user DTO.
      */
     @GetMapping
+    @ResponseStatus(HttpStatus.FOUND)
     public Page<UserDto> findAll(@Valid EsmPagination pagination) {
         return service.findAll(pagination);
     }

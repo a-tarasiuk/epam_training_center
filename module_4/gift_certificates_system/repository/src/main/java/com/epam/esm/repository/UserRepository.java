@@ -9,9 +9,11 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findById(long id);
+
     Optional<User> findByLogin(String login);
 
-    Optional<User> findById(long id);
+    Optional<User> findByLoginAndPasswordEncoded(String login, String passwordEncoded);
 
     @Query("SELECT o.user, SUM(o.price) AS sumOfAllOrders FROM Order o GROUP BY o.user ORDER BY SUM(o.price) DESC")
     Set<UserInformation> findUsersWithHighestCostOfAllOrders();

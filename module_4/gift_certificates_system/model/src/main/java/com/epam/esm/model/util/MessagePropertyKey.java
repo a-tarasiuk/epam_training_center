@@ -1,5 +1,9 @@
 package com.epam.esm.model.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MessagePropertyKey {
     // Validation - General
     public static final String VALIDATION_ID = "validation.id";
@@ -36,12 +40,12 @@ public final class MessagePropertyKey {
     public static final String VALIDATION_GIFT_CERTIFICATE_DURATION = "validation.gift-certificate.duration";
     public static final String VALIDATION_GIFT_CERTIFICATE_DURATION_NOT_NULL = "validation.gift-certificate.duration.not-null";
     public static final String VALIDATION_GIFT_CERTIFICATE_TAGS_NOT_EMPTY = "validation.gift-certificate.tags.not-empty";
-    public static final String VALIDATION_GIFT_CERTIFICATE_KEYWORD_NOT_BLANK = "validation.gift-certificate.keyword.not-blank";
 
     // Exceptions - User
     public static final String EXCEPTION_USER_ID_NOT_FOUND = "exception.user.id.not-found";
     public static final String EXCEPTION_USER_LOGIN_NOT_FOUND = "exception.user.login.not-found";
     public static final String EXCEPTION_USER_LOGIN_EXISTS = "exception.user.login.exists";
+    public static final String EXCEPTION_USER_LOGIN_OR_PASSWORD_INCORRECT = "exception.user.login-or-password.incorrect";
 
     // Exceptions - Order
     public static final String EXCEPTION_ORDER_ID_NOT_FOUND = "exception.order.id.not-found";
@@ -50,7 +54,6 @@ public final class MessagePropertyKey {
     // Exceptions - Tag
     public static final String EXCEPTION_TAG_NOT_NULL = "exception.tag.name.not-null";
     public static final String EXCEPTION_TAG_NAME_EXISTS = "exception.tag.name.exists";
-    public static final String EXCEPTION_TAG_NAME_NOT_FOUND = "exception.tag.name.not-found";
     public static final String EXCEPTION_TAG_ID_NOT_FOUND = "exception.tag.id.not-found";
 
     // Exceptions - Gift certificate
@@ -72,6 +75,9 @@ public final class MessagePropertyKey {
     // Exceptions - Unsupported operation
     public static final String EXCEPTION_UNSUPPORTED_OPERATION = "exception.unsupported-operation";
 
-    private MessagePropertyKey() {
-    }
+    // Exceptions - JWT
+    public static final String EXCEPTION_JWT_EXPIRED = "exception.jwt.expired";
+    public static final String EXCEPTION_JWT_UNSUPPORTED = "exception.jwt.unsupported";
+    public static final String EXCEPTION_JWT_MALFORMED = "exception.jwt.malformed";
+    public static final String EXCEPTION_JWT_SIGNATURE = "exception.jwt.signature";
 }

@@ -1,27 +1,21 @@
 package com.epam.esm.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.epam.esm.model.listener.UserListener;
+import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
 /**
  * User entity.
+ *
+ * @see com.epam.esm.model.listener.UserListener
  */
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -29,6 +23,7 @@ import java.util.Objects;
 @Setter
 @Entity
 @ToString
+@EntityListeners(UserListener.class)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -100,10 +95,17 @@ public class User implements UserDetails {
 
     public enum Role {
         ROLE_USER,
-        ROLE_ADMINISTRATOR
+        ROLE_ADMINISTRATOR;
+
+        private static final String ROLE_PREFIX = "ROLE_";
+
+         public String withoutPrefix() {
+            return StringUtils.removeStart(this.name(), ROLE_PREFIX);
+        }
     }
 
     public enum DefaultUsernameParameter {
-        LOGIN
+        LOGIN,
+        PASSWORD_ENCODED
     }
 }

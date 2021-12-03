@@ -1,8 +1,12 @@
 package com.epam.esm.model.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Url mapping for controllers.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UrlMapping {
 
     /**
@@ -20,7 +24,7 @@ public final class UrlMapping {
      * URL for Tag
      */
     public static final String TAGS = "/tags";
-    public static final String MOST_WIDELY_USED_TAG_OF_USER_WITH_HIGHEST_COST_OF_ALL_ORDERS = "/most-widely";
+    public static final String MOST_WIDELY_USED_TAG_OF_TOP_USER = "/most-widely-used-of-top-user";
 
     /**
      * URL only for User.
@@ -30,8 +34,8 @@ public final class UrlMapping {
     /**
      * URL for User with Order
      */
-    public static final String FIND_ORDER_BY_USER_ID = "/{orderId}/user/{userId}";
-    public static final String FIND_ALL_ORDERS_BY_USER_ID = "/user/{userId}";
+    public static final String FIND_ORDER_FOR_USER = "/users/{userId}/orders/{orderId}";
+    public static final String CREATE_ORDER_FOR_USER = "users/{userId}/orders";
 
     /**
      * URL for Order
@@ -44,9 +48,5 @@ public final class UrlMapping {
     public static final String AUTHENTICATION = "/auth";
     public static final String SIGN_UP = "/sign-up";
     public static final String SIGN_IN = "/sign-in";
-    public static final String LOGOUT = "/logout";
     public static final String TOKEN = "/token";
-
-    private UrlMapping() {
-    }
 }

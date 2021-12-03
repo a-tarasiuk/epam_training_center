@@ -23,11 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND;
-import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_ORDER_FOR_USER_NOT_FOUND;
-import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_ORDER_ID_NOT_FOUND;
-import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
-import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.*;
 
 /**
  * Order service implementation.
