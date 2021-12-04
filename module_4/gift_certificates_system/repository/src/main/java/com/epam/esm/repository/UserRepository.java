@@ -13,8 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByLogin(String login);
 
-    Optional<User> findByLoginAndPasswordEncoded(String login, String passwordEncoded);
-
-    @Query("SELECT o.user, SUM(o.price) AS sumOfAllOrders FROM Order o GROUP BY o.user ORDER BY SUM(o.price) DESC")
+    @Query("SELECT new com.epam.esm.model.pojo.UserInformation(o.user, SUM(o.price)) FROM Order o GROUP BY o.user ORDER BY SUM(o.price) DESC")
     Set<UserInformation> findUsersWithHighestCostOfAllOrders();
 }

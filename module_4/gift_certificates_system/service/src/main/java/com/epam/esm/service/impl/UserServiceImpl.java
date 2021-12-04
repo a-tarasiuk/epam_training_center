@@ -21,7 +21,11 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 
-import static com.epam.esm.model.util.MessagePropertyKey.*;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_USER_LOGIN_EXISTS;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_USER_LOGIN_NOT_FOUND;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_USER_LOGIN_OR_PASSWORD_INCORRECT;
 
 /**
  * User service implementation.
@@ -36,7 +40,8 @@ public class UserServiceImpl implements UserService {
     private final PageMapper pageMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, ModelMapper modelMapper, PageMapper pageMapper) {
+    public UserServiceImpl(UserRepository userRepository, JwtUtils jwtUtils, PasswordEncoder passwordEncoder,
+                           ModelMapper modelMapper, PageMapper pageMapper) {
         this.userRepository = userRepository;
         this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;

@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public interface GiftCertificateToTagRelationRepository extends CrudRepository<GiftCertificateToTagRelation, Long> {
 
-
     /**
      * Find all gift certificate to tag relation by tag entity.
      *
@@ -30,7 +29,6 @@ public interface GiftCertificateToTagRelationRepository extends CrudRepository<G
     /**
      * Returns whether an entity with the given exists.
      *
-     * @param relation must not be {@literal null}.
      * @return {@literal true} if an entity with the given id exists, {@literal false} otherwise.
      * @throws IllegalArgumentException if {@literal id} is {@literal null}.
      */

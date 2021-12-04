@@ -17,10 +17,14 @@ public class UserAccessVerification {
         this.userService = userService;
     }
 
-    public boolean verifyAuthorizationUser(long userId) {
+    public boolean isAuthorizationUser(long userId) {
         UserDto user = userService.findById(userId);
         User authorizationUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return StringUtils.equals(user.getLogin(), authorizationUser.getLogin());
+        String loginFromRequest = user.getLogin();
+        String loginFromContext = authorizationUser.getLogin();
+
+        return StringUtils.equals(loginFromRequest, loginFromContext)
+                || StringUtils.equals(authorizationUser.getRole().name(), User.Role.ROLE_ADMINISTRATOR.name());
     }
 }

@@ -1,14 +1,18 @@
-package com.epam.esm.controller.exception;
+package com.epam.esm.controller.handler;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Set;
 
 @AllArgsConstructor
 @Getter
-public class EsmExceptionBody {
+@Builder
+@ToString
+public class ExceptionBody {
     private static final String ERROR_MESSAGE_PROPERTY = "Error message";
     private static final String ERROR_CODE_PROPERTY = "Error esm code";
 

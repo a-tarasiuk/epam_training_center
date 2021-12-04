@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class RelationId implements Serializable {
+public class GiftCertificateToTagRelationId implements Serializable {
     private Long giftCertificate;
     private Long tag;
 }

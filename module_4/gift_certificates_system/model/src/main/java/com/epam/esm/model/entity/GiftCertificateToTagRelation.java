@@ -1,14 +1,21 @@
 package com.epam.esm.model.entity;
 
 import com.epam.esm.model.listener.GiftCertificateToTagRelationListener;
-import com.epam.esm.model.util.DatabaseColumnName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.Objects;
+
+import static com.epam.esm.model.util.DatabaseColumnName.GIFT_CERTIFICATE_ID;
+import static com.epam.esm.model.util.DatabaseColumnName.TAG_ID;
 
 
 /**
@@ -21,16 +28,16 @@ import java.util.Objects;
 @Getter
 @Entity
 @EntityListeners(GiftCertificateToTagRelationListener.class)
-@IdClass(RelationId.class)
+@IdClass(GiftCertificateToTagRelationId.class)
 public class GiftCertificateToTagRelation implements Serializable {
     @Id
     @ManyToOne
-    @JoinColumn(name = DatabaseColumnName.GIFT_CERTIFICATE_ID)
+    @JoinColumn(name = GIFT_CERTIFICATE_ID)
     private GiftCertificate giftCertificate;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = DatabaseColumnName.TAG_ID)
+    @JoinColumn(name = TAG_ID)
     private Tag tag;
 
     @Override

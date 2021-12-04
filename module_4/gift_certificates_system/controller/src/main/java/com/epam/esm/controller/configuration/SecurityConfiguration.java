@@ -1,9 +1,11 @@
 package com.epam.esm.controller.configuration;
 
-import com.epam.esm.controller.filter.JwtFilter;
-import com.epam.esm.model.entity.User;
+import com.epam.esm.controller.filter.JwtRequestFilter;
+import com.epam.esm.controller.handler.AccessDeniedExceptionHandler;
+import com.epam.esm.controller.handler.AuthenticationExceptionHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,20 +14,31 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.epam.esm.model.entity.User.Role.*;
+import static com.epam.esm.model.entity.User.Role.ROLE_ADMINISTRATOR;
+import static com.epam.esm.model.entity.User.Role.ROLE_USER;
+import static com.epam.esm.model.util.UrlMapping.ALL_INSIDE;
 import static com.epam.esm.model.util.UrlMapping.AUTHENTICATION;
 import static com.epam.esm.model.util.UrlMapping.GIFT_CERTIFICATES;
-import static com.epam.esm.model.util.UrlMapping.ORDERS;
+import static com.epam.esm.model.util.UrlMapping.ORDER_FOR_USER;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PATCH;
+import static org.springframework.http.HttpMethod.POST;
 
 @EnableWebSecurity(debug = false)
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    private final JwtFilter jwtFilter;
+    private final JwtRequestFilter jwtFilter;
+    private final ResourceBundleMessageSource messageSource;
 
-    public SecurityConfiguration(JwtFilter jwtFilter) {
+    @Autowired
+    public SecurityConfiguration(JwtRequestFilter jwtFilter, ResourceBundleMessageSource messageSource) {
         this.jwtFilter = jwtFilter;
+        this.messageSource = messageSource;
     }
 
     @Bean
@@ -39,21 +52,48 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    /**
+     * Check authorization exceptions.
+     *
+     * @return AccessDeniedHandler
+     */
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new AccessDeniedExceptionHandler();
+    }
+
+    /**
+     * Check JWT and authentication exceptions.
+     *
+     * @return AuthenticationEntryPoint.
+     */
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return new AuthenticationExceptionHandler();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, GIFT_CERTIFICATES + "/**").permitAll()
+                .antMatchers(GET, GIFT_CERTIFICATES + ALL_INSIDE).permitAll()
+                .antMatchers(GET).hasAnyRole(ROLE_USER.withoutPrefix(), ROLE_ADMINISTRATOR.withoutPrefix())
+                .antMatchers(DELETE).hasRole(ROLE_ADMINISTRATOR.withoutPrefix())
+                .antMatchers(PATCH).hasRole(ROLE_ADMINISTRATOR.withoutPrefix())
                 .antMatchers(AUTHENTICATION + "/**").anonymous()
-                .antMatchers(HttpMethod.POST, ORDERS).hasRole(ROLE_USER.withoutPrefix())
-                .antMatchers(HttpMethod.GET).hasRole(ROLE_USER.withoutPrefix())
-                .antMatchers("/tags/most-widely").hasRole(ROLE_ADMINISTRATOR.withoutPrefix())
+                .antMatchers(POST, ORDER_FOR_USER).hasAnyRole(ROLE_USER.withoutPrefix(), ROLE_ADMINISTRATOR.withoutPrefix())
                 .anyRequest().hasRole(ROLE_ADMINISTRATOR.withoutPrefix())
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .httpBasic()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint())
+                .accessDeniedHandler(accessDeniedHandler());
     }
 }

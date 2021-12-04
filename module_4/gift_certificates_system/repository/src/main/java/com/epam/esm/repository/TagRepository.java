@@ -6,19 +6,22 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.Set;
 
 import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_TAG_NOT_NULL;
+import static com.epam.esm.repository.util.ParameterName.GIFT_CERTIFICATE;
 
+@Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
     Optional<Tag> findById(long id);
 
     Optional<Tag> findByName(String name);
 
     @Query("SELECT t FROM Tag t JOIN GiftCertificateToTagRelation r ON r.tag = t JOIN GiftCertificate gc ON gc = r.giftCertificate WHERE gc = :giftCertificate")
-    Set<Tag> findAllByGiftCertificate(@Param("giftCertificate") GiftCertificate certificate);
+    Set<Tag> findAllByGiftCertificate(@Param(GIFT_CERTIFICATE) GiftCertificate certificate);
 
     /**
      * Deletes a given entity.

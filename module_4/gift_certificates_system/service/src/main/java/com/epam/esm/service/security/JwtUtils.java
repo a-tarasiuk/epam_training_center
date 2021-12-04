@@ -1,8 +1,9 @@
 package com.epam.esm.service.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -11,9 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Base64;
 
-import static com.epam.esm.model.util.MessagePropertyKey.*;
-
 @Component
+@Log4j2
 public class JwtUtils {
     private static final String SIGNING_KEY = "Esm secret key";
 
@@ -35,21 +35,11 @@ public class JwtUtils {
     public String getLoginFromJwt(String jwt) {
         String base64 = encodeToBase64(SIGNING_KEY);
 
-        try {
-            return Jwts.parser()
-                    .setSigningKey(base64)
-                    .parseClaimsJws(jwt)
-                    .getBody()
-                    .getSubject();
-        } catch (ExpiredJwtException e) {
-            throw new AccessDeniedException(EXCEPTION_JWT_EXPIRED);
-        } catch (UnsupportedJwtException e) {
-            throw new AccessDeniedException(EXCEPTION_JWT_UNSUPPORTED);
-        } catch (MalformedJwtException e) {
-            throw new AccessDeniedException(EXCEPTION_JWT_MALFORMED);
-        } catch (SignatureException e) {
-            throw new AccessDeniedException(EXCEPTION_JWT_SIGNATURE);
-        }
+        return Jwts.parser()
+                .setSigningKey(base64)
+                .parseClaimsJws(jwt)
+                .getBody()
+                .getSubject();
     }
 
     public enum Parameter {

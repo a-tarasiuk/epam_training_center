@@ -1,11 +1,12 @@
 package com.epam.esm.model.pojo;
 
+import com.epam.esm.model.dto.UserDto;
 import com.epam.esm.model.entity.Tag;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -14,45 +15,11 @@ import java.util.Set;
  *
  * @see UserInformation
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@EqualsAndHashCode
-public class MostWidelyUsedTag {
+@Builder
+@Data
+public class MostWidelyUsedTag implements Serializable {
+    private UserDto userDto;
     private Long numberOfUses;
     private Set<Tag> tags;
-    private UserInformation userInformation;
-
-    /**
-     * Set number of times these tags have been used by the user.
-     *
-     * @param numberOfUses count of uses.
-     * @return this object with number of uses tags.
-     */
-    public MostWidelyUsedTag setNumberOfUsesTags(Long numberOfUses) {
-        this.numberOfUses = numberOfUses;
-        return this;
-    }
-
-    /**
-     * Set of most widely used tag.
-     *
-     * @param tags set of tag.
-     * @return this object with set of tag.
-     */
-    public MostWidelyUsedTag setTags(Set<Tag> tags) {
-        this.tags = tags;
-        return this;
-    }
-
-    /**
-     * Set UserInformation.
-     *
-     * @param userInformation user price.
-     * @return this object.
-     */
-    public MostWidelyUsedTag setUserInformation(UserInformation userInformation) {
-        this.userInformation = userInformation;
-        return this;
-    }
+    private BigDecimal sumOfAllOrders;
 }

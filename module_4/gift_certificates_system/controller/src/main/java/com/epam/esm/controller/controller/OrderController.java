@@ -14,16 +14,24 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import static com.epam.esm.model.util.MessagePropertyKey.*;
+import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_ID;
+import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL;
+import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_ORDER_ID;
+import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_USER_ID;
+import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_USER_ID_NOT_EMPTY;
 
 @RestController
-@RequestMapping(value = UrlMapping.ORDERS)
 @Validated
 public class OrderController {
     private final OrderServiceImpl service;
@@ -36,21 +44,22 @@ public class OrderController {
     }
 
     /**
-     * Create order for user by user ID.
+     * Create order for user by user ID.<br>
+     * Authenticated user cannot call this method for other users.
      *
      * @param userId            user ID.
      * @param giftCertificateId gift certificate ID.
      * @return Created order DTO.
      */
-    @PostMapping(UrlMapping.CREATE_ORDER_FOR_USER)
+    @PostMapping(UrlMapping.ORDER_FOR_USER)
+    @PreAuthorize("@userAccessVerification.isAuthorizationUser(#userId)")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("@userAccessVerification.verifyAuthorizationUser(#userId)")
-    public EntityModel<OrderDto> createOrderForUser(@PathVariable
-                                                    @NotNull(message = VALIDATION_USER_ID_NOT_EMPTY)
-                                                    @Min(value = 1, message = VALIDATION_USER_ID) Long userId,
+    public EntityModel<OrderDto> createOrderForUser(@NotNull(message = VALIDATION_USER_ID_NOT_EMPTY)
+                                                    @Min(value = 1, message = VALIDATION_USER_ID)
+                                                    @PathVariable long userId,
                                                     @NotNull(message = VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL)
                                                     @Min(value = 1, message = VALIDATION_GIFT_CERTIFICATE_ID)
-                                                    @RequestBody Long giftCertificateId) {
+                                                    @RequestBody long giftCertificateId) {
         OrderDto order = service.create(userId, giftCertificateId);
         return EntityModel.of(linkBuilder.build(order));
     }
@@ -61,7 +70,7 @@ public class OrderController {
      * @param id Order ID.
      * @return Order DTO.
      */
-    @GetMapping(UrlMapping.ID)
+    @GetMapping(UrlMapping.FIND_ORDERS_BY_ID)
     @ResponseStatus(HttpStatus.FOUND)
     public EntityModel<OrderDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
                                           @PathVariable long id) {
@@ -83,15 +92,16 @@ public class OrderController {
     }
 
     /**
-     * Find all orders by user ID.
+     * Find all orders by user ID.<br>
+     * Authenticated user cannot call this method for other users.
      *
      * @param userId     User ID.
      * @param pagination Pagination parameters.
      * @return Set of found order DTO.
      */
-    @GetMapping(UrlMapping.CREATE_ORDER_FOR_USER)
+    @GetMapping(UrlMapping.ORDER_FOR_USER)
+    @PreAuthorize("@userAccessVerification.isAuthorizationUser(#userId)")
     @ResponseStatus(HttpStatus.FOUND)
-    @PreAuthorize("@userAccessVerification.verifyLoggedUser(#userId)")
     public Page<OrderDto> findAllOrdersByUserId(@Min(value = 1, message = VALIDATION_USER_ID)
                                                 @PathVariable long userId,
                                                 @Valid EsmPagination pagination) {
@@ -108,6 +118,7 @@ public class OrderController {
     @GetMapping(UrlMapping.FIND_ORDER_FOR_USER)
     @JsonView(View.FindOrderForUser.class)
     @ResponseStatus(HttpStatus.FOUND)
+    @PreAuthorize("@userAccessVerification.isAuthorizationUser(#userId)")
     public OrderDto findOrderForUser(@Min(value = 1, message = VALIDATION_USER_ID)
                                      @PathVariable long userId,
                                      @Min(value = 1, message = VALIDATION_ORDER_ID)

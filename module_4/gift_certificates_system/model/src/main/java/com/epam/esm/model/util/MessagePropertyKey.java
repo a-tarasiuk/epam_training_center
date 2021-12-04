@@ -80,4 +80,7 @@ public final class MessagePropertyKey {
     public static final String EXCEPTION_JWT_UNSUPPORTED = "exception.jwt.unsupported";
     public static final String EXCEPTION_JWT_MALFORMED = "exception.jwt.malformed";
     public static final String EXCEPTION_JWT_SIGNATURE = "exception.jwt.signature";
+
+    // Exceptions - Authorization
+    public static final String EXCEPTION_AUTHORIZATION_ACCESS_DENIED = "exception.authorization.access-denied";
 }

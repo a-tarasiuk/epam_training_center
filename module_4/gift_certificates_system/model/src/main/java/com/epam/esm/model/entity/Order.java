@@ -1,15 +1,29 @@
 package com.epam.esm.model.entity;
 
 import com.epam.esm.model.listener.OrderListener;
-import com.epam.esm.model.util.DatabaseColumnName;
 import com.epam.esm.model.util.DatabaseTableName;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+import static com.epam.esm.model.util.DatabaseColumnName.GIFT_CERTIFICATE_ID;
+import static com.epam.esm.model.util.DatabaseColumnName.USER_ID;
 
 /**
  * Order entity.
@@ -30,11 +44,11 @@ public class Order implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = DatabaseColumnName.USER_ID)
+    @JoinColumn(name = USER_ID)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = DatabaseColumnName.GIFT_CERTIFICATE_ID)
+    @JoinColumn(name = GIFT_CERTIFICATE_ID)
     private GiftCertificate giftCertificate;
 
     @Column(nullable = false)

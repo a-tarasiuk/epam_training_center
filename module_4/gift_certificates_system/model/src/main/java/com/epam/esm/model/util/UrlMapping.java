@@ -35,12 +35,13 @@ public final class UrlMapping {
      * URL for User with Order
      */
     public static final String FIND_ORDER_FOR_USER = "/users/{userId}/orders/{orderId}";
-    public static final String CREATE_ORDER_FOR_USER = "users/{userId}/orders";
+    public static final String ORDER_FOR_USER = "/users/{userId}/orders";
 
     /**
      * URL for Order
      */
     public static final String ORDERS = "/orders";
+    public static final String FIND_ORDERS_BY_ID = "/orders/{id}";
 
     /**
      * URL for Authentication
@@ -48,5 +49,4 @@ public final class UrlMapping {
     public static final String AUTHENTICATION = "/auth";
     public static final String SIGN_UP = "/sign-up";
     public static final String SIGN_IN = "/sign-in";
-    public static final String TOKEN = "/token";
 }

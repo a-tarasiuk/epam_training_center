@@ -11,5 +11,5 @@ public interface TagService<T> extends CreateService<T> {
      * @return set of MostWidelyUsedTag.
      * @see com.epam.esm.model.pojo.MostWidelyUsedTag
      */
-    public Set<MostWidelyUsedTag> findMostWidelyUsedTags();
+    Set<MostWidelyUsedTag> findMostWidelyUsedTags();
 }

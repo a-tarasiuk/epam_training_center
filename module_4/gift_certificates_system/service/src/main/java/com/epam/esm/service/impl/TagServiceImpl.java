@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.model.dto.TagDto;
+import com.epam.esm.model.dto.UserDto;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
@@ -130,11 +131,15 @@ public class TagServiceImpl implements TagService<TagDto> {
     private MostWidelyUsedTag buildMostWidelyUsedTag(UserInformation userInformation, Map<Tag, Long> map) {
         Long count = findMaxCountOfRepetitions(map);
         Set<Tag> tags = findMostWidelyUsedTags(map, count);
+        User user = userInformation.getUser();
+        UserDto userDto = modelMapper.map(user, UserDto.class);
 
-        return new MostWidelyUsedTag()
-                .setTags(tags)
-                .setNumberOfUsesTags(count)
-                .setUserInformation(userInformation);
+        return MostWidelyUsedTag.builder()
+                .userDto(userDto)
+                .tags(tags)
+                .numberOfUses(count)
+                .sumOfAllOrders(userInformation.getSumOfAllOrders())
+                .build();
     }
 
     private void delete(Tag tag) {
