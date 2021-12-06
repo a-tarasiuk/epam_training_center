@@ -8,7 +8,6 @@ import com.epam.esm.model.util.MessagePropertyKey;
 import com.epam.esm.model.util.UrlMapping;
 import com.epam.esm.repository.util.EsmPagination;
 import com.epam.esm.service.GitCertificateService;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
@@ -75,7 +74,7 @@ public class GiftCertificateController {
     }
 
     /**
-     * Find all gift certificates DTO.
+     * Find all gift certificates DTO with parameters.
      *
      * @param pagination Pagination parameters.
      * @return Set of found gift certificates DTO.
@@ -83,7 +82,7 @@ public class GiftCertificateController {
     @GetMapping
     public Page<GiftCertificateDto> findAll(@Valid EsmPagination pagination,
                                             @Valid GiftCertificateSearchParameter searchParameter) {
-        return ObjectUtils.isEmpty(searchParameter)
+        return searchParameter.isEmptyAllFields()
                 ? service.findAll(pagination)
                 : service.findAll(pagination, searchParameter);
     }

@@ -7,6 +7,7 @@ import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.GiftCertificateToTagRelation;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.pojo.GiftCertificateSearchParameter;
+import com.epam.esm.model.util.MessagePropertyKey;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.GiftCertificateToTagRelationRepository;
 import com.epam.esm.repository.TagRepository;
@@ -21,6 +22,7 @@ import com.epam.esm.service.util.PageMapper;
 import com.epam.esm.service.util.PageValidator;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -107,8 +109,12 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         Specification<GiftCertificate> specification = SpecificationGenerator.build(searchParameter);
         Page<GiftCertificate> certificates = certificateRepository.findAll(specification, pageable);
 
-        PageValidator.validate(pagination, certificates);
-        return pageMapper.map(certificates, GiftCertificateDto.class);
+        if (certificates.getSize() != NumberUtils.INTEGER_ZERO) {
+            PageValidator.validate(pagination, certificates);
+            return pageMapper.map(certificates, GiftCertificateDto.class);
+        } else {
+            throw new javax.persistence.EntityNotFoundException(MessagePropertyKey.EXCEPTION_GIFT_CERTIFICATE_WITH_SEARCH_PARAMETERS);
+        }
     }
 
     @Override

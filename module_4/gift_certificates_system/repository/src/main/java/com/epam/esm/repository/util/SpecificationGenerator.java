@@ -57,7 +57,7 @@ public final class SpecificationGenerator implements Serializable {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            String keyword = searchParameter.getKeyword();
+            String keyword = searchParameter.getKeyword().trim();
             if (ObjectUtils.isNotEmpty(keyword)) {
                 String keywordLike = SqlGenerator.like(keyword);
                 Predicate nameLike = builder.like(root.get(ColumnName.NAME.name().toLowerCase()), keywordLike);
@@ -79,8 +79,11 @@ public final class SpecificationGenerator implements Serializable {
                         .having(builder.count(root).in(tagNames.size()));
             }
 
-            List<Order> orders = generateOrdersForFields(searchParameter.getSortBy(), builder, root);
-            query.orderBy(orders);
+            Set<String> sortBy = searchParameter.getSortBy();
+            if (ObjectUtils.isNotEmpty(sortBy)) {
+                List<Order> orders = generateOrdersForFields(sortBy, builder, root);
+                query.orderBy(orders);
+            }
 
             return builder.and(predicates.toArray(new Predicate[0]));
         };

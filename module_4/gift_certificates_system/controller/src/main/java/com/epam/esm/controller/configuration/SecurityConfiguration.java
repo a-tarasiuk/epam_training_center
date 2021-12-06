@@ -4,9 +4,8 @@ import com.epam.esm.controller.filter.JwtRequestFilter;
 import com.epam.esm.controller.handler.AccessDeniedExceptionHandler;
 import com.epam.esm.controller.handler.AuthenticationExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,12 +33,9 @@ import static org.springframework.http.HttpMethod.POST;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final JwtRequestFilter jwtFilter;
-    private final ResourceBundleMessageSource messageSource;
 
-    @Autowired
-    public SecurityConfiguration(JwtRequestFilter jwtFilter, ResourceBundleMessageSource messageSource) {
+    public SecurityConfiguration(JwtRequestFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
-        this.messageSource = messageSource;
     }
 
     @Bean
@@ -49,7 +45,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 
     @Bean

@@ -2,6 +2,7 @@ package com.epam.esm.model.dto;
 
 import com.epam.esm.model.util.DtoRegexValidator;
 import com.epam.esm.model.util.MessagePropertyKey;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -54,7 +55,10 @@ public class GiftCertificateDto extends AbstractDto<GiftCertificateDto> {
             message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_DURATION)
     private Integer duration;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime lastUpdateDate;
 
     @NotEmpty(message = MessagePropertyKey.VALIDATION_GIFT_CERTIFICATE_TAGS_NOT_EMPTY)
