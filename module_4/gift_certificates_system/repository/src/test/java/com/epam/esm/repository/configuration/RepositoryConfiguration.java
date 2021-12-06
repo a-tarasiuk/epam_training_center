@@ -10,7 +10,6 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Locale;
 
@@ -23,7 +22,7 @@ import java.util.Locale;
 @ComponentScan("com.epam.esm")
 @EntityScan("com.epam.esm")
 @SpringBootConfiguration
-public class RepositoryConfigurationTest implements WebMvcConfigurer {
+public class RepositoryConfiguration {
     @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource messages = new ResourceBundleMessageSource();

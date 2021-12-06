@@ -2,7 +2,7 @@ package com.epam.esm.repository;
 
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Tag;
-import com.epam.esm.repository.configuration.RepositoryConfigurationTest;
+import com.epam.esm.repository.configuration.RepositoryConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = {RepositoryConfigurationTest.class})
+@SpringBootTest(classes = {RepositoryConfiguration.class})
 @Sql(scripts = "classpath:database/schema.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:database/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class TagRepositoryTest {
