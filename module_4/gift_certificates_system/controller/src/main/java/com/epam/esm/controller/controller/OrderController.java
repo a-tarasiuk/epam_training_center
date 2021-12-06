@@ -71,7 +71,6 @@ public class OrderController {
      * @return Order DTO.
      */
     @GetMapping(UrlMapping.FIND_ORDERS_BY_ID)
-    @ResponseStatus(HttpStatus.FOUND)
     public EntityModel<OrderDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
                                           @PathVariable long id) {
         OrderDto order = service.findById(id);
@@ -86,7 +85,6 @@ public class OrderController {
      * @return Set of found orders DTO.
      */
     @GetMapping(UrlMapping.ORDERS)
-    @ResponseStatus(HttpStatus.FOUND)
     public Page<OrderDto> findAll(@Valid EsmPagination pagination) {
         return service.findAll(pagination);
     }
@@ -101,7 +99,6 @@ public class OrderController {
      */
     @GetMapping(UrlMapping.ORDER_FOR_USER)
     @PreAuthorize("@userAccessVerification.isAuthorizationUser(#userId)")
-    @ResponseStatus(HttpStatus.FOUND)
     public Page<OrderDto> findAllOrdersByUserId(@Min(value = 1, message = VALIDATION_USER_ID)
                                                 @PathVariable long userId,
                                                 @Valid EsmPagination pagination) {
@@ -117,7 +114,6 @@ public class OrderController {
      */
     @GetMapping(UrlMapping.FIND_ORDER_FOR_USER)
     @JsonView(View.FindOrderForUser.class)
-    @ResponseStatus(HttpStatus.FOUND)
     @PreAuthorize("@userAccessVerification.isAuthorizationUser(#userId)")
     public OrderDto findOrderForUser(@Min(value = 1, message = VALIDATION_USER_ID)
                                      @PathVariable long userId,

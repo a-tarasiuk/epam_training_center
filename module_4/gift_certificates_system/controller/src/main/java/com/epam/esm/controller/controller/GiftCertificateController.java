@@ -67,7 +67,6 @@ public class GiftCertificateController {
      * @return Entity of the gift certificate.
      */
     @GetMapping(path = UrlMapping.ID)
-    @ResponseStatus(HttpStatus.FOUND)
     public EntityModel<GiftCertificateDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
                                                     @PathVariable long id) {
         GiftCertificateDto certificate = service.findById(id);
@@ -82,7 +81,6 @@ public class GiftCertificateController {
      * @return Set of found gift certificates DTO.
      */
     @GetMapping
-    @ResponseStatus(HttpStatus.FOUND)
     public Page<GiftCertificateDto> findAll(@Valid EsmPagination pagination,
                                             @Valid GiftCertificateSearchParameter searchParameter) {
         return ObjectUtils.isEmpty(searchParameter)

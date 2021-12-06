@@ -42,7 +42,6 @@ public class UserController {
      * @return User DTO.
      */
     @GetMapping(UrlMapping.ID)
-    @ResponseStatus(HttpStatus.FOUND)
     public EntityModel<UserDto> findById(@Min(value = 1, message = VALIDATION_ID)
                                          @PathVariable long id) {
         UserDto user = service.findById(id);
@@ -57,7 +56,6 @@ public class UserController {
      * @return Set of found user DTO.
      */
     @GetMapping
-    @ResponseStatus(HttpStatus.FOUND)
     public Page<UserDto> findAll(@Valid EsmPagination pagination) {
         return service.findAll(pagination);
     }

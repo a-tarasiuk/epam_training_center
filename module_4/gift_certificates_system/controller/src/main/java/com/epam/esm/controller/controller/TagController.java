@@ -69,7 +69,6 @@ public class TagController {
      * @return Tag DTO with HATEOAS.
      */
     @GetMapping(UrlMapping.ID)
-    @ResponseStatus(HttpStatus.FOUND)
     public EntityModel<TagDto> findById(@Min(value = 1, message = MessagePropertyKey.VALIDATION_ID)
                                         @PathVariable long id) {
         TagDto tag = service.findById(id);
@@ -84,7 +83,6 @@ public class TagController {
      * @return Set of tags DTO with HATEOAS.
      */
     @GetMapping
-    @ResponseStatus(HttpStatus.FOUND)
     public PagedModel<EntityModel<TagDto>> findAll(@Valid EsmPagination pagination, PagedResourcesAssembler<TagDto> assembler) {
         Page<TagDto> page = service.findAll(pagination);
         return assembler.toModel(page);
@@ -108,7 +106,6 @@ public class TagController {
      * @return Set of MostWidelyUsedTag.
      */
     @GetMapping(UrlMapping.MOST_WIDELY_USED_TAG_OF_TOP_USER)
-    @ResponseStatus(HttpStatus.FOUND)
     public CollectionModel<MostWidelyUsedTag> findMostWidelyUsedTag() {
         Set<MostWidelyUsedTag> tags = service.findMostWidelyUsedTags();
         return CollectionModel.of(tags);
