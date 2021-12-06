@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface GiftCertificateRepository extends JpaRepository<GiftCertificate, Long>, JpaSpecificationExecutor<GiftCertificate> {
     Optional<GiftCertificate> findByName(String name);
 
-    @Query("SELECT g FROM  GiftCertificate AS g JOIN Order AS o ON o.giftCertificate = g WHERE o.user = :user")
-    List<GiftCertificate> findAllByUser(@Param("user") User user);
+    @Query("SELECT g FROM  GiftCertificate AS g JOIN Order AS o ON o.giftCertificate = g WHERE o.user.id = :id")
+    List<GiftCertificate> findAllByUserId(@Param("id") long id);
 }

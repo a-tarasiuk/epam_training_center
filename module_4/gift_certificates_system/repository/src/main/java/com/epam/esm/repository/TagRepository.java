@@ -10,10 +10,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.epam.esm.repository.util.ParameterName.GIFT_CERTIFICATE;
+import static com.epam.esm.repository.util.ParameterName.ID;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
     Optional<Tag> findByName(String name);
 
-    @Query("SELECT t FROM Tag t JOIN GiftCertificateToTagRelation r ON r.tag = t JOIN GiftCertificate gc ON gc = r.giftCertificate WHERE gc = :giftCertificate")
-    Set<Tag> findAllByGiftCertificate(@Param(GIFT_CERTIFICATE) GiftCertificate certificate);
+    @Query("SELECT t FROM Tag t JOIN GiftCertificateToTagRelation r ON r.tag = t JOIN GiftCertificate gc ON gc = r.giftCertificate WHERE gc.id = :id")
+    Set<Tag> findAllByGiftCertificateId(@Param(ID) long id);
 }

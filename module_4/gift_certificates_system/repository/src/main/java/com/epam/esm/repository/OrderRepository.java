@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface OrderRepository extends PagingAndSortingRepository<Order, Long> {
-    Page<Order> findAllByUser(User user, Pageable pageable);
+    Page<Order> findAllByUserId(long id, Pageable pageable);
 }

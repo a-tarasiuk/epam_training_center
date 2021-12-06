@@ -65,7 +65,7 @@ public class TagRepositoryTest {
         GiftCertificate certificate = new GiftCertificate(1L, "certificate 1", "description for gift certificate 1", BigDecimal.valueOf(1.10F), 1,
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000));
-        assertEquals(tagRepository.findAllByGiftCertificate(certificate).size(), 3);
+        assertEquals(tagRepository.findAllByGiftCertificateId(certificate.getId()).size(), 3);
     }
 
     @Test
@@ -73,6 +73,6 @@ public class TagRepositoryTest {
         GiftCertificate certificate = new GiftCertificate(1L, "certificate 1", "description for gift certificate 1", BigDecimal.valueOf(1.10F), 1,
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000),
                 LocalDateTime.of(2021, 10, 01, 17, 05, 53, 889000000));
-        assertEquals(tagRepository.findAllByGiftCertificate(certificate).size(), 999);
+        assertEquals(tagRepository.findAllByGiftCertificateId(certificate.getId()).size(), 999);
     }
 }

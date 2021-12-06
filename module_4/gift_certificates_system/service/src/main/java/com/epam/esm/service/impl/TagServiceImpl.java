@@ -99,12 +99,14 @@ public class TagServiceImpl implements TagService<TagDto> {
     }
 
     private List<GiftCertificate> findAllGiftCertificatesByUser(User user) {
-        return certificateRepository.findAllByUser(user);
+        long id = user.getId();
+        return certificateRepository.findAllByUserId(id);
     }
 
     private List<Tag> findAllTagsFromGiftCertificates(List<GiftCertificate> certificates) {
         return certificates.stream()
-                .map(tagRepository::findAllByGiftCertificate)
+                .map(GiftCertificate::getId)
+                .map(tagRepository::findAllByGiftCertificateId)
                 .flatMap(Set::stream)
                 .collect(Collectors.toList());
     }
@@ -148,7 +150,8 @@ public class TagServiceImpl implements TagService<TagDto> {
     }
 
     private void deleteAllRelations(Tag tag) {
-        relationRepository.deleteAll(relationRepository.findAllByTag(tag));
+        long id = tag.getId();
+        relationRepository.deleteAll(relationRepository.findAllByTagId(id));
     }
 
     private void checkIfTagExistsOrElseThrow(Tag tag) {

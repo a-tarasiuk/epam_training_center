@@ -12,4 +12,5 @@ public final class ParameterName {
     public static final String LOGIN = "login";
     public static final String PRICE = "price";
     public static final String GIFT_CERTIFICATE = "giftCertificate";
+    public static final String ID = "id";
 }

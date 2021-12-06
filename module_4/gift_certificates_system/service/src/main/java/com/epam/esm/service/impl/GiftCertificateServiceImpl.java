@@ -73,13 +73,13 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
                 .map(tagDto -> modelMapper.map(tagDto, Tag.class))
                 .map(tag -> tagRepository.findByName(tag.getName()).orElseGet(() -> tagRepository.save(tag)))
                 .forEach(tag -> {
-                    if (!relationRepository.findByGiftCertificateAndTag(createdCertificate, tag).isPresent()) {
+                    if (!relationRepository.findByGiftCertificateAndTag(createdCertificate.getId(), tag.getId()).isPresent()) {
                         relationRepository.save(new GiftCertificateToTagRelation(createdCertificate, tag));
                     }
                 });
 
         GiftCertificateDto gcDto = modelMapper.map(createdCertificate, GiftCertificateDto.class);
-        Set<TagDto> tagsDto = tagRepository.findAllByGiftCertificate(createdCertificate).stream()
+        Set<TagDto> tagsDto = tagRepository.findAllByGiftCertificateId(createdCertificate.getId()).stream()
                 .map(tag -> modelMapper.map(tag, TagDto.class))
                 .collect(Collectors.toSet());
         gcDto.setTags(tagsDto);
@@ -160,8 +160,11 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
 
         if (optionalTag.isPresent()) {
             Tag foundTag = optionalTag.get();
+            
+            long certificateId = certificate.getId();
+            long tagId = tag.getId();
 
-            if (!relationRepository.findByGiftCertificateAndTag(certificate, tag).isPresent()) {
+            if (!relationRepository.findByGiftCertificateAndTag(certificateId, tagId).isPresent()) {
                 GiftCertificateToTagRelation relation = new GiftCertificateToTagRelation(certificate, foundTag);
                 relationRepository.save(relation);
             }
@@ -173,7 +176,8 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     }
 
     private Set<Tag> findTagsBy(GiftCertificate certificate) {
-        return tagRepository.findAllByGiftCertificate(certificate);
+        long id = certificate.getId();
+        return tagRepository.findAllByGiftCertificateId(id);
     }
 
     private Set<TagDto> findTagsDtoBy(GiftCertificate certificate) {
@@ -201,7 +205,8 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     }
 
     private void deleteRelations(GiftCertificate certificate) {
-        relationRepository.deleteAll(relationRepository.findAllByGiftCertificate(certificate));
+        long id = certificate.getId();
+        relationRepository.deleteAll(relationRepository.findAllByGiftCertificate(id));
     }
 
     private void deleteIrrelevantRelations(GiftCertificate certificate, Set<Tag> tagsFromRequest) {

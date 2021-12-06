@@ -13,18 +13,18 @@ public interface GiftCertificateToTagRelationRepository extends CrudRepository<G
     /**
      * Find all gift certificate to tag relation by tag entity.
      *
-     * @param tag Tag entity.
+     * @param id Tag id.
      * @return List of gift certificate to tag relation.
      */
-    List<GiftCertificateToTagRelation> findAllByTag(Tag tag);
+    List<GiftCertificateToTagRelation> findAllByTagId(long id);
 
     /**
      * Find all gift certificate to tag relation by gift certificate entity.
      *
-     * @param certificate Gift certificate entity.
+     * @param id Gift certificate id.
      * @return List of gift certificate to tag relation.
      */
-    List<GiftCertificateToTagRelation> findAllByGiftCertificate(GiftCertificate certificate);
+    List<GiftCertificateToTagRelation> findAllByGiftCertificate(long id);
 
     /**
      * Returns whether an entity with the given exists.
@@ -32,5 +32,5 @@ public interface GiftCertificateToTagRelationRepository extends CrudRepository<G
      * @return {@literal true} if an entity with the given id exists, {@literal false} otherwise.
      * @throws IllegalArgumentException if {@literal id} is {@literal null}.
      */
-    Optional<GiftCertificateToTagRelation> findByGiftCertificateAndTag(GiftCertificate certificate, Tag tag);
+    Optional<GiftCertificateToTagRelation> findByGiftCertificateAndTag(long giftCertificateId, long tagId);
 }

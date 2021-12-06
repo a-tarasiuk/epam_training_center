@@ -88,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderDto> findAllByUserId(long userId, EsmPagination pagination) {
         User user = getUserOrElseThrow(userId);
         Pageable pageable = pageMapper.map(pagination);
-        Page<Order> orders = orderRepository.findAllByUser(user, pageable);
+        Page<Order> orders = orderRepository.findAllByUserId(userId, pageable);
         return pageMapper.map(orders, OrderDto.class);
     }
 
