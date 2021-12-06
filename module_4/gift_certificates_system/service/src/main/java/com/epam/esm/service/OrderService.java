@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.model.dto.OrderDto;
+import com.epam.esm.model.dto.OrderShortInformationDto;
 import com.epam.esm.repository.util.EsmPagination;
 import org.springframework.data.domain.Page;
 
@@ -31,7 +32,7 @@ public interface OrderService extends AbstractService<OrderDto> {
      *
      * @param userId  user ID.
      * @param orderId order ID.
-     * @return Order DTO.
+     * @return Order Short Information Dto.
      */
-    OrderDto findByOrderIdAndUserId(long orderId, long userId);
+    OrderShortInformationDto findByOrderIdAndUserId(long orderId, long userId);
 }

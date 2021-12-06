@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.model.dto.GiftCertificateDto;
 import com.epam.esm.model.dto.OrderDto;
+import com.epam.esm.model.dto.OrderShortInformationDto;
 import com.epam.esm.model.dto.UserDto;
 import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.Order;
@@ -92,12 +93,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto findByOrderIdAndUserId(long orderId, long userId) {
+    public OrderShortInformationDto findByOrderIdAndUserId(long orderId, long userId) {
         User user = getUserOrElseThrow(userId);
         Order order = getOrderOrElseThrow(orderId);
 
         if (Objects.equals(user, order.getUser())) {
-            return modelMapper.map(order, OrderDto.class);
+            return modelMapper.map(order, OrderShortInformationDto.class);
         } else {
             throw new EntityNotFoundException(EXCEPTION_ORDER_FOR_USER_NOT_FOUND, userId);
         }

@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import static com.epam.esm.model.entity.User.*;
+import static com.epam.esm.model.entity.User.Role;
 
 @Component
 @Log4j2

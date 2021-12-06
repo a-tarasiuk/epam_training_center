@@ -2,12 +2,11 @@ package com.epam.esm.controller.controller;
 
 import com.epam.esm.controller.util.hateoas.LinkBuilder;
 import com.epam.esm.model.dto.OrderDto;
+import com.epam.esm.model.dto.OrderShortInformationDto;
 import com.epam.esm.model.util.MessagePropertyKey;
 import com.epam.esm.model.util.UrlMapping;
-import com.epam.esm.model.view.View;
 import com.epam.esm.repository.util.EsmPagination;
 import com.epam.esm.service.impl.OrderServiceImpl;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
@@ -61,7 +60,8 @@ public class OrderController {
                                                                     @Min(value = 1, message = VALIDATION_GIFT_CERTIFICATE_ID)
                                                                     @RequestBody long giftCertificateId) {
         OrderDto order = service.create(userId, giftCertificateId);
-        return EntityModel.of(linkBuilder.build(order));
+        linkBuilder.build(order);
+        return EntityModel.of(order);
     }
 
     /**
@@ -113,13 +113,12 @@ public class OrderController {
      * @return Entity model of found order.
      */
     @GetMapping(UrlMapping.FIND_ORDER_FOR_USER)
-    @JsonView(View.FindOrderForUser.class)
     @PreAuthorize("@userAccessVerification.isVerifiedById(#userId)")
-    public OrderDto findByUserIdAndOrderId(@Min(value = 1, message = VALIDATION_USER_ID)
-                                           @PathVariable long userId,
-                                           @Min(value = 1, message = VALIDATION_ORDER_ID)
-                                           @PathVariable long orderId) {
-        OrderDto order = service.findByOrderIdAndUserId(orderId, userId);
-        return linkBuilder.build(order);
+    public EntityModel<OrderShortInformationDto> findByUserIdAndOrderId(@Min(value = 1, message = VALIDATION_USER_ID)
+                                                                        @PathVariable long userId,
+                                                                        @Min(value = 1, message = VALIDATION_ORDER_ID)
+                                                                        @PathVariable long orderId) {
+        OrderShortInformationDto order = service.findByOrderIdAndUserId(orderId, userId);
+        return EntityModel.of(order);
     }
 }

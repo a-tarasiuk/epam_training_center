@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -15,13 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class OrderDto extends AbstractDto<OrderDto> {
-    @Valid
-    private UserDto user;
-
-    @Valid
-    private GiftCertificateDto giftCertificate;
-
+public class OrderShortInformationDto extends AbstractDto<OrderShortInformationDto> {
     private BigDecimal price;
     private LocalDateTime purchaseDate;
 }
