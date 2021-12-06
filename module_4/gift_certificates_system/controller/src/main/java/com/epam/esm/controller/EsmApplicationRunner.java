@@ -7,8 +7,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = PackagePath.BASE)
-@EnableJpaRepositories(PackagePath.BASE)
-@EntityScan(PackagePath.BASE)
+@EnableJpaRepositories(PackagePath.REPOSITORY)
+@EntityScan(PackagePath.MODEL)
 public class EsmApplicationRunner {
     public static void main(String[] args) {
         SpringApplication.run(EsmApplicationRunner.class, args);
