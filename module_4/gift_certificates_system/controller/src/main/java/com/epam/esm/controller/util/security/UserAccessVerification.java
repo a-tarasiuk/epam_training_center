@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import static com.epam.esm.model.entity.User.*;
+
 @Component
 @Log4j2
 public class UserAccessVerification {
@@ -17,7 +19,7 @@ public class UserAccessVerification {
         this.userService = userService;
     }
 
-    public boolean isAuthorizationUser(long userId) {
+    public boolean isVerifiedById(long userId) {
         UserDto user = userService.findById(userId);
         User authorizationUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -25,6 +27,6 @@ public class UserAccessVerification {
         String loginFromContext = authorizationUser.getLogin();
 
         return StringUtils.equals(loginFromRequest, loginFromContext)
-                || StringUtils.equals(authorizationUser.getRole().name(), User.Role.ROLE_ADMINISTRATOR.name());
+                || StringUtils.equals(authorizationUser.getRole().name(), Role.ROLE_ADMINISTRATOR.name());
     }
 }
