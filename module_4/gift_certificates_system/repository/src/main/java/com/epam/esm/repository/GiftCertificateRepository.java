@@ -1,7 +1,6 @@
 package com.epam.esm.repository;
 
 import com.epam.esm.model.entity.GiftCertificate;
-import com.epam.esm.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

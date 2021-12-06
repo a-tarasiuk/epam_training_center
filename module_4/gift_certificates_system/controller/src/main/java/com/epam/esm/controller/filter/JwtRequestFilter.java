@@ -3,7 +3,6 @@ package com.epam.esm.controller.filter;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.security.JwtUtils;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +21,15 @@ import static com.epam.esm.service.security.JwtUtils.Parameter.JWT_HTTP_HEADER_N
 import static com.epam.esm.service.security.JwtUtils.Parameter.JWT_PREFIX;
 
 @Component
-@Log4j2
 public class JwtRequestFilter extends OncePerRequestFilter {
+    private final UserService userService;
+    private final JwtUtils jwtUtils;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private JwtUtils jwtUtils;
+    public JwtRequestFilter(UserService userService, JwtUtils jwtUtils) {
+        this.userService = userService;
+        this.jwtUtils = jwtUtils;
+    }
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request,

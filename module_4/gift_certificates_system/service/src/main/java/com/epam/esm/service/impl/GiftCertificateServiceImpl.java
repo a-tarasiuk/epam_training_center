@@ -160,7 +160,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
 
         if (optionalTag.isPresent()) {
             Tag foundTag = optionalTag.get();
-            
+
             long certificateId = certificate.getId();
             long tagId = tag.getId();
 
