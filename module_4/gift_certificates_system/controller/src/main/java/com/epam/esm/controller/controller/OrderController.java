@@ -55,11 +55,11 @@ public class OrderController {
     @PreAuthorize("@userAccessVerification.isAuthorizationUser(#userId)")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<OrderDto> createByUserIdAndGiftCertificateId(@NotNull(message = VALIDATION_USER_ID_NOT_EMPTY)
-                                                    @Min(value = 1, message = VALIDATION_USER_ID)
-                                                    @PathVariable long userId,
-                                                    @NotNull(message = VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL)
-                                                    @Min(value = 1, message = VALIDATION_GIFT_CERTIFICATE_ID)
-                                                    @RequestBody long giftCertificateId) {
+                                                                    @Min(value = 1, message = VALIDATION_USER_ID)
+                                                                    @PathVariable long userId,
+                                                                    @NotNull(message = VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL)
+                                                                    @Min(value = 1, message = VALIDATION_GIFT_CERTIFICATE_ID)
+                                                                    @RequestBody long giftCertificateId) {
         OrderDto order = service.create(userId, giftCertificateId);
         return EntityModel.of(linkBuilder.build(order));
     }
@@ -100,8 +100,8 @@ public class OrderController {
     @GetMapping(UrlMapping.ORDER_FOR_USER)
     @PreAuthorize("@userAccessVerification.isAuthorizationUser(#userId)")
     public Page<OrderDto> findAllByUserId(@Min(value = 1, message = VALIDATION_USER_ID)
-                                                @PathVariable long userId,
-                                                @Valid EsmPagination pagination) {
+                                          @PathVariable long userId,
+                                          @Valid EsmPagination pagination) {
         return service.findAllByUserId(userId, pagination);
     }
 
@@ -116,9 +116,9 @@ public class OrderController {
     @JsonView(View.FindOrderForUser.class)
     @PreAuthorize("@userAccessVerification.isAuthorizationUser(#userId)")
     public OrderDto findByUserIdAndOrderId(@Min(value = 1, message = VALIDATION_USER_ID)
-                                     @PathVariable long userId,
-                                     @Min(value = 1, message = VALIDATION_ORDER_ID)
-                                     @PathVariable long orderId) {
+                                           @PathVariable long userId,
+                                           @Min(value = 1, message = VALIDATION_ORDER_ID)
+                                           @PathVariable long orderId) {
         OrderDto order = service.findOrderForUser(orderId, userId);
         return linkBuilder.build(order);
     }

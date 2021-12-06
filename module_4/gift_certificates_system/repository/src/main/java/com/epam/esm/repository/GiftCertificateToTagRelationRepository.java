@@ -4,7 +4,6 @@ import com.epam.esm.model.entity.GiftCertificate;
 import com.epam.esm.model.entity.GiftCertificateToTagRelation;
 import com.epam.esm.model.entity.Tag;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
