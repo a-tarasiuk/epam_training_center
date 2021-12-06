@@ -92,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto findOrderForUser(long orderId, long userId) {
+    public OrderDto findByOrderIdAndUserId(long orderId, long userId) {
         User user = getUserOrElseThrow(userId);
         Order order = getOrderOrElseThrow(orderId);
 

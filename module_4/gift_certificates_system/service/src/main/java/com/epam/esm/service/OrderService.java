@@ -33,5 +33,5 @@ public interface OrderService extends AbstractService<OrderDto> {
      * @param orderId order ID.
      * @return Order DTO.
      */
-    OrderDto findOrderForUser(long orderId, long userId);
+    OrderDto findByOrderIdAndUserId(long orderId, long userId);
 }

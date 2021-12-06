@@ -119,7 +119,7 @@ public class OrderController {
                                            @PathVariable long userId,
                                            @Min(value = 1, message = VALIDATION_ORDER_ID)
                                            @PathVariable long orderId) {
-        OrderDto order = service.findOrderForUser(orderId, userId);
+        OrderDto order = service.findByOrderIdAndUserId(orderId, userId);
         return linkBuilder.build(order);
     }
 }
