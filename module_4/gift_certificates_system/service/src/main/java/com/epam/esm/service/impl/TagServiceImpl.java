@@ -14,8 +14,8 @@ import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.repository.util.EsmPagination;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.exception.EntityExistingException;
-import com.epam.esm.service.exception.EntityNonExistentException;
+import com.epam.esm.service.exception.EntityExistsException;
+import com.epam.esm.service.exception.EntityNotFoundException;
 import com.epam.esm.service.util.PageMapper;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
@@ -76,13 +76,13 @@ public class TagServiceImpl implements TagService<TagDto> {
     public TagDto findById(long id) {
         return tagRepository.findById(id)
                 .map(tag -> modelMapper.map(tag, TagDto.class))
-                .orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND, id));
+                .orElseThrow(() -> new EntityNotFoundException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND, id));
     }
 
     @Override
     public void delete(long id) {
         Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new EntityNonExistentException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND, id));
+                .orElseThrow(() -> new EntityNotFoundException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND, id));
         delete(tag);
     }
 
@@ -154,7 +154,7 @@ public class TagServiceImpl implements TagService<TagDto> {
     private void checkIfTagExistsOrElseThrow(Tag tag) {
         String name = tag.getName();
         tagRepository.findByName(name).ifPresent(t -> {
-            throw new EntityExistingException(MessagePropertyKey.EXCEPTION_TAG_NAME_EXISTS, name);
+            throw new EntityExistsException(MessagePropertyKey.EXCEPTION_TAG_NAME_EXISTS, name);
         });
     }
 }

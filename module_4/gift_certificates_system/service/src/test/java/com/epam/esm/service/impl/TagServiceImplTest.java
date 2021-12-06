@@ -4,8 +4,8 @@ import com.epam.esm.model.dto.TagDto;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.util.EsmPagination;
-import com.epam.esm.service.exception.EntityExistingException;
-import com.epam.esm.service.exception.EntityNonExistentException;
+import com.epam.esm.service.exception.EntityExistsException;
+import com.epam.esm.service.exception.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -64,7 +64,7 @@ public class TagServiceImplTest {
 
         Mockito.when(tagRepository.findByName(Mockito.eq(existsTagName))).thenReturn(optionalTag);
 
-        Throwable throwable = assertThrows(EntityExistingException.class, () -> tagService.create(createdTag));
+        Throwable throwable = assertThrows(EntityExistsException.class, () -> tagService.create(createdTag));
 
         String expectedMessage = "message.entity.exists.exception";
         String actualMessage = throwable.getMessage();
@@ -112,11 +112,11 @@ public class TagServiceImplTest {
 
     @Test
     public void findByIdExceptionPositive() {
-        int nonExistingId = 9;
+        long nonExistingId = 9;
 
         Mockito.when(tagRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
-        Throwable throwable = assertThrows(EntityNonExistentException.class, () -> tagService.findById(nonExistingId));
+        Throwable throwable = assertThrows(EntityNotFoundException.class, () -> tagService.findById(nonExistingId));
 
         String expectedMessage = "message.entity.notFound.exception";
         String actualMessage = throwable.getMessage();

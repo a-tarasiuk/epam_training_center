@@ -3,6 +3,7 @@ package com.epam.esm.controller.configuration;
 import com.epam.esm.controller.filter.JwtRequestFilter;
 import com.epam.esm.controller.handler.AccessDeniedExceptionHandler;
 import com.epam.esm.controller.handler.AuthenticationExceptionHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -44,6 +45,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     protected PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
     @Bean

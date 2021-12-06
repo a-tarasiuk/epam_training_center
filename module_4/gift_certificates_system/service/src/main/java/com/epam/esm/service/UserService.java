@@ -6,5 +6,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends CreateService<UserDto>, UserDetailsService {
     UserDto create(UserDto userDto);
+
     UserDto signIn(AuthenticationUserDto authenticationUserDto);
 }

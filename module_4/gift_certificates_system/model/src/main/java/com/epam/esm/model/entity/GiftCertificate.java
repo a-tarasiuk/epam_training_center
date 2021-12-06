@@ -56,24 +56,6 @@ public class GiftCertificate implements Serializable {
     @Column(nullable = false)
     private LocalDateTime lastUpdateDate;
 
-    public enum ColumnName {
-        ID,
-        NAME,
-        DESCRIPTION,
-        PRICE,
-        DURATION,
-        CREATE_DATE,
-        LAST_UPDATE_DATE;
-
-        public static ColumnName convertFromString(String value) {
-            try {
-                return valueOf(value.toUpperCase(Locale.US));
-            } catch (Exception e) {
-                throw new IllegalArgumentException(EXCEPTION_GIFT_CERTIFICATE_COLUMN_NAME_INCORRECT_VALUE);
-            }
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,5 +72,23 @@ public class GiftCertificate implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getDescription(), getPrice(), getDuration(), getCreateDate(), getLastUpdateDate());
+    }
+
+    public enum ColumnName {
+        ID,
+        NAME,
+        DESCRIPTION,
+        PRICE,
+        DURATION,
+        CREATE_DATE,
+        LAST_UPDATE_DATE;
+
+        public static ColumnName convertFromString(String value) {
+            try {
+                return valueOf(value.toUpperCase(Locale.US));
+            } catch (Exception e) {
+                throw new IllegalArgumentException(EXCEPTION_GIFT_CERTIFICATE_COLUMN_NAME_INCORRECT_VALUE);
+            }
+        }
     }
 }

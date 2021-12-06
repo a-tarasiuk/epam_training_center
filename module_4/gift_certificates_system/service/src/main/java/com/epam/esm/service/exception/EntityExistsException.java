@@ -7,13 +7,13 @@ import lombok.Getter;
  */
 
 @Getter
-public class EntityExistingException extends RuntimeException {
+public class EntityExistsException extends RuntimeException {
     private String argument;
 
     /**
      * Constructs an <code>EntityNonExistentException</code> with no detail message.
      */
-    public EntityExistingException() {
+    public EntityExistsException() {
     }
 
     /**
@@ -22,7 +22,7 @@ public class EntityExistingException extends RuntimeException {
      *
      * @param message the detail message.
      */
-    public EntityExistingException(String message) {
+    public EntityExistsException(String message) {
         super(message);
     }
 
@@ -32,7 +32,7 @@ public class EntityExistingException extends RuntimeException {
      * @param message  the detail message.
      * @param argument argument for exception.
      */
-    public EntityExistingException(String message, Object argument) {
+    public EntityExistsException(String message, Object argument) {
         super(message);
         this.argument = String.valueOf(argument);
     }
@@ -52,7 +52,7 @@ public class EntityExistingException extends RuntimeException {
      *                is permitted, and indicates that the cause is nonexistent or
      *                unknown.)
      */
-    public EntityExistingException(String message, Throwable cause) {
+    public EntityExistsException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -70,7 +70,7 @@ public class EntityExistingException extends RuntimeException {
      *              unknown.)
      * @since 1.5
      */
-    public EntityExistingException(Throwable cause) {
+    public EntityExistsException(Throwable cause) {
         super(cause);
     }
 }

@@ -24,6 +24,9 @@ public class AccessDeniedExceptionHandler implements AccessDeniedHandler {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         HttpStatus status = HttpStatus.FORBIDDEN;
@@ -36,7 +39,6 @@ public class AccessDeniedExceptionHandler implements AccessDeniedHandler {
         String localeMessage = messageSource.getMessage(EXCEPTION_AUTHORIZATION_ACCESS_DENIED, null, locale);
 
         ExceptionInformation information = ExceptionUtils.generateExceptionInformation(localeMessage, status, applicationStatus);
-        ObjectMapper mapper = new ObjectMapper();
-        response.getWriter().write(mapper.writeValueAsString(information));
+        response.getWriter().write(objectMapper.writeValueAsString(information));
     }
 }

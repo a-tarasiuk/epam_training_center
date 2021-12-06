@@ -13,8 +13,8 @@ import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.util.EsmPagination;
 import com.epam.esm.repository.util.SpecificationGenerator;
 import com.epam.esm.service.GitCertificateService;
-import com.epam.esm.service.exception.EntityExistingException;
-import com.epam.esm.service.exception.EntityNonExistentException;
+import com.epam.esm.service.exception.EntityExistsException;
+import com.epam.esm.service.exception.EntityNotFoundException;
 import com.epam.esm.service.util.GiftCertificateFieldChecker;
 import com.epam.esm.service.util.GiftCertificateUpdater;
 import com.epam.esm.service.util.PageMapper;
@@ -90,7 +90,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     @Override
     public GiftCertificateDto findById(long id) {
         GiftCertificate gc = certificateRepository.findById(id)
-                .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
+                .orElseThrow(() -> new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
         return buildGiftCertificateDtoWithTags(gc);
     }
 
@@ -114,7 +114,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     @Override
     public GiftCertificateDto update(long id, GiftCertificateUpdateDto certificate) {
         GiftCertificate foundGc = certificateRepository.findById(id)
-                .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
+                .orElseThrow(() -> new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
 
         if (GiftCertificateFieldChecker.isFilledOneField(certificate)) {
             GiftCertificate updatedGc = modelMapper.map(certificate, GiftCertificate.class);
@@ -135,7 +135,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
     @Override
     public void delete(long id) {
         Optional<GiftCertificate> optionalCertificate = certificateRepository.findById(id);
-        GiftCertificate gc = optionalCertificate.orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
+        GiftCertificate gc = optionalCertificate.orElseThrow(() -> new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, id));
         delete(gc);
     }
 
@@ -144,7 +144,7 @@ public class GiftCertificateServiceImpl implements GitCertificateService {
         Optional<GiftCertificate> optionalGiftCertificate = certificateRepository.findByName(name);
 
         if (optionalGiftCertificate.isPresent()) {
-            throw new EntityExistingException(EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS, name);
+            throw new EntityExistsException(EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS, name);
         }
     }
 

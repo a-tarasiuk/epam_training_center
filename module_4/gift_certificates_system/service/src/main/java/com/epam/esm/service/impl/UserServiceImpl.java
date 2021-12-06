@@ -6,8 +6,8 @@ import com.epam.esm.model.entity.User;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.repository.util.EsmPagination;
 import com.epam.esm.service.UserService;
-import com.epam.esm.service.exception.EntityExistingException;
-import com.epam.esm.service.exception.EntityNonExistentException;
+import com.epam.esm.service.exception.EntityExistsException;
+import com.epam.esm.service.exception.EntityNotFoundException;
 import com.epam.esm.service.security.JwtUtils;
 import com.epam.esm.service.util.PageMapper;
 import lombok.extern.log4j.Log4j2;
@@ -18,8 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityNotFoundException;
 
 import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_UNSUPPORTED_OPERATION;
 import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_USER_ID_NOT_FOUND;
@@ -66,13 +64,13 @@ public class UserServiceImpl implements UserService {
         String password = authenticationUser.getPassword();
 
         User user = userRepository.findByLogin(login).orElseThrow(
-                () -> new EntityNotFoundException(EXCEPTION_USER_LOGIN_OR_PASSWORD_INCORRECT)
+                () -> new javax.persistence.EntityNotFoundException(EXCEPTION_USER_LOGIN_OR_PASSWORD_INCORRECT)
         );
 
         if (passwordEncoder.matches(password, user.getPasswordEncoded())) {
             return createUserDtoFromUserWithJwt(user);
         } else {
-            throw new EntityNotFoundException(EXCEPTION_USER_LOGIN_OR_PASSWORD_INCORRECT);
+            throw new javax.persistence.EntityNotFoundException(EXCEPTION_USER_LOGIN_OR_PASSWORD_INCORRECT);
         }
     }
 
@@ -87,7 +85,7 @@ public class UserServiceImpl implements UserService {
     public UserDto findById(long id) {
         return userRepository.findById(id)
                 .map(user -> modelMapper.map(user, UserDto.class))
-                .orElseThrow(() -> new EntityNonExistentException(EXCEPTION_USER_ID_NOT_FOUND, id));
+                .orElseThrow(() -> new EntityNotFoundException(EXCEPTION_USER_ID_NOT_FOUND, id));
     }
 
     @Override
@@ -98,14 +96,14 @@ public class UserServiceImpl implements UserService {
     private void checkIfUserExistsOrElseThrow(final User user) {
         String login = user.getLogin();
         userRepository.findByLogin(login).ifPresent(t -> {
-            throw new EntityExistingException(EXCEPTION_USER_LOGIN_EXISTS, login);
+            throw new EntityExistsException(EXCEPTION_USER_LOGIN_EXISTS, login);
         });
     }
 
     @Override
     public UserDetails loadUserByUsername(String login) {
         return userRepository.findByLogin(login).orElseThrow(
-                () -> new EntityNonExistentException(EXCEPTION_USER_LOGIN_NOT_FOUND, login)
+                () -> new EntityNotFoundException(EXCEPTION_USER_LOGIN_NOT_FOUND, login)
         );
     }
 

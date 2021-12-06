@@ -11,7 +11,7 @@ import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.repository.util.EsmPagination;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.service.exception.EntityNonExistentException;
+import com.epam.esm.service.exception.EntityNotFoundException;
 import com.epam.esm.service.util.PageMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
         if (Objects.equals(user, order.getUser())) {
             return modelMapper.map(order, OrderDto.class);
         } else {
-            throw new EntityNonExistentException(EXCEPTION_ORDER_FOR_USER_NOT_FOUND, userId);
+            throw new EntityNotFoundException(EXCEPTION_ORDER_FOR_USER_NOT_FOUND, userId);
         }
     }
 
@@ -115,14 +115,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private User getUserOrElseThrow(long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_USER_ID_NOT_FOUND, userId));
+        return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(EXCEPTION_USER_ID_NOT_FOUND, userId));
     }
 
     private Order getOrderOrElseThrow(long orderId) {
-        return orderRepository.findById(orderId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_ORDER_ID_NOT_FOUND, orderId));
+        return orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException(EXCEPTION_ORDER_ID_NOT_FOUND, orderId));
     }
 
     private GiftCertificate getGiftCertificateOrElseThrow(long gcId) {
-        return certificateRepository.findById(gcId).orElseThrow(() -> new EntityNonExistentException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, gcId));
+        return certificateRepository.findById(gcId).orElseThrow(() -> new EntityNotFoundException(EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND, gcId));
     }
 }

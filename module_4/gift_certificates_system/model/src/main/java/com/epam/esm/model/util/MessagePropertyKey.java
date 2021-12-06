@@ -52,17 +52,15 @@ public final class MessagePropertyKey {
     public static final String EXCEPTION_ORDER_FOR_USER_NOT_FOUND = "exception.order.user.not-found";
 
     // Exceptions - Tag
-    public static final String EXCEPTION_TAG_NOT_NULL = "exception.tag.name.not-null";
     public static final String EXCEPTION_TAG_NAME_EXISTS = "exception.tag.name.exists";
     public static final String EXCEPTION_TAG_ID_NOT_FOUND = "exception.tag.id.not-found";
 
     // Exceptions - Gift certificate
-    public static final String EXCEPTION_GIFT_CERTIFICATE_NOT_NULL = "exception.gift-certificate.not-null";
     public static final String EXCEPTION_GIFT_CERTIFICATE_NAME_EXISTS = "exception.gift-certificate.name.exists";
     public static final String EXCEPTION_GIFT_CERTIFICATE_ID_NOT_FOUND = "exception.gift-certificate.id.not-found";
     public static final String EXCEPTION_GIFT_CERTIFICATE_COLUMN_NAME_INCORRECT_VALUE = "exception.gift-certificate.column-name.incorrect-value";
     public static final String EXCEPTION_GIFT_CERTIFICATE_UPDATE_FIELDS_EMPTY = "exception.gift-certificate.update.fields.empty";
-    public static final String EXCEPTION_GIFT_CERTIFICATE_WITH_SEARCH_PARAMETERS = "exception.gift-certificate.with-search-parameters.not-found";
+    public static final String EXCEPTION_GIFT_CERTIFICATE_WITH_SEARCH_PARAMETERS = "exception.gift-certificate.with-search-parameters.not-found";   // todo
 
     // Exceptions - OrderGenerator.Direction
     public static final String EXCEPTION_ESM_SORT_DIRECTION_INCORRECT_VALUE = "exception.esm-sort.direction.incorrect-value";
@@ -80,6 +78,9 @@ public final class MessagePropertyKey {
     public static final String EXCEPTION_JWT_UNSUPPORTED = "exception.jwt.unsupported";
     public static final String EXCEPTION_JWT_MALFORMED = "exception.jwt.malformed";
     public static final String EXCEPTION_JWT_SIGNATURE = "exception.jwt.signature";
+
+    // Exceptions - Authentication
+    public static final String EXCEPTION_AUTHENTICATION = "exception.authentication";
 
     // Exceptions - Authorization
     public static final String EXCEPTION_AUTHORIZATION_ACCESS_DENIED = "exception.authorization.access-denied";
