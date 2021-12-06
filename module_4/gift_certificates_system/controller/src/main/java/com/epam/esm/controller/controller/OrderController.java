@@ -54,7 +54,7 @@ public class OrderController {
     @PostMapping(UrlMapping.ORDER_FOR_USER)
     @PreAuthorize("@userAccessVerification.isAuthorizationUser(#userId)")
     @ResponseStatus(HttpStatus.CREATED)
-    public EntityModel<OrderDto> createOrderForUser(@NotNull(message = VALIDATION_USER_ID_NOT_EMPTY)
+    public EntityModel<OrderDto> createByUserIdAndGiftCertificateId(@NotNull(message = VALIDATION_USER_ID_NOT_EMPTY)
                                                     @Min(value = 1, message = VALIDATION_USER_ID)
                                                     @PathVariable long userId,
                                                     @NotNull(message = VALIDATION_GIFT_CERTIFICATE_ID_NOT_NULL)
@@ -99,7 +99,7 @@ public class OrderController {
      */
     @GetMapping(UrlMapping.ORDER_FOR_USER)
     @PreAuthorize("@userAccessVerification.isAuthorizationUser(#userId)")
-    public Page<OrderDto> findAllOrdersByUserId(@Min(value = 1, message = VALIDATION_USER_ID)
+    public Page<OrderDto> findAllByUserId(@Min(value = 1, message = VALIDATION_USER_ID)
                                                 @PathVariable long userId,
                                                 @Valid EsmPagination pagination) {
         return service.findAllByUserId(userId, pagination);
@@ -115,7 +115,7 @@ public class OrderController {
     @GetMapping(UrlMapping.FIND_ORDER_FOR_USER)
     @JsonView(View.FindOrderForUser.class)
     @PreAuthorize("@userAccessVerification.isAuthorizationUser(#userId)")
-    public OrderDto findOrderForUser(@Min(value = 1, message = VALIDATION_USER_ID)
+    public OrderDto findByUserIdAndOrderId(@Min(value = 1, message = VALIDATION_USER_ID)
                                      @PathVariable long userId,
                                      @Min(value = 1, message = VALIDATION_ORDER_ID)
                                      @PathVariable long orderId) {

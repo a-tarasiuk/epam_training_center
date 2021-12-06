@@ -87,7 +87,7 @@ public class TagServiceImpl implements TagService<TagDto> {
     }
 
     @Override
-    public Set<MostWidelyUsedTag> findMostWidelyUsedTags() {
+    public Set<MostWidelyUsedTag> findMostWidelyUsedTagsOfTopUser() {
         return userRepository.findUsersWithHighestCostOfAllOrders().stream()
                 .flatMap(userInformation -> Stream.of(userInformation)
                         .map(UserInformation::getUser)

@@ -106,8 +106,8 @@ public class TagController {
      * @return Set of MostWidelyUsedTag.
      */
     @GetMapping(UrlMapping.MOST_WIDELY_USED_TAG_OF_TOP_USER)
-    public CollectionModel<MostWidelyUsedTag> findMostWidelyUsedTag() {
-        Set<MostWidelyUsedTag> tags = service.findMostWidelyUsedTags();
+    public CollectionModel<MostWidelyUsedTag> findMostWidelyUsedTagOfTopUser() {
+        Set<MostWidelyUsedTag> tags = service.findMostWidelyUsedTagsOfTopUser();
         return CollectionModel.of(tags);
     }
 }
