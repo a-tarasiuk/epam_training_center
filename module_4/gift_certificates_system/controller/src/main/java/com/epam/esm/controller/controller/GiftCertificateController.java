@@ -82,9 +82,9 @@ public class GiftCertificateController {
     @GetMapping
     public Page<GiftCertificateDto> findAll(@Valid EsmPagination pagination,
                                             @Valid GiftCertificateSearchParameter searchParameter) {
-        return searchParameter.isEmptyAllFields()
-                ? service.findAll(pagination)
-                : service.findAll(pagination, searchParameter);
+        return searchParameter.isNullAllFields()
+                ? service.findAll(pagination).map(linkBuilder::build)
+                : service.findAll(pagination, searchParameter).map(linkBuilder::build);
     }
 
     /**

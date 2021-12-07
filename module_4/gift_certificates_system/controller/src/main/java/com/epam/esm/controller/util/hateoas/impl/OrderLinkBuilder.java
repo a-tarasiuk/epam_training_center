@@ -11,18 +11,18 @@ import java.util.stream.Collectors;
 @Component
 public class OrderLinkBuilder extends AbstractLinkBuilder<OrderDto> {
     private final UserLinkBuilder userLinkBuilder;
-    private final GiftCertificateLinkBuilder gcLinkBuilder;
+    private final GiftCertificateLinkBuilder certificateLinkBuilder;
 
     @Autowired
     public OrderLinkBuilder(UserLinkBuilder userLinkBuilder, GiftCertificateLinkBuilder certificateLinkBuilder) {
         this.userLinkBuilder = userLinkBuilder;
-        this.gcLinkBuilder = certificateLinkBuilder;
+        this.certificateLinkBuilder = certificateLinkBuilder;
     }
 
     @Override
     public OrderDto build(OrderDto order) {
         userLinkBuilder.build(order.getUser());
-        gcLinkBuilder.build(order.getGiftCertificate());
+        certificateLinkBuilder.build(order.getGiftCertificate());
         return buildSelf(OrderController.class, order);
     }
 

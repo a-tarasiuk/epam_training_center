@@ -10,6 +10,7 @@ import com.epam.esm.model.pojo.UserInformation;
 import com.epam.esm.model.util.MessagePropertyKey;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.GiftCertificateToTagRelationRepository;
+import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.repository.util.EsmPagination;
@@ -17,6 +18,7 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.service.exception.EntityExistsException;
 import com.epam.esm.service.exception.EntityNotFoundException;
 import com.epam.esm.service.util.PageMapper;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +41,7 @@ import java.util.stream.Stream;
  * Tag service implementation.
  */
 @Service
+@Log4j2
 @Transactional
 public class TagServiceImpl implements TagService<TagDto> {
     private final TagRepository tagRepository;
@@ -62,6 +68,8 @@ public class TagServiceImpl implements TagService<TagDto> {
         Tag tag = modelMapper.map(tagDto, Tag.class);
         checkIfTagExistsOrElseThrow(tag);
         Tag createdTag = tagRepository.save(tag);
+
+        log.info("{} created.", createdTag);
         return modelMapper.map(createdTag, TagDto.class);
     }
 
@@ -69,6 +77,8 @@ public class TagServiceImpl implements TagService<TagDto> {
     public Page<TagDto> findAll(EsmPagination pagination) {
         Pageable pageable = pageMapper.map(pagination);
         Page<Tag> tags = tagRepository.findAll(pageable);
+
+        log.info("the total number of tags {} found.", tags.getTotalElements());
         return pageMapper.map(tags, TagDto.class);
     }
 
@@ -84,12 +94,20 @@ public class TagServiceImpl implements TagService<TagDto> {
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(MessagePropertyKey.EXCEPTION_TAG_ID_NOT_FOUND, id));
         delete(tag);
+        log.info("Tag with ID {} deleted.", id);
     }
 
     @Override
     public Set<MostWidelyUsedTag> findMostWidelyUsedTagsOfTopUser() {
+        Set<UserInformation> information = userRepository.findUsersWithHighestCostOfAllOrders();
+        BigDecimal maxSumOfAllOrders = information.stream()
+                .max(Comparator.comparing(UserInformation::getSumOfAllOrders))
+                .orElseThrow(() -> {throw new EntityNotFoundException();})
+                .getSumOfAllOrders();
+
         return userRepository.findUsersWithHighestCostOfAllOrders().stream()
                 .flatMap(userInformation -> Stream.of(userInformation)
+                        .filter(u -> u.getSumOfAllOrders().equals(maxSumOfAllOrders))
                         .map(UserInformation::getUser)
                         .map(this::findAllGiftCertificatesByUser)
                         .map(this::findAllTagsFromGiftCertificates)

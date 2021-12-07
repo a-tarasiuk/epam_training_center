@@ -77,7 +77,7 @@ public class GiftCertificateServiceImplTest {
         Mockito.when(certificateRepository.findByName("certificate")).thenReturn(Optional.empty());
         Mockito.when(certificateRepository.save(giftCertificate)).thenReturn(giftCertificate);
         Mockito.when(tagRepository.findByName("abstract tagDto")).thenReturn(Optional.of(tag));
-        Mockito.when(relationRepository.findByGiftCertificateAndTag(giftCertificate.getId(), tag.getId())).thenReturn(Optional.empty());
+        Mockito.when(relationRepository.findByGiftCertificateIdAndTagId(giftCertificate.getId(), tag.getId())).thenReturn(Optional.empty());
         GiftCertificateToTagRelation relation = new GiftCertificateToTagRelation(giftCertificate, tag);
         Mockito.when(relationRepository.save(relation)).thenReturn(relation);
         assertNotNull(giftCertificateService.create(modelMapper.map(giftCertificate, GiftCertificateDto.class)));

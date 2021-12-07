@@ -14,8 +14,11 @@ import java.util.stream.Collectors;
 
 @Component
 public final class PageMapper {
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public PageMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
     public <T, D> Page<D> map(Page<T> source, Class<D> destinationType) {
         List<D> list = source.stream()

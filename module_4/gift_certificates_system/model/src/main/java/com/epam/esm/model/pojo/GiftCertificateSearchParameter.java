@@ -18,7 +18,7 @@ public class GiftCertificateSearchParameter {
     private Set<String> tagNames;
     private Set<String> sortBy;
 
-    public boolean isEmptyAllFields() {
+    public boolean isNullAllFields() {
         return Stream.of(this.keyword, this.tagNames, this.sortBy)
                 .allMatch(Objects::isNull);
     }

@@ -45,6 +45,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPasswordEncoded(encodedPassword);
 
         User createdUser = userRepository.save(user);
+
+        log.info("User successfully sign up: {}", createdUser);
         return createUserDtoFromUserWithJwt(createdUser);
     }
 
@@ -57,6 +59,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         if (passwordEncoder.matches(password, user.getPasswordEncoded())) {
+            log.info("User successfully sign in: {}", user);
             return createUserDtoFromUserWithJwt(user);
         } else {
             throw new javax.persistence.EntityNotFoundException(EXCEPTION_USER_LOGIN_OR_PASSWORD_INCORRECT);

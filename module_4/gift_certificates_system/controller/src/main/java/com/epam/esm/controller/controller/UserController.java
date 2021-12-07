@@ -25,12 +25,12 @@ import static com.epam.esm.model.util.MessagePropertyKey.VALIDATION_ID;
 @Validated
 public class UserController {
     private final UserService service;
-    private final LinkBuilder<UserDto> linkBuilderUser;
+    private final LinkBuilder<UserDto> linkBuilder;
 
     @Autowired
-    public UserController(UserServiceImpl service, LinkBuilder<UserDto> linkBuilderUser) {
+    public UserController(UserServiceImpl service, LinkBuilder<UserDto> linkBuilder) {
         this.service = service;
-        this.linkBuilderUser = linkBuilderUser;
+        this.linkBuilder = linkBuilder;
     }
 
     /**
@@ -43,7 +43,7 @@ public class UserController {
     public EntityModel<UserDto> findById(@Min(value = 1, message = VALIDATION_ID)
                                          @PathVariable long id) {
         UserDto user = service.findById(id);
-        linkBuilderUser.build(user);
+        linkBuilder.build(user);
         return EntityModel.of(user);
     }
 
@@ -55,6 +55,7 @@ public class UserController {
      */
     @GetMapping
     public Page<UserDto> findAll(@Valid EsmPagination pagination) {
-        return service.findAll(pagination);
+        return service.findAll(pagination)
+                .map(linkBuilder::build);
     }
 }

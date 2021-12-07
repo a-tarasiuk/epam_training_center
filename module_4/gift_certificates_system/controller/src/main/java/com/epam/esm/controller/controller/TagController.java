@@ -83,9 +83,9 @@ public class TagController {
      * @return Set of tags DTO with HATEOAS.
      */
     @GetMapping
-    public PagedModel<EntityModel<TagDto>> findAll(@Valid EsmPagination pagination, PagedResourcesAssembler<TagDto> assembler) {
-        Page<TagDto> page = service.findAll(pagination);
-        return assembler.toModel(page);
+    public Page<TagDto> findAll(@Valid EsmPagination pagination) {
+        return service.findAll(pagination)
+                .map(linkBuilder::build);
     }
 
     /**

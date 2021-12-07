@@ -1,6 +1,7 @@
 package com.epam.esm.repository;
 
 import com.epam.esm.model.entity.GiftCertificateToTagRelation;
+import com.epam.esm.model.entity.Tag;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public interface GiftCertificateToTagRelationRepository extends CrudRepository<G
      * @param id Gift certificate id.
      * @return List of gift certificate to tag relation.
      */
-    List<GiftCertificateToTagRelation> findAllByGiftCertificate(long id);
+    List<GiftCertificateToTagRelation> findAllByGiftCertificateId(long id);
 
     /**
      * Returns whether an entity with the given exists.
@@ -30,5 +31,5 @@ public interface GiftCertificateToTagRelationRepository extends CrudRepository<G
      * @return {@literal true} if an entity with the given id exists, {@literal false} otherwise.
      * @throws IllegalArgumentException if {@literal id} is {@literal null}.
      */
-    Optional<GiftCertificateToTagRelation> findByGiftCertificateAndTag(long giftCertificateId, long tagId);
+    Optional<GiftCertificateToTagRelation> findByGiftCertificateIdAndTagId(long giftCertificateId, long tagId);
 }

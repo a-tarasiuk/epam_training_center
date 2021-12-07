@@ -40,6 +40,8 @@ public class UserServiceImpl implements UserService {
     public Page<UserDto> findAll(EsmPagination pagination) {
         Pageable pageable = pageMapper.map(pagination);
         Page<User> users = userRepository.findAll(pageable);
+
+        log.info("Total number of users {} found.", users.getTotalElements());
         return pageMapper.map(users, UserDto.class);
     }
 

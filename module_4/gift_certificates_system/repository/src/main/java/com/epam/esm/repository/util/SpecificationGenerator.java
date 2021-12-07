@@ -22,7 +22,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_ESM_SORT_DIRECTION_INCORRECT_VALUE;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_SORT_CONDITION_INCORRECT_VALUE;
+import static com.epam.esm.model.util.MessagePropertyKey.EXCEPTION_SORT_DIRECTION_INCORRECT_VALUE;
 
 public final class SpecificationGenerator implements Serializable {
     private static final String DEFAULT_SORT = "id.asc";
@@ -72,9 +73,9 @@ public final class SpecificationGenerator implements Serializable {
                 Join<GiftCertificateToTagRelation, Tag> rel = relation.join(ParameterName.TAG);
                 Predicate on = builder.equal(root, relation.get(ParameterName.GIFT_CERTIFICATE));
                 rel.on(on);
-                Predicate condition = rel.get(ParameterName.NAME).in(tagNames);
-                predicates.add(condition);
-
+                Path<String> tagName = rel.get(ParameterName.NAME);
+                Predicate predicate = tagName.in(tagNames);
+                predicates.add(predicate);
                 query.groupBy(root)
                         .having(builder.count(root).in(tagNames.size()));
             }
@@ -136,6 +137,22 @@ public final class SpecificationGenerator implements Serializable {
         return direction == Direction.DESC ? builder.desc(path) : builder.asc(path);
     }
 
+    private enum Condition {
+        OR,
+        AND;
+
+        Condition() {
+        }
+
+        public static Condition convertFromString(String value) {
+            try {
+                return valueOf(value.toUpperCase(Locale.US));
+            } catch (Exception e) {
+                throw new IllegalArgumentException(EXCEPTION_SORT_CONDITION_INCORRECT_VALUE);
+            }
+        }
+    }
+
     private enum Direction {
         ASC,
         DESC;
@@ -143,11 +160,11 @@ public final class SpecificationGenerator implements Serializable {
         Direction() {
         }
 
-        public static SpecificationGenerator.Direction convertFromString(String value) {
+        public static Direction convertFromString(String value) {
             try {
                 return valueOf(value.toUpperCase(Locale.US));
             } catch (Exception e) {
-                throw new IllegalArgumentException(EXCEPTION_ESM_SORT_DIRECTION_INCORRECT_VALUE);
+                throw new IllegalArgumentException(EXCEPTION_SORT_DIRECTION_INCORRECT_VALUE);
             }
         }
     }

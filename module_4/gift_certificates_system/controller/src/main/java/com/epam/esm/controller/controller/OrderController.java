@@ -86,7 +86,8 @@ public class OrderController {
      */
     @GetMapping(UrlMapping.ORDERS)
     public Page<OrderDto> findAll(@Valid EsmPagination pagination) {
-        return service.findAll(pagination);
+        return service.findAll(pagination)
+                .map(linkBuilder::build);
     }
 
     /**
@@ -102,7 +103,8 @@ public class OrderController {
     public Page<OrderDto> findAllByUserId(@Min(value = 1, message = VALIDATION_USER_ID)
                                           @PathVariable long userId,
                                           @Valid EsmPagination pagination) {
-        return service.findAllByUserId(userId, pagination);
+        return service.findAllByUserId(userId, pagination)
+                .map(linkBuilder::build);
     }
 
     /**
@@ -118,7 +120,7 @@ public class OrderController {
                                                                         @PathVariable long userId,
                                                                         @Min(value = 1, message = VALIDATION_ORDER_ID)
                                                                         @PathVariable long orderId) {
-        OrderShortInformationDto order = service.findByOrderIdAndUserId(orderId, userId);
+        OrderShortInformationDto order = service.findByOrderIdAndUserId(orderId, userId);   //fixme
         return EntityModel.of(order);
     }
 }
