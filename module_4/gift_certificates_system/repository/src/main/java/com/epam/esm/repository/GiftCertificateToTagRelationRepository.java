@@ -1,7 +1,6 @@
 package com.epam.esm.repository;
 
 import com.epam.esm.model.entity.GiftCertificateToTagRelation;
-import com.epam.esm.model.entity.Tag;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

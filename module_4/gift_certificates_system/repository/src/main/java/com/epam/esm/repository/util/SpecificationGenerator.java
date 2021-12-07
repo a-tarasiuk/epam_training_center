@@ -58,7 +58,7 @@ public final class SpecificationGenerator implements Serializable {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            String keyword = searchParameter.getKeyword().trim();
+            String keyword = searchParameter.getKeyword();
             if (ObjectUtils.isNotEmpty(keyword)) {
                 String keywordLike = SqlGenerator.like(keyword);
                 Predicate nameLike = builder.like(root.get(ColumnName.NAME.name().toLowerCase()), keywordLike);
@@ -73,8 +73,7 @@ public final class SpecificationGenerator implements Serializable {
                 Join<GiftCertificateToTagRelation, Tag> rel = relation.join(ParameterName.TAG);
                 Predicate on = builder.equal(root, relation.get(ParameterName.GIFT_CERTIFICATE));
                 rel.on(on);
-                Path<String> tagName = rel.get(ParameterName.NAME);
-                Predicate predicate = tagName.in(tagNames);
+                Predicate predicate = rel.get(ParameterName.NAME).in(tagNames);
                 predicates.add(predicate);
                 query.groupBy(root)
                         .having(builder.count(root).in(tagNames.size()));

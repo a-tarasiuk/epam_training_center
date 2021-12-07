@@ -2,8 +2,6 @@ package com.epam.esm.controller.util.hateoas.impl;
 
 import com.epam.esm.controller.controller.UserController;
 import com.epam.esm.model.dto.UserDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;

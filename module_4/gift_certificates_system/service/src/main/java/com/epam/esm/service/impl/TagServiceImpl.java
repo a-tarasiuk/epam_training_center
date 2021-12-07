@@ -10,7 +10,6 @@ import com.epam.esm.model.pojo.UserInformation;
 import com.epam.esm.model.util.MessagePropertyKey;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.GiftCertificateToTagRelationRepository;
-import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.repository.util.EsmPagination;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
