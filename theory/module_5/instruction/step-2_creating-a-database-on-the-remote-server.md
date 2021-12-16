@@ -60,8 +60,6 @@ spring.datasource.password=admin12345admin
 
 В разделе `Additional configuration` оставляем порт по умолчанию `3306` для доступа к БД.
 
-Проверять подключение буду с помощью `Data Grip 2021.2`. 
-
 ![RDS - Connectivity](../content/rds_connectivity.png)
 
 ### 2.2 Устанавливаем соединения с БД
@@ -76,6 +74,8 @@ spring.datasource.password=admin12345admin
 ![RDS - Endpoint](../content/rds_endpoint.png)
 
 #### Создаем `Data Source`
+Проверять подключение буду с помощью `Data Grip 2021.2`. 
+
 В поле `Host` вводим значение из секции `Endpoint`, `Port = 3306`, `Authentication = USer & Password`, в поле `User = admin`, в поле `Password` вводим пароль.
 
 #### Тестовое соединение с БД
