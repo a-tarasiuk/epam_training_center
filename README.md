@@ -1,5 +1,5 @@
 # Gift Certificates System
-`Jenkins`
+`Jenkins` `SonarQube`
 
 `Spring Data JPA` `Spring Security` `JWT`
 
