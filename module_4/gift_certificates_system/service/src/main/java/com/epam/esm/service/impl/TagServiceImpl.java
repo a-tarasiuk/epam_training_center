@@ -100,7 +100,7 @@ public class TagServiceImpl implements TagService<TagDto> {
         Set<UserInformation> information = userRepository.findUsersWithHighestCostOfAllOrders();
         BigDecimal maxSumOfAllOrders = information.stream()
                 .max(Comparator.comparing(UserInformation::getSumOfAllOrders))
-                .orElseThrow(() -> {throw new EntityNotFoundException();})
+                .orElseThrow(EntityNotFoundException::new)
                 .getSumOfAllOrders();
 
         return userRepository.findUsersWithHighestCostOfAllOrders().stream()
