@@ -16,6 +16,10 @@
 
     <name>Gift Certificate Systems Webapp</name>
 
+    <build>
+        <finalName>gift_certificates_system</finalName>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>${esm.groupId}</groupId>
