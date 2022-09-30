@@ -43,6 +43,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         user.setPasswordEncoded(encodedPassword);
+        user.setRole(User.Role.ROLE_USER);
 
         User createdUser = userRepository.save(user);
 

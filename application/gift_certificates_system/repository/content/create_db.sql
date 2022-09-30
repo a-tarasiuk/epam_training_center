@@ -36,6 +36,8 @@ CREATE TABLE user
     login      varchar(50) not null,
     first_name varchar(50) not null,
     last_name  varchar(50) not null,
+    password_encoded varchar(60) not null,
+    role enum('ROLE_USER', 'ROLE_ADMINISTRATOR') not null,
     UNIQUE (login),
     PRIMARY KEY (id)
 );
