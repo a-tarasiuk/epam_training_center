@@ -11,16 +11,15 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>${esm.module.controller.artifactId</artifactId>
+    <artifactId>${esm.module.controller.artifactId}</artifactId>
+
     <packaging>war</packaging>
 
     <name>Gift Certificate Systems Webapp</name>
 
-    <properties>
-        <project.build.sourceEncoding>${esm.encoding}</project.build.sourceEncoding>
-        <maven.compiler.source>${maven.compiler.version}</maven.compiler.source>
-        <maven.compiler.target>${maven.compiler.version}</maven.compiler.target>
-    </properties>
+    <build>
+        <finalName>esm</finalName>
+    </build>
 
     <dependencies>
         <dependency>
@@ -28,35 +27,6 @@
             <artifactId>${esm.module.service.artifactId}</artifactId>
             <version>${esm.version}</version>
             <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${javax.servlet.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Spring Framework-->
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 </project>
