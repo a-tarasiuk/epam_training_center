@@ -1,0 +1,881 @@
+{
+	"info": {
+		"_postman_id": "8edef7f5-7820-4885-9d57-f079514fa70f",
+		"name": "module_4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "User - find all",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJFZWVlZWVlZWVlZWVlZWVlZSIsImlhdCI6MTYzODgyNDQwMH0.bheY8aM15ITfVaMUvmLNsnwHhGwlCJDAhRUAPMon3_8",
+								"description": "ROLE_USER",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "400",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - find by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/users/1013",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1013"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Order - find all",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Order - find by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/orders/24",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders",
+								"24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Order - find all by user ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/users/1013/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1013",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Order - find by order ID and by user ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ru-RU",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/users/1013/orders/23 ",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1013",
+								"orders",
+								"23 "
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Order - create for user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "ru-RU",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "12636",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/1013/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1013",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tag",
+			"item": [
+				{
+					"name": "Tag - find most widely used tag of top user",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/tags/most-widely-used-of-top-user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tags",
+								"most-widely-used-of-top-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tag - find all",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "USER",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ru-RU",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/tags",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tags"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "12",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tag - find by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "USER",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ADMINISTRATOR",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/tags/372",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tags",
+								"372"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tag - create",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "USER",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ADMINISTRATOR",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Customtagggggggggggggg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/tags",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tag - delete by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "ru-RU",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/tags/372",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tags",
+								"372"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gift certificate",
+			"item": [
+				{
+					"name": "Gift certificate - find all",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/gift-certificates",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gift-certificates"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "name.desc,description.asc,id.desc",
+									"disabled": true
+								},
+								{
+									"key": "tagNames",
+									"value": "Epam,Junior",
+									"disabled": true
+								},
+								{
+									"key": "keyword",
+									"value": "bison",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1299999",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gift certificate - find by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ru-RU",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/gift-certificates/12631999",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gift-certificates",
+								"12631999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gift certificate - create",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Cerificatenextiiiii\",\r\n    \"description\" : \"Descriptionnnn\",\r\n    \"price\" : 99.99,\r\n    \"duration\" : 100,\r\n    \"tags\" : [\r\n        {\r\n            \"name\" : \"Epam\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/gift-certificates",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gift-certificates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gift certificate - update",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Cerificatenextiiiii\",\r\n    \"description\" : \"Description\",\r\n    \"price\" : 7778888888888888888.99,\r\n    \"duration\" : 2,\r\n    \"tags\" : [\r\n        {\r\n            \"name\" : \"Homeeeeo\"\r\n        }, {\r\n            \"name\" : \"Hommmmmm\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/gift-certificates/12636",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gift-certificates",
+								"12636"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Authentication - sign in",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\" : \"user\",\r\n    \"password\" : \"user\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/sign-in",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication - sign up",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjM4NDc4ODAwfQ.LOjHxvGW5uMSmWmVNCj0nil8FyEdPCR6Hr589WB0Jhg",
+								"description": "ROLE_USER",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYzODQ3ODgwMH0.fvyFRe71RXZkXl2Q_ibuyDEhY0_iXoXh0fOmXk6i_Ho",
+								"description": "ROLE_ADMINISTRATOR",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ru-RU",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\" : \"Eeeeeeeeeeeeeeeee\",\r\n    \"password\" : \"Eeeeeeeeeeeeeeeee\",\r\n    \"firstName\" : \"John\",\r\n    \"lastName\" : \"Dee\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/sign-up",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

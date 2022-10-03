@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
-import java.util.List;
+import com.epam.esm.repository.util.EsmPagination;
+import org.springframework.data.domain.Page;
 
 /**
  * Abstract for SERVICE layer.
@@ -10,19 +11,11 @@ import java.util.List;
  */
 public interface AbstractService<T> {
     /**
-     * Entity creation.
-     *
-     * @param entity - Entity.
-     * @return - Created entity from the database.
-     */
-    T create(T entity);
-
-    /**
      * Search for all entities.
      *
-     * @return - List of found entities.
+     * @return - Page of found entities.
      */
-    List<T> findAll();
+    Page<T> findAll(EsmPagination pagination);
 
     /**
      * Finding entity by it is ID.
@@ -36,7 +29,6 @@ public interface AbstractService<T> {
      * Deleting entity by it is ID.
      *
      * @param id - Entity ID.
-     * @return - Operation result (true - if deleted, false - if not deleted)
      */
-    boolean delete(long id);
+    void delete(long id);
 }

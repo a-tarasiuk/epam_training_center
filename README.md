@@ -1,4 +1,6 @@
-# Epam training center
+# Gift Certificates System
+`Jenkins` `SonarQube` `JaCoCo`
 
-### Tasks
-https://github.com/mjc-school/MJC-School/tree/master/stage%20%233/java
+`Spring Data JPA` `Spring Security` `JWT`
+
+`Spring Boot` `HATEOAS` `Java 8` `MySQL` `JUnit 5` `Mockito`
