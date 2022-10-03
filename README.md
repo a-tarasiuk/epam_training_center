@@ -1,4 +1,6 @@
 # Gift Certificates System
+
+## Technology stack
 `Spring Data JPA` `Spring Security` `JWT`
 
 `Spring Boot` `HATEOAS` `Java 8` `MySQL` `JUnit 5` `Mockito`
@@ -11,6 +13,11 @@ User with role `Administrator`:
 User with role `User`:  
 - login: `user`  
 - password: `user`
+
+## Database structure
+The SQL code for generating the database structure and for populating the data is on the path `./application/gift_certificates_system/repository/content/`.
+
+![Database structure](./application/gift_certificates_system/repository/content/gift_certificates_system_db.png)
 
 ## Task
 
@@ -37,17 +44,18 @@ Spring Security is a powerful and highly customizable authentication and access-
 2. Application should support only stateless user authentication and verify integrity of JWT token.
 3. Users should be stored in a database with some basic information and a password.
 
-User Permissions:
-
-     - Guest:
-        * Read operations for main entity.
-        * Signup.
-        * Login.
-     - User:
-        * Make an order on main entity.
-        * All read operations.
-     - Administrator (can be added only via database call):
-        * All operations, including addition and modification of entities.
+**User Permissions:**
+```
+- Guest:
+   * Read operations for main entity.
+   * Signup.
+   * Login.
+- User:
+   * Make an order on main entity.
+   * All read operations.
+- Administrator (can be added only via database call):
+   * All operations, including addition and modification of entities.
+```
 
 4. Get acquainted with the concepts Oauth2 and OpenId Connect
 5. (Optional task) Use Oauth2 as an authorization protocol.
