@@ -67,3 +67,16 @@ Spring Security is a powerful and highly customizable authentication and access-
 [Bcrypt generator Online](https://bcrypt-generator.com)
 
 [JWT Debugger](https://jwt.io/)
+
+# Error
+## Intellij Idea Cannot Resolve Symbol
+After the project is opened on Intellij IDEA, a situation may arise in which the code is compiled without errors, but when any class is opened, we will observe the picture that some classes will be released in red with an error
+`Intellij Idea Cannot Resolve Symbol`.  
+
+It is recommended to perform `File | Invalidate Caches`:
+
+![File | Invalidate Caches](./content/intellij_idea_file_invalidate_caches.png)
+
+If it didn't help, then:  
+
+![Maven](./content/maven_reload_all_maven_projects.png)
