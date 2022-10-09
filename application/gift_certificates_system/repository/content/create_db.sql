@@ -5,7 +5,7 @@ CREATE
 DATABASE gift_certificates_system_db;
 
 USE
-gift_certificates_system_db;
+gift_certificates_system_db ;
 
 /* Entities */
 CREATE TABLE gift_certificate
